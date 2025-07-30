@@ -10,9 +10,10 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->string('short_name')->nullable();
+            $table->string('abbr')->nullable();
+            $table->string('img_src')->nullable();
+            $table->string('api_id')->nullable()->index();
             $table->foreignId('country_id')->constrained()->onDelete('cascade');
-            $table->foreignId('league_id')->nullable()->constrained()->onDelete('set null');
-            $table->foreignId('cup_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
         });
     }

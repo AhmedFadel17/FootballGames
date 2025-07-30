@@ -7,16 +7,24 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Player extends Model
 {
-    protected $fillable = ['name', 'nationality', 'position'];
+    protected $fillable = [
+        'name',
+        'fullname',
+        'position',
+        'date_of_birth',
+        'img_src',
+        'api_id',
+        'country_id',
+    ];
+
+    public function competitionPlayerFullStats()
+    {
+        return $this->hasMany(CompetitionPlayerFullStat::class);
+    }
 
     public function teamPeriods(): HasMany
     {
         return $this->hasMany(PlayerTeamPeriod::class);
-    }
-
-    public function stats(): HasMany
-    {
-        return $this->hasMany(PlayerStat::class);
     }
 
     public function transfers(): HasMany

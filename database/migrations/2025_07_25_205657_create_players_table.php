@@ -9,8 +9,11 @@ return new class extends Migration {
         Schema::create('players', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('fullname');
             $table->enum('position', ['GK', 'DEF', 'MID', 'FWD']);
             $table->date('date_of_birth')->nullable();
+            $table->string('img_src')->nullable();
+            $table->string('api_id')->nullable()->index();
             $table->foreignId('country_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
         });

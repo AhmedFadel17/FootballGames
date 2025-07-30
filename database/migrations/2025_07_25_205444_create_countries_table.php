@@ -8,6 +8,7 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('countries', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('continent_id')->constrained()->onDelete('cascade');
             $table->string('name')->unique();
             $table->string('code', 3); // ISO 3166-1 alpha-3
             $table->timestamps();

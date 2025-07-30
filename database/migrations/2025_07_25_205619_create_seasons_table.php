@@ -6,17 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::create('cups', function (Blueprint $table) {
+        Schema::create('seasons', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('country_id')->nullable()->constrained()->onDelete('set null');
-            $table->boolean('is_international')->default(false);
+            $table->year('start_year');
+            $table->year('end_year');
             $table->timestamps();
         });
     }
 
     public function down(): void {
-        Schema::dropIfExists('cups');
+        Schema::dropIfExists('seasons');
     }
 };
 

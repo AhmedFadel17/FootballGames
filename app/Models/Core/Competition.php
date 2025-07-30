@@ -6,15 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Team extends Model
+class Competition extends Model
 {
     protected $fillable = [
         'name',
         'short_name',
-        'abbr',
-        'img_src',
-        'api_id',
         'country_id',
+        'type',
+        'founded_year',
+        'tier',
+        'img_src',
+        'is_active',
     ];
 
     public function country(): BelongsTo
@@ -22,20 +24,18 @@ class Team extends Model
         return $this->belongsTo(Country::class);
     }
 
-    public function competitionParticipants()
+    public function participants()
     {
         return $this->hasMany(CompetitionParticipant::class);
     }
 
-    public function competitionTeamFullStats()
+    public function teamStats()
     {
         return $this->hasMany(CompetitionTeamFullStat::class);
     }
 
-    // A team can have many players
-    public function players()
+    public function playerStats()
     {
-        return $this->hasMany(Player::class);
+        return $this->hasMany(CompetitionPlayerFullStat::class);
     }
-
 }
