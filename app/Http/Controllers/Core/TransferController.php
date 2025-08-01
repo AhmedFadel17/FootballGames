@@ -2,64 +2,54 @@
 
 namespace App\Http\Controllers\Core;
 
+use App\DTOs\Core\Transfer\TransferDTO;
+use App\DTOs\Pagination\PaginationDTO;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Core\Transfer\CreateTransferRequest;
+use App\Http\Requests\Core\Transfer\TransferFilterRequest;
+use App\Http\Requests\Core\Transfer\UpdateTransferRequest;
+use App\Services\Transfer\ITransferService;
+use Illuminate\Http\JsonResponse;
 
 class TransferController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private readonly ITransferService $_service;
+    
+    public function __construct(ITransferService $service)
     {
-        //
+        $this->_service = $service;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(TransferFilterRequest $request): JsonResponse
     {
-        //
+        $dto = new PaginationDTO($request->validated());
+        $transfers = $this->_service->getAll($dto);
+        return response()->json($transfers->toArray());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(CreateTransferRequest $request): JsonResponse
     {
-        //
+        $dto = new TransferDTO($request->validated());
+        $transfer = $this->_service->create($dto);
+        return response()->json($transfer, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id): JsonResponse
     {
-        //
+        $transfer = $this->_service->getById($id);
+        return response()->json($transfer);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(UpdateTransferRequest $request, $id): JsonResponse
     {
-        //
+        $dto = new TransferDTO($request->validated());
+        $transfer = $this->_service->update($id, $dto);
+        return response()->json($transfer);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id): JsonResponse
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $this->_service->delete($id);
+        return response()->json(null, 204);
     }
 }

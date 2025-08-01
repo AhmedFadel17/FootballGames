@@ -11,6 +11,7 @@
         "@inertiajs/react": "^2.0.0",
         "@tailwindcss/forms": "^0.5.3",
         "@tailwindcss/vite": "^4.0.0",
+        "@types/flatpickr": "^3.0.2",
         "@types/react": "^19.1.8",
         "@types/react-dom": "^19.1.6",
         "@vitejs/plugin-react": "^4.2.0",
@@ -23,6 +24,26 @@
         "react-dom": "^18.2.0",
         "tailwindcss": "^3.2.1",
         "typescript": "^5.8.3",
-        "vite": "^7.0.4"
+        "vite": "^7.0.4",
+        "vite-plugin-svgr": "^4.3.0"
+    },
+    "dependencies": {
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.1",
+        "@fullcalendar/daygrid": "^6.1.18",
+        "@fullcalendar/interaction": "^6.1.18",
+        "@fullcalendar/react": "^6.1.18",
+        "@fullcalendar/timegrid": "^6.1.18",
+        "@mui/material": "^7.2.0",
+        "@react-jvectormap/core": "^1.0.4",
+        "@react-jvectormap/world": "^1.1.2",
+        "apexcharts": "^5.3.2",
+        "flatpickr": "^4.6.13",
+        "react-apexcharts": "^1.7.0",
+        "react-dropzone": "^14.3.8",
+        "react-helmet-async": "^2.0.5",
+        "react-router-dom": "^7.7.1",
+        "swiper": "^11.2.10",
+        "tailwind-merge": "^3.3.1"
     }
 }

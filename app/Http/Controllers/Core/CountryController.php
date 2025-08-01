@@ -2,64 +2,54 @@
 
 namespace App\Http\Controllers\Core;
 
+use App\DTOs\Core\Country\CountryDTO;
+use App\DTOs\Pagination\PaginationDTO;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Core\Country\CreateCountryRequest;
+use App\Http\Requests\Core\Country\CountryFilterRequest;
+use App\Http\Requests\Core\Country\UpdateCountryRequest;
+use App\Services\Country\ICountryService;
+use Illuminate\Http\JsonResponse;
 
 class CountryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private readonly ICountryService $_service;
+    
+    public function __construct(ICountryService $service)
     {
-        //
+        $this->_service = $service;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(CountryFilterRequest $request): JsonResponse
     {
-        //
+        $dto = new PaginationDTO($request->validated());
+        $countries = $this->_service->getAll($dto);
+        return response()->json($countries->toArray());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(CreateCountryRequest $request): JsonResponse
     {
-        //
+        $dto = new CountryDTO($request->validated());
+        $country = $this->_service->create($dto);
+        return response()->json($country, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id): JsonResponse
     {
-        //
+        $country = $this->_service->getById($id);
+        return response()->json($country);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(UpdateCountryRequest $request, $id): JsonResponse
     {
-        //
+        $dto = new CountryDTO($request->validated());
+        $country = $this->_service->update($id, $dto);
+        return response()->json($country);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id): JsonResponse
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $this->_service->delete($id);
+        return response()->json(null, 204);
     }
 }

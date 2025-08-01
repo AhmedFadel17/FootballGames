@@ -10,8 +10,12 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["resources/js/*"]
+    }
   },
-  "include": ["resources/js"],
+   "include": ["resources/js","resources/js/types"],
   "exclude": ["node_modules"]
 }

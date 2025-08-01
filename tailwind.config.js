@@ -8,13 +8,21 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './resources/js/**/*.jsx',
+        './resources/**/*.blade.php',
+        './resources/**/*.js',
+        './resources/**/*.jsx',
+        './resources/**/*.ts',
+        './resources/**/*.tsx',
     ],
 
     theme: {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                outfit: ["'Outfit'", ...defaultTheme.fontFamily.sans],
+
             },
+            
         },
     },
 

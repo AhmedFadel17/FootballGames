@@ -2,64 +2,54 @@
 
 namespace App\Http\Controllers\Core;
 
+use App\DTOs\Core\Team\TeamDTO;
+use App\DTOs\Pagination\PaginationDTO;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Core\Team\CreateTeamRequest;
+use App\Http\Requests\Core\Team\TeamFilterRequest;
+use App\Http\Requests\Core\Team\UpdateTeamRequest;
+use App\Services\Team\ITeamService;
+use Illuminate\Http\JsonResponse;
 
 class TeamController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private readonly ITeamService $_service;
+    
+    public function __construct(ITeamService $service)
     {
-        //
+        $this->_service = $service;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(TeamFilterRequest $request): JsonResponse
     {
-        //
+        $dto = new PaginationDTO($request->validated());
+        $teams = $this->_service->getAll($dto);
+        return response()->json($teams->toArray());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(CreateTeamRequest $request): JsonResponse
     {
-        //
+        $dto = new TeamDTO($request->validated());
+        $team = $this->_service->create($dto);
+        return response()->json($team, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id): JsonResponse
     {
-        //
+        $team = $this->_service->getById($id);
+        return response()->json($team);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(UpdateTeamRequest $request, $id): JsonResponse
     {
-        //
+        $dto = new TeamDTO($request->validated());
+        $team = $this->_service->update($id, $dto);
+        return response()->json($team);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id): JsonResponse
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $this->_service->delete($id);
+        return response()->json(null, 204);
     }
 }

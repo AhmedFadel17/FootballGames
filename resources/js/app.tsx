@@ -1,26 +1,66 @@
-import '../css/app.css';
-import './bootstrap';
+import { BrowserRouter as Router, Routes, Route } from "react-router";
+import SignIn from "@/Pages/AuthPages/SignIn";
+import SignUp from "@/Pages/AuthPages/SignUp";
+import NotFound from "@/Pages/OtherPage/NotFound";
+import UserProfiles from "@/Pages/UserProfiles";
+import Videos from "@/Pages/UiElements/Videos";
+import Images from "@/Pages/UiElements/Images";
+import Alerts from "@/Pages/UiElements/Alerts";
+import Badges from "@/Pages/UiElements/Badges";
+import Avatars from "@/Pages/UiElements/Avatars";
+import Buttons from "@/Pages/UiElements/Buttons";
+import LineChart from "@/Pages/Charts/LineChart";
+import BarChart from "@/Pages/Charts/BarChart";
+import Calendar from "@/Pages/Calendar";
+import BasicTables from "@/Pages/Tables/BasicTables";
+import FormElements from "@/Pages/Forms/FormElements";
+import Blank from "@/Pages/Blank";
+import AppLayout from "@/Layouts/AppLayout";
+import { ScrollToTop } from "@/Components/common/ScrollToTop";
+import Home from "@/Pages/Dashboard/Home";
 
-import { createInertiaApp } from '@inertiajs/react';
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { createRoot } from 'react-dom/client';
+export default function App() {
+  return (
+    <>
+      <Router>
+        <ScrollToTop />
+        <Routes>
+          {/* Dashboard Layout */}
+          <Route element={<AppLayout />}>
+            <Route index path="/" element={<Home />} />
 
-const appName = import.meta.env.VITE_APP_NAME || 'Football';
+            {/* Others Page */}
+            <Route path="/profile" element={<UserProfiles />} />
+            <Route path="/calendar" element={<Calendar />} />
+            <Route path="/blank" element={<Blank />} />
 
-createInertiaApp({
-  title: (title) => `${title} - ${appName}`,
-  resolve: (name) =>
-    resolvePageComponent(
-      `./Pages/${name}.tsx`,
-      import.meta.glob('./Pages/**/*.tsx'),
-    ),
+            {/* Forms */}
+            <Route path="/form-elements" element={<FormElements />} />
 
-  setup({ el, App, props }) {
-    const root = createRoot(el);
-    root.render(<App {...props} />);
-  },
+            {/* Tables */}
+            <Route path="/basic-tables" element={<BasicTables />} />
 
-  progress: {
-    color: '#4B5563',
-  },
-});
+            {/* Ui Elements */}
+            <Route path="/alerts" element={<Alerts />} />
+            <Route path="/avatars" element={<Avatars />} />
+            <Route path="/badge" element={<Badges />} />
+            <Route path="/buttons" element={<Buttons />} />
+            <Route path="/images" element={<Images />} />
+            <Route path="/videos" element={<Videos />} />
+
+            {/* Charts */}
+            <Route path="/line-chart" element={<LineChart />} />
+            <Route path="/bar-chart" element={<BarChart />} />
+          </Route>
+
+          {/* Auth Layout */}
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+
+          {/* Fallback Route */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+    </>
+  );
+}

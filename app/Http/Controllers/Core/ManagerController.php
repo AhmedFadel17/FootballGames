@@ -2,64 +2,54 @@
 
 namespace App\Http\Controllers\Core;
 
+use App\DTOs\Core\Manager\ManagerDTO;
+use App\DTOs\Pagination\PaginationDTO;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Core\Manager\CreateManagerRequest;
+use App\Http\Requests\Core\Manager\ManagerFilterRequest;
+use App\Http\Requests\Core\Manager\UpdateManagerRequest;
+use App\Services\Manager\IManagerService;
+use Illuminate\Http\JsonResponse;
 
 class ManagerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private readonly IManagerService $_service;
+    
+    public function __construct(IManagerService $service)
     {
-        //
+        $this->_service = $service;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(ManagerFilterRequest $request): JsonResponse
     {
-        //
+        $dto = new PaginationDTO($request->validated());
+        $managers = $this->_service->getAll($dto);
+        return response()->json($managers->toArray());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(CreateManagerRequest $request): JsonResponse
     {
-        //
+        $dto = new ManagerDTO($request->validated());
+        $manager = $this->_service->create($dto);
+        return response()->json($manager, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id): JsonResponse
     {
-        //
+        $manager = $this->_service->getById($id);
+        return response()->json($manager);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(UpdateManagerRequest $request, $id): JsonResponse
     {
-        //
+        $dto = new ManagerDTO($request->validated());
+        $manager = $this->_service->update($id, $dto);
+        return response()->json($manager);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id): JsonResponse
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $this->_service->delete($id);
+        return response()->json(null, 204);
     }
 }

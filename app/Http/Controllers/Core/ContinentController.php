@@ -2,64 +2,54 @@
 
 namespace App\Http\Controllers\Core;
 
+use App\DTOs\Core\Continent\ContinentDTO;
+use App\DTOs\Pagination\PaginationDTO;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Core\Continent\CreateContinentRequest;
+use App\Http\Requests\Core\Continent\ContinentFilterRequest;
+use App\Http\Requests\Core\Continent\UpdateContinentRequest;
+use App\Services\Continent\IContinentService;
+use Illuminate\Http\JsonResponse;
 
 class ContinentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private readonly IContinentService $_service;
+    
+    public function __construct(IContinentService $service)
     {
-        //
+        $this->_service = $service;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(ContinentFilterRequest $request): JsonResponse
     {
-        //
+        $dto = new PaginationDTO($request->validated());
+        $continents = $this->_service->getAll($dto);
+        return response()->json($continents->toArray());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(CreateContinentRequest $request): JsonResponse
     {
-        //
+        $dto = new ContinentDTO($request->validated());
+        $continent = $this->_service->create($dto);
+        return response()->json($continent, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id): JsonResponse
     {
-        //
+        $continent = $this->_service->getById($id);
+        return response()->json($continent);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(UpdateContinentRequest $request, $id): JsonResponse
     {
-        //
+        $dto = new ContinentDTO($request->validated());
+        $continent = $this->_service->update($id, $dto);
+        return response()->json($continent);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id): JsonResponse
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $this->_service->delete($id);
+        return response()->json(null, 204);
     }
 }

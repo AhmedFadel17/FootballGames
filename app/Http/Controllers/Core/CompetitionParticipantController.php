@@ -2,64 +2,54 @@
 
 namespace App\Http\Controllers\Core;
 
+use App\DTOs\Core\CompetitionParticipant\CompetitionParticipantDTO;
+use App\DTOs\Pagination\PaginationDTO;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Core\CompetitionParticipant\CreateCompetitionParticipantRequest;
+use App\Http\Requests\Core\CompetitionParticipant\CompetitionParticipantFilterRequest;
+use App\Http\Requests\Core\CompetitionParticipant\UpdateCompetitionParticipantRequest;
+use App\Services\CompetitionParticipant\ICompetitionParticipantService;
+use Illuminate\Http\JsonResponse;
 
 class CompetitionParticipantController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private readonly ICompetitionParticipantService $_service;
+    
+    public function __construct(ICompetitionParticipantService $service)
     {
-        //
+        $this->_service = $service;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(CompetitionParticipantFilterRequest $request): JsonResponse
     {
-        //
+        $dto = new PaginationDTO($request->validated());
+        $participants = $this->_service->getAll($dto);
+        return response()->json($participants->toArray());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(CreateCompetitionParticipantRequest $request): JsonResponse
     {
-        //
+        $dto = new CompetitionParticipantDTO($request->validated());
+        $participant = $this->_service->create($dto);
+        return response()->json($participant, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id): JsonResponse
     {
-        //
+        $participant = $this->_service->getById($id);
+        return response()->json($participant);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(UpdateCompetitionParticipantRequest $request, $id): JsonResponse
     {
-        //
+        $dto = new CompetitionParticipantDTO($request->validated());
+        $participant = $this->_service->update($id, $dto);
+        return response()->json($participant);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id): JsonResponse
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $this->_service->delete($id);
+        return response()->json(null, 204);
     }
 }

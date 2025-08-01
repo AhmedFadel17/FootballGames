@@ -2,64 +2,54 @@
 
 namespace App\Http\Controllers\Core;
 
+use App\DTOs\Core\ManagerTeamPeriod\ManagerTeamPeriodDTO;
+use App\DTOs\Pagination\PaginationDTO;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Core\ManagerTeamPeriod\CreateManagerTeamPeriodRequest;
+use App\Http\Requests\Core\ManagerTeamPeriod\ManagerTeamPeriodFilterRequest;
+use App\Http\Requests\Core\ManagerTeamPeriod\UpdateManagerTeamPeriodRequest;
+use App\Services\ManagerTeamPeriod\IManagerTeamPeriodService;
+use Illuminate\Http\JsonResponse;
 
 class ManagerTeamPeriodController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private readonly IManagerTeamPeriodService $_service;
+    
+    public function __construct(IManagerTeamPeriodService $service)
     {
-        //
+        $this->_service = $service;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(ManagerTeamPeriodFilterRequest $request): JsonResponse
     {
-        //
+        $dto = new PaginationDTO($request->validated());
+        $periods = $this->_service->getAll($dto);
+        return response()->json($periods->toArray());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(CreateManagerTeamPeriodRequest $request): JsonResponse
     {
-        //
+        $dto = new ManagerTeamPeriodDTO($request->validated());
+        $period = $this->_service->create($dto);
+        return response()->json($period, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id): JsonResponse
     {
-        //
+        $period = $this->_service->getById($id);
+        return response()->json($period);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(UpdateManagerTeamPeriodRequest $request, $id): JsonResponse
     {
-        //
+        $dto = new ManagerTeamPeriodDTO($request->validated());
+        $period = $this->_service->update($id, $dto);
+        return response()->json($period);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id): JsonResponse
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $this->_service->delete($id);
+        return response()->json(null, 204);
     }
 }

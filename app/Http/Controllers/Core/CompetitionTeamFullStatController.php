@@ -2,64 +2,54 @@
 
 namespace App\Http\Controllers\Core;
 
+use App\DTOs\Core\CompetitionTeamFullStat\CompetitionTeamFullStatDTO;
+use App\DTOs\Pagination\PaginationDTO;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Core\CompetitionTeamFullStat\CreateCompetitionTeamFullStatRequest;
+use App\Http\Requests\Core\CompetitionTeamFullStat\CompetitionTeamFullStatFilterRequest;
+use App\Http\Requests\Core\CompetitionTeamFullStat\UpdateCompetitionTeamFullStatRequest;
+use App\Services\CompetitionTeamFullStat\ICompetitionTeamFullStatService;
+use Illuminate\Http\JsonResponse;
 
 class CompetitionTeamFullStatController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private readonly ICompetitionTeamFullStatService $_service;
+    
+    public function __construct(ICompetitionTeamFullStatService $service)
     {
-        //
+        $this->_service = $service;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(CompetitionTeamFullStatFilterRequest $request): JsonResponse
     {
-        //
+        $dto = new PaginationDTO($request->validated());
+        $stats = $this->_service->getAll($dto);
+        return response()->json($stats->toArray());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(CreateCompetitionTeamFullStatRequest $request): JsonResponse
     {
-        //
+        $dto = new CompetitionTeamFullStatDTO($request->validated());
+        $stat = $this->_service->create($dto);
+        return response()->json($stat, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id): JsonResponse
     {
-        //
+        $stat = $this->_service->getById($id);
+        return response()->json($stat);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(UpdateCompetitionTeamFullStatRequest $request, $id): JsonResponse
     {
-        //
+        $dto = new CompetitionTeamFullStatDTO($request->validated());
+        $stat = $this->_service->update($id, $dto);
+        return response()->json($stat);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id): JsonResponse
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $this->_service->delete($id);
+        return response()->json(null, 204);
     }
 }
