@@ -1,3 +1,5 @@
 type Player={
-    Id:number
+    Id:number,
+    imgSrc:string,
+    name:string
 }

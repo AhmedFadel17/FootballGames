@@ -5,6 +5,5 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
-    readonly glob: ImportMetaGlob;
-
+  readonly glob: ImportMetaGlob;
 }

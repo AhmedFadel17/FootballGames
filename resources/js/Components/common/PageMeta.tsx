@@ -1,4 +1,5 @@
 import { HelmetProvider, Helmet } from "react-helmet-async";
+const appName = import.meta.env.VITE_APP_NAME ?? "FG";
 
 const PageMeta = ({
   title,
@@ -8,7 +9,7 @@ const PageMeta = ({
   description: string;
 }) => (
   <Helmet>
-    <title>{title}</title>
+    <title>{title} | {appName}</title>
     <meta name="description" content={description} />
   </Helmet>
 );
