@@ -13,9 +13,22 @@ return new class extends Migration
     {
         Schema::create('bingo_conditions', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->json('rule_json');
+            $table->foreignId('bingo_game_id')
+                ->constrained('bingo_games')
+                ->onDelete('cascade');
+            $table->unsignedInteger('object_id');
+            $table->string('object_type', 100);
+            $table->string('connection_type', 50);
+            $table->foreignId('bingo_match_id')
+                ->nullable()
+                ->constrained('bingo_matches')
+                ->nullOnDelete();
+            $table->boolean('is_marked')->default(false);
+            $table->integer('pos');
             $table->timestamps();
+
+            $table->unique(['bingo_game_id',  'pos'], 'unique_cell_position');
+            $table->index(['object_id', 'object_type'], 'bingo_cells_object_index');
         });
     }
 

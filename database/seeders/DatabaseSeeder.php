@@ -14,15 +14,17 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            ContinentSeeder::class,
-            CountriesTableSeeder::class,
-            CompetitionsSeeder::class,
-            SeasonSeeder::class,
-            TeamSeeder::class,
-            TeamFullStatsSeeder::class,
-            CompetitionParticipantsSeeder::class,
-            PlayersWithTeamsSeeder::class,
-            CompetitionPlayerFullStatsSeeder::class
+            // ContinentSeeder::class,
+            // CountriesTableSeeder::class,
+            // CompetitionsSeeder::class,
+            // SeasonSeeder::class,
+            // TeamSeeder::class,
+            // TeamFullStatsSeeder::class,
+            // CompetitionParticipantsSeeder::class,
+            // PlayersWithTeamsSeeder::class,
+            // CompetitionPlayerFullStatsSeeder::class
+            GameTypesTableSeeder::class,
+            GamesTableSeeder::class,
         ]);
     }
 }

@@ -2,14 +2,20 @@
 
 namespace App\Models\Game;
 
+use App\Shared\Enums\GameStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class GameInstance extends Model
 {
-    protected $fillable = ['game_id', 'start_at', 'end_at'];
+    protected $fillable = ['game_id', 'start_at', 'end_at', 'status'];
 
+    protected $casts = [
+        'status' => GameStatus::class,
+        'start_at' => 'datetime',
+        'end_at' => 'datetime',
+    ];
     public function game(): BelongsTo
     {
         return $this->belongsTo(Game::class);

@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('top10_configs', function (Blueprint $table) {
+        Schema::create('bingo_games', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('game_instance_id')->constrained()->onDelete('cascade');
-            $table->json('ranking_formula');
+            $table->foreignId('game_instance_id')
+                ->constrained("game_instances")
+                ->onDelete('cascade');
+            $table->unsignedInteger('size')->default(3);
+            $table->unsignedInteger('remaining_answers');
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('top10_configs');
+        Schema::dropIfExists('bingo_games');
     }
 };

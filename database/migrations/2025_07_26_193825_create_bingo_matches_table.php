@@ -13,10 +13,16 @@ return new class extends Migration
     {
         Schema::create('bingo_matches', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('player_id')->constrained()->onDelete('cascade');
-            $table->foreignId('matched_condition_id')->constrained('bingo_conditions')->onDelete('cascade');
-            $table->foreignId('game_instance_id')->constrained()->onDelete('cascade');
+            $table->foreignId('bingo_game_id')
+                ->constrained('bingo_games')
+                ->onDelete('cascade');
+            $table->foreignId('player_id')
+                ->constrained('players')
+                ->onDelete('cascade');
+            $table->integer('pos');
             $table->timestamps();
+
+            $table->unique(['bingo_game_id',  'player_id'], 'unique_player_matches');
         });
     }
 
