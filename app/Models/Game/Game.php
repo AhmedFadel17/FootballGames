@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Game extends Model
 {
-    protected $fillable = ['name', 'game_type_id'];
+    protected $fillable = ['title','description','is_active', 'game_type_id'];
 
     public function type(): BelongsTo
     {

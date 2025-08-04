@@ -31,6 +31,26 @@ use App\Services\CompetitionPlayerFullStat\ICompetitionPlayerFullStatService;
 use App\Services\CompetitionPlayerFullStat\CompetitionPlayerFullStatService;
 use App\Services\CompetitionTeamFullStat\ICompetitionTeamFullStatService;
 use App\Services\CompetitionTeamFullStat\CompetitionTeamFullStatService;
+
+use App\Services\GameServices\GameInstance\IGameInstanceService;
+use App\Services\GameServices\GameInstance\GameInstanceService;
+use App\Services\GameServices\GameEntry\IGameEntryService;
+use App\Services\GameServices\GameEntry\GameEntryService;
+use App\Services\GameServices\GameResult\IGameResultService;
+use App\Services\GameServices\GameResult\GameResultService;
+use App\Services\GameServices\GamePrize\IGamePrizeService;
+use App\Services\GameServices\GamePrize\GamePrizeService;
+
+use App\Services\GameServices\Game\GameService;
+use App\Services\GameServices\Game\IGameService;
+use App\Services\GameServices\GameType\GameTypeService;
+use App\Services\GameServices\GameType\IGameTypeService;
+use App\Services\GamesListServices\Bingo\BingoCondition\BingoConditionService;
+use App\Services\GamesListServices\Bingo\BingoCondition\IBingoConditionService;
+use App\Services\GamesListServices\Bingo\BingoGame\BingoGameService;
+use App\Services\GamesListServices\Bingo\BingoGame\IBingoGameService;
+use App\Services\GamesListServices\Bingo\BingoMatch\BingoMatchService;
+use App\Services\GamesListServices\Bingo\BingoMatch\IBingoMatchService;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Debug\ExceptionHandler;
@@ -56,6 +76,15 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(IManagerTeamPeriodService::class, ManagerTeamPeriodService::class);
         $this->app->bind(ICompetitionPlayerFullStatService::class, CompetitionPlayerFullStatService::class);
         $this->app->bind(ICompetitionTeamFullStatService::class, CompetitionTeamFullStatService::class);
+        $this->app->bind(IGameService::class, GameService::class);
+        $this->app->bind(IGameTypeService::class, GameTypeService::class);
+        $this->app->bind(IGameInstanceService::class, GameInstanceService::class);
+        $this->app->bind(IGameEntryService::class, GameEntryService::class);
+        $this->app->bind(IGameResultService::class, GameResultService::class);
+        $this->app->bind(IGamePrizeService::class, GamePrizeService::class);
+        $this->app->bind(IBingoGameService::class, BingoGameService::class);
+        $this->app->bind(IBingoConditionService::class, BingoConditionService::class);
+        $this->app->bind(IBingoMatchService::class, BingoMatchService::class);
         $this->app->singleton(
         ExceptionHandler::class,
         Handler::class

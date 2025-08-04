@@ -12,6 +12,8 @@ class GameTypesTableSeeder extends Seeder
      */
     public function run(): void
     {
+        DB::table('game_types')->truncate();
+
         $gameTypes = [
             [
                 'name' => 'Bingo',

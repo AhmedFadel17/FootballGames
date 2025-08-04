@@ -13,6 +13,8 @@ use App\Http\Controllers\Core\PlayerTeamPeriodController;
 use App\Http\Controllers\Core\SeasonController;
 use App\Http\Controllers\Core\TeamController;
 use App\Http\Controllers\Core\TransferController;
+use App\Http\Controllers\Game\GameController;
+use App\Http\Controllers\Game\GameTypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +23,10 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::prefix('v1')->group(function () {
+    Route::apiResource('games', GameController::class);
+    Route::apiResource('game-types', GameTypeController::class);
+
+
     Route::prefix('admin')->group(function () {
         Route::apiResource('competitions', CompetitionController::class);
         Route::apiResource('competition-participants', CompetitionParticipantController::class);
@@ -37,4 +43,3 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('transfers', TransferController::class);
     });
 });
-
