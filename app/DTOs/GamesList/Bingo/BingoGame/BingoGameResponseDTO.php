@@ -2,6 +2,7 @@
 
 namespace App\DTOs\GamesList\Bingo\BingoGame;
 
+use App\DTOs\GamesList\Bingo\BingoCondition\BingoConditionResponseDTO;
 use App\Models\GamesList\Bingo\BingoGame;
 
 class BingoGameResponseDTO
@@ -10,6 +11,7 @@ class BingoGameResponseDTO
     public readonly int $game_instance_id;
     public readonly int $size;
     public readonly int $remaining_answers;
+    public readonly array $conditions;
     public readonly string $created_at;
     public readonly string $updated_at;
 
@@ -18,6 +20,7 @@ class BingoGameResponseDTO
         int $game_instance_id,
         int $size,
         int $remaining_answers,
+        ?array $conditions,
         string $created_at,
         string $updated_at
     ) {
@@ -25,6 +28,7 @@ class BingoGameResponseDTO
         $this->game_instance_id = $game_instance_id;
         $this->size = $size;
         $this->remaining_answers = $remaining_answers;
+        $this->conditions = $conditions;
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
     }
@@ -35,6 +39,7 @@ class BingoGameResponseDTO
             id: $bingoGame->id ?? 0,
             game_instance_id: $bingoGame->game_instance_id ?? 0,
             size: $bingoGame->size ?? 0,
+            conditions: $bingoGame->conditions->map(fn($c) => BingoConditionResponseDTO::fromModel($c))->toArray()??[],
             remaining_answers: $bingoGame->remaining_answers ?? 0,
             created_at: $bingoGame->created_at?->format('Y-m-d H:i:s') ?? '',
             updated_at: $bingoGame->updated_at?->format('Y-m-d H:i:s') ?? ''
@@ -48,6 +53,7 @@ class BingoGameResponseDTO
             'game_instance_id' => $this->game_instance_id,
             'size' => $this->size,
             'remaining_answers' => $this->remaining_answers,
+            'conditions' => array_map(fn($c) => $c->toArray(), $this->conditions),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

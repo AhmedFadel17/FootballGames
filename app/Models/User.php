@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -27,6 +28,9 @@ class User extends Authenticatable
         'games_won',
         'games_lost',
         'favorite_team',
+        'role',
+        'refresh_token',
+        'refresh_token_expires_at',
     ];
 
     /**
@@ -37,6 +41,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'refresh_token',
     ];
 
     /**
@@ -54,6 +59,11 @@ class User extends Authenticatable
             'games_won' => 'integer',
             'games_lost' => 'integer',
         ];
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return $this->role === $role;
     }
 
     public function userSettings()

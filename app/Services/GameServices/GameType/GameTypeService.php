@@ -12,7 +12,7 @@ class GameTypeService implements IGameTypeService
     public function getAll(): array
     {
         $query = GameType::query();
-        return $query->get()
+        return $query->with('games')->get()
             ->map(fn($game) => GameTypeResponseDTO::fromModel($game))
             ->all();
     }

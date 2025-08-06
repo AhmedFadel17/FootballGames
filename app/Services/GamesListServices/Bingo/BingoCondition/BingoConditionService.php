@@ -13,9 +13,13 @@ class BingoConditionService implements IBingoConditionService
 
     public function getByBingoGameId(int $id): array
     {
-        $query =BingoCondition::query();
-        return $query->where('bingo_game_id',$id)
-            ->map(fn($game) => BingoConditionResponseDTO::fromModel($game))
+        $conditions = BingoCondition::query()
+            ->with(['objectable', 'match.player'])
+            ->where('bingo_game_id', $id)
+            ->get();
+
+        return $conditions
+            ->map(fn($condition) => BingoConditionResponseDTO::fromModel($condition))
             ->all();
     }
 } 

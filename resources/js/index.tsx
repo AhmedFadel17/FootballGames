@@ -3,23 +3,26 @@ import './bootstrap';
 import "swiper/swiper-bundle.css";
 import "flatpickr/dist/flatpickr.css";
 import { createRoot } from 'react-dom/client';
-import { StrictMode } from "react";
+import { StrictMode, useEffect, useState } from "react";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AppWrapper } from "@/components/common/PageMeta";
 import App from '@/app';
-import { store } from "@/store";
+import { store, persistor } from "@/store";
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
 const root = createRoot(document.getElementById('app')!);
 
 root.render(
   <StrictMode>
     <Provider store={store}>
-      <ThemeProvider>
-        <AppWrapper>
-          <App />
-        </AppWrapper>
-      </ThemeProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <ThemeProvider>
+          <AppWrapper>
+            <App />
+          </AppWrapper>
+        </ThemeProvider>
+      </PersistGate>
     </Provider>
   </StrictMode>
 );

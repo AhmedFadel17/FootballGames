@@ -8,15 +8,14 @@ class CreateBingoGameRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     public function rules(): array
     {
         return [
-            'game_instance_id' => 'required|integer|exists:game_instances,id',
+            'game_id' => 'required|integer|exists:games,id',
             'size' => 'required|integer|min:1',
-            'remaining_answers' => 'required|integer|min:0',
         ];
     }
 } 

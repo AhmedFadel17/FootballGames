@@ -2,11 +2,11 @@
 
 namespace App\Shared\Enums;
 
-enum BingoConnectionType
+enum BingoConnectionType:string
 {
-    case PLAYED_FOR;
-    case PLAYED_WITH;
-    case PLAYED_UNDER;
-    case WON;
-    case MADE_STATS;
+    case PLAYED_FOR="played for";
+    case PLAYED_WITH="played with";
+    case PLAYED_UNDER="played under manager";
+    case WON="won";
+    case MADE_STATS="made";
 }

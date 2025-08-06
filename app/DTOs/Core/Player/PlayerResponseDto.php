@@ -20,4 +20,15 @@ class PlayerResponseDTO
         $this->date_of_birth = $player->date_of_birth;
         $this->country_id = $player->country_id;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'position' => $this->position,
+            'date_of_birth' => $this->date_of_birth,
+            'country_id' => $this->country_id,
+        ];
+    }
 }

@@ -1,12 +1,40 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import bingoReducer from "./slices/bingoSlice";
+import authReducer from "./slices/authSlice";
+import storage from "redux-persist/lib/storage";
+import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
+import { identityApi } from '@/services/identityApi';
+import { api } from '@/services/api';
+import { combineReducers } from 'redux';
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['auth'], // persist only the auth slice
+};
+const rootReducer = combineReducers({
+  auth: authReducer,
+  bingo: bingoReducer,
+
+  [api.reducerPath]: api.reducer,
+  [identityApi.reducerPath]: identityApi.reducer,
+
+});
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-  reducer: {
-    bingo: bingoReducer,
-  },
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    })
+    .concat(api.middleware)
+    .concat(identityApi.middleware),
 });
+
+export const persistor = persistStore(store);
+
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

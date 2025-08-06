@@ -1,31 +1,49 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { bingoApi } from "@/services/bingoApi";
+
+
 
 interface BingoState {
+  bingoGame: BingoGame | null;
   isActive: boolean;
-  size:number;
 }
 
 const initialState: BingoState = {
-  isActive:false,
-  size:3
+  bingoGame: null,
+  isActive: false,
 };
 
 const bingoSlice = createSlice({
   name: "bingo",
   initialState,
   reducers: {
-    increment: (state) => {
-      state.value += 1;
+    startBingo: (state, action: PayloadAction<BingoGame>) => {
+      state.bingoGame = action.payload;
+      state.isActive = true;
     },
-    decrement: (state) => {
-      state.value -= 1;
+    resetBingo: (state) => {
+      state.bingoGame = null;
+      state.isActive = false;
     },
-    startBingo: (state, action: PayloadAction<number>) => {
-      state.size = action.payload;
-      state.isActive=true
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addMatcher(
+        bingoApi.endpoints.createBingoGame.matchFulfilled,
+        (state, { payload }) => {
+          state.bingoGame = payload;
+          state.isActive = true;
+        }
+      )
+      .addMatcher(
+        bingoApi.endpoints.createBingoGame.matchRejected,
+        (state) => {
+          state.bingoGame = null;
+          state.isActive = false;
+        }
+      );
   },
 });
 
-export const { increment, decrement, startBingo } = bingoSlice.actions;
+export const { startBingo, resetBingo } = bingoSlice.actions;
 export default bingoSlice.reducer;

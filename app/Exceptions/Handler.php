@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
@@ -37,6 +38,30 @@ class Handler extends ExceptionHandler
                 'message' => 'Unauthorized access'
             ], 401);
         }
+
+
+        // ✅ Handle Authorization Errors (Forbidden)
+        if ($exception instanceof AuthorizationException) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This action is not authorized',
+                'details' => [
+                    'exception'   => class_basename($exception), // e.g., "AuthorizationException"
+                    'user'        => auth()->check() ? [
+                        'id'    => auth()->id(),
+                        'email' => auth()->user()->email,
+                        'role'  => auth()->user()->role,
+                        'abilities' => auth()->user()->currentAccessToken()
+                            ? auth()->user()->currentAccessToken()->abilities
+                            : [],
+                    ] : null,
+                    'route'       => $request->path(),       // Endpoint user attempted to access
+                    'method'      => $request->method(),     // HTTP verb (GET, POST, etc.)
+                    'timestamp'   => now()->toDateTimeString(),
+                ],
+            ], 403);
+        }
+
 
         // ✅ Handle Generic HTTP Exceptions
         if ($exception instanceof HttpException) {

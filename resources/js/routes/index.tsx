@@ -1,18 +1,18 @@
 import { AppRoute } from "@/types/ui";
-import { lazy } from "react";
 
-const Home = lazy(() => import("@/pages/Dashboard/Home"));
+import UserHome from "@/pages/Dashboard/Home";
+import AdminHome from "@/pages/Admin/Home";
 
-const BingoGame = lazy(() => import("@/pages/Games/Bingo"));
-const Top10Game = lazy(() => import("@/pages/Games/Top10"));
+import BingoGame from "@/pages/Games/Bingo";
+import Top10Game from "@/pages/Games/Top10";
 
-const Competitions = lazy(() => import("@/pages/Admin/Competitions"));
-const Teams = lazy(() => import("@/pages/Admin/Teams"));
-const Players = lazy(() => import("@/pages/Admin/Players"));
-const Managers = lazy(() => import("@/pages/Admin/Managers"));
-const Seasons = lazy(() => import("@/pages/Admin/Seasons"));
-const Transfers = lazy(() => import("@/pages/Admin/Transfers"));
-const Statistics = lazy(() => import("@/pages/Admin/Statistics"));
+import Competitions from "@/pages/Admin/Competitions";
+import Teams from "@/pages/Admin/Teams";
+import Players from "@/pages/Admin/Players";
+import Managers from "@/pages/Admin/Managers";
+import Seasons from "@/pages/Admin/Seasons";
+import Transfers from "@/pages/Admin/Transfers";
+import Statistics from "@/pages/Admin/Statistics";
 
 // =============================
 // 🚀 USER ROUTES
@@ -21,7 +21,7 @@ export const AppUserRoutes: AppRoute[] = [
   {
     path: "/",
     label: "Dashboard",
-    element: <Home />,
+    element: <UserHome />,
   },
   {
     path: "/games/bingo",
@@ -43,7 +43,7 @@ export const AppAdminRoutes: AppRoute[] = [
   {
     path: "/",
     label: "Dashboard",
-    element: <Home />,
+    element: <AdminHome />,
   },
   {
     path: "/admin/competitions",

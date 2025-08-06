@@ -13,11 +13,15 @@ class BingoMatchService implements IBingoMatchService
     {
         $bingoGame = BingoGame::query()->findOrFail($id);
         $remaining_answers = $bingoGame->remaining_answers ?? 0;
-        $total_answers = BingoGame::query()->matches()->count ?? 0;
-        $pos=$total_answers-$remaining_answers;
+        if ($remaining_answers == 0) abort(400, "Invalid Request");
+        $total_answers = $bingoGame->matches()->count() ?? 0;
+        $pos = $total_answers - $remaining_answers;
         $query = BingoMatch::query();
-        $bingoMatch= $query->where('bingo_game_id', $id)->where('pos',$pos)->first();
+        $bingoMatch = $query->with(['player'])->where('bingo_game_id', $id)->where('pos', $pos)->first();
+        if (!$bingoMatch) abort(400, "Invalid Request");
+        $bingoGame->update([
+            "remaining_answers" => $remaining_answers - 1
+        ]);
         return BingoMatchResponseDTO::fromModel($bingoMatch);
-
     }
 }

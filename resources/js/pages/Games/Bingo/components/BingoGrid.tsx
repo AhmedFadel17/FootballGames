@@ -1,34 +1,33 @@
 import BingoCard from "./BingoCard";
 
 interface BingoGridProps {
-    width: number;
-    height: number;
+  width: number;
+  height: number;
+  conditions: BingoCondition[];
+  onCellClick?: (conditionId: number) => void;
 }
 
-export default function BingoGrid({ width, height }: BingoGridProps) {
-    const totalCells = width * height;
+export default function BingoGrid({ width, height, conditions, onCellClick }: BingoGridProps) {
+  const totalCells = width * height;
 
-    return (
-        <div
-            className="grid gap-2"
-            style={{
-                gridTemplateColumns: `repeat(${width}, minmax(40px, 1fr))`,
-            }}
-        >
-            {Array.from({ length: totalCells }).map((_, index) => (
+  return (
+    <div
+      className="grid gap-2"
+      style={{
+        gridTemplateColumns: `repeat(${width}, minmax(40px, 1fr))`,
+      }}
+    >
+      {Array.from({ length: totalCells }).map((_, index) => {
+        const condition = conditions[index];
 
-                <BingoCard
-                    key={index}
-                    imgSrc="https://resources.premierleague.com/premierleague25/photos/players/110x140/427637.png"
-                    name="Ronaldo"
-                    connection="Played with"
-                    completed={true}
-                    answer={{
-                        name: "Messi",
-                        imgSrc: "https://resources.premierleague.com/premierleague25/photos/players/110x140/427637.png"
-                    }}
-                />
-            ))}
-        </div>
-    );
+        return (
+          <BingoCard
+            key={index}
+            bingoCondition={condition}
+            onClick={() => condition && onCellClick?.(condition.pos)}
+          />
+        );
+      })}
+    </div>
+  );
 }

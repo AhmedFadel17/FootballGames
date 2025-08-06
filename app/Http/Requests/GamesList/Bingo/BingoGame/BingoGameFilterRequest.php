@@ -16,10 +16,11 @@ class BingoGameFilterRequest extends FormRequest
         return [
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
-            'search' => 'nullable|string|max:255',
             'sort_by' => 'nullable|string|in:game_instance_id,size,remaining_answers,created_at,updated_at',
             'sort_order' => 'nullable|string|in:asc,desc',
-            'game_instance_id' => 'nullable|integer|exists:game_instances,id',
+            'game_id' => 'nullable|integer|exists:games,id',
+            'user_id' => 'nullable|integer|exists:users,id',
+
         ];
     }
 
