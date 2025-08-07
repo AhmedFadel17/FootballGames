@@ -1,6 +1,6 @@
 type Player = {
     Id: number;
-    imgSrc: string;
+    img_src: string;
     name: string;
     position: string;
     country_id: number;

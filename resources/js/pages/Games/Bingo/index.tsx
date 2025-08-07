@@ -22,13 +22,12 @@ export default function BingoPage() {
         description="This is the football bingo game"
       />
       <div className="grid grid-cols-12 gap-4 md:gap-6">
-        <div className="col-span-12 space-y-6 xl:col-span-7">
-          <BingoGame isActive={bingoIsActive} />
+        
 
-        </div>
-
-        <div className="col-span-12 xl:col-span-5">
-          {!bingoIsActive &&
+        <div className="col-span-12">
+          {bingoIsActive ?
+            <BingoGame isActive={bingoIsActive} />
+            :
             <BingoMaker />
           }
         </div>

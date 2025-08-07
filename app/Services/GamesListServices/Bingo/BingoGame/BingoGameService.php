@@ -15,54 +15,38 @@ use App\Models\GamesList\Bingo\BingoCondition;
 use App\Models\GamesList\Bingo\BingoGame;
 use App\Models\GamesList\Bingo\BingoMatch;
 use App\Models\User;
+use App\Services\GamesListServices\Bingo\BingoCondition\IBingoConditionService;
+use App\Services\GamesListServices\Bingo\BingoMatch\IBingoMatchService;
 use App\Services\Pagination\IPaginationService;
 use App\Shared\Enums\BingoConnectionType;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BingoGameService implements IBingoGameService
 {
-    private readonly IPaginationService $_paginationService;
+
+
     const ANSWERS_SIZE = 40;
-    public function __construct(IPaginationService $paginationService)
-    {
-        $this->_paginationService = $paginationService;
-    }
+    public function __construct(
+        private readonly IPaginationService $_paginationService,
+        private readonly IBingoMatchService $_matcherService,
+        private readonly IBingoConditionService $_conditionService
+    ) {}
 
     public function skip(int $gameId): void
     {
         $bingoGame = BingoGame::query()->findOrFail($gameId);
         $remaining_answers = $bingoGame->remaining_answers ?? 0;
         if ($remaining_answers == 0) abort(400, "Invalid Request");
-        $bingoGame->update([
-            "remaining_answers" => $remaining_answers - 1
-        ]);
-        $remaining_answers = $bingoGame->remaining_answers ?? 0;
+        $this->updateRemainingAnswers($bingoGame, $bingoGame->remaining_answers - 1);
     }
     public function check(int $gameId, int $conditionPos): BingoConditionResponseDTO
     {
         $bingoGame = BingoGame::query()->findOrFail($gameId);
-        $remaining_answers = $bingoGame->remaining_answers ?? 0;
 
-        if ($remaining_answers <= 0) {
-            abort(400, "Invalid Request");
-        }
+        $bingoCondition = $this->_conditionService::getByBingoGameIdAndPosition($bingoGame->id, $conditionPos);
 
-        // 🔹 إجمالي الماتشات
-        $totalAnswers = BingoMatch::query()
-            ->where('bingo_game_id', $gameId)
-            ->count();
-
-        $pos = max(0, $totalAnswers - $remaining_answers);
-
-        $bingoCondition = BingoCondition::query()
-            ->where('bingo_game_id', $gameId)
-            ->where('pos', $conditionPos)
-            ->firstOrFail();
-
-        $bingoMatch = BingoMatch::query()
-            ->where('bingo_game_id', $gameId)
-            ->where('pos', $pos)
-            ->firstOrFail();
+        $bingoMatch = $this->_matcherService->getBingoGameCurrentMatch($bingoGame->id);
 
         $object = $bingoCondition->objectable;
         $player = $bingoMatch->player;
@@ -70,7 +54,6 @@ class BingoGameService implements IBingoGameService
         $acceptedAnswer = false;
 
         if ($object && $player) {
-            // ✅ تحقق لو object = Player
             if ($bingoCondition->object_type === Player::class) {
                 $sharedTeam = DB::table('player_team_periods as pt1')
                     ->join('player_team_periods as pt2', function ($join) use ($object, $player) {
@@ -87,7 +70,6 @@ class BingoGameService implements IBingoGameService
                 }
             }
 
-            // ✅ تحقق لو object = Team
             if ($bingoCondition->object_type === Team::class) {
                 $playedForTeam = PlayerTeamPeriod::query()
                     ->where('player_id', $player->id)
@@ -99,17 +81,19 @@ class BingoGameService implements IBingoGameService
                 }
             }
         }
+        $b=$bingoGame->remaining_answers;
 
         if ($acceptedAnswer) {
             $bingoCondition->update([
                 'bingo_match_id' => $bingoMatch->id,
                 'is_marked' => true,
             ]);
+        } else {
+            $this->updateRemainingAnswers($bingoGame, $bingoGame->remaining_answers - 1);
         }
-
-        $bingoGame->update([
-            'remaining_answers' => $remaining_answers - 1,
-        ]);
+        $r=$bingoGame->refresh()->remaining_answers;
+        $c=$this->_matcherService->getBingoGameCurrentMatch($bingoGame->id)->pos;
+        Log::info("Check Data: Name=[$object->name] - Player: [$player->name] - next:$c  - before: $b - after: $r - accepted $acceptedAnswer");
 
         return BingoConditionResponseDTO::fromModel($bingoCondition->refresh());
     }
@@ -187,5 +171,12 @@ class BingoGameService implements IBingoGameService
     {
         $bingoGame = BingoGame::findOrFail($id);
         $bingoGame->delete();
+    }
+
+    private function updateRemainingAnswers(BingoGame $game, int $answers): void
+    {
+        $game->update([
+            'remaining_answers' => $answers,
+        ]);
     }
 }

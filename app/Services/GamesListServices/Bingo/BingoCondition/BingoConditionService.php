@@ -22,4 +22,12 @@ class BingoConditionService implements IBingoConditionService
             ->map(fn($condition) => BingoConditionResponseDTO::fromModel($condition))
             ->all();
     }
-} 
+    public static function getByBingoGameIdAndPosition(int $gameId, int $pos): BingoCondition
+    {
+        $condition = BingoCondition::query()
+            ->where('bingo_game_id', $gameId)
+            ->where('pos', $pos)
+            ->firstOrFail();
+        return $condition;
+    }
+}

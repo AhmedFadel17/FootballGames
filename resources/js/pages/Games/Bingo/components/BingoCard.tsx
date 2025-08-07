@@ -9,13 +9,13 @@ export default function BingoCard({ bingoCondition, onClick }: BingoCardProps) {
     }
     const { id,pos, is_marked, object, connection_type, match } = bingoCondition;
 
-    const imgSrc = object && "imgSrc" in object
-        ? object.imgSrc
+    const imgSrc = object && "img_src" in object
+        ? object.img_src
         : "https://via.placeholder.com/80";
     const name = object && "name" in object ? object.name : "Unknown";
 
-    const answerImg = match?.player && "imgSrc" in match.player
-        ? match.player.imgSrc
+    const answerImg = match?.player && "img_src" in match.player
+        ? match.player.img_src
         : "https://via.placeholder.com/80";
     const answerName = match?.player?.name ?? "";
 

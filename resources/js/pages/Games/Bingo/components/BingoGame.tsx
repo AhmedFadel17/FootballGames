@@ -5,92 +5,88 @@ import {
 } from "@/services/bingoApi";
 import BingoGrid from "./BingoGrid";
 import BingoSelector from "./BingoSelector";
-import { useAppSelector } from "@/store";
-import { useState, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { useEffect } from "react";
+import {
+  setConditions,
+  setMatcher,
+  updateCondition,
+} from "@/store/slices/bingoSlice";
 
 interface BingoGameProps {
   isActive: boolean;
 }
 
 export default function BingoGame({ isActive }: BingoGameProps) {
-  const bingoGame = useAppSelector((state) => state.bingo.bingoGame);
+  const dispatch = useAppDispatch();
+  const { bingoGame, conditions, matcher } = useAppSelector((state) => state.bingo);
 
-  // ✅ Local state to update a single condition immediately
-  const [localConditions, setLocalConditions] = useState<BingoCondition[]>([]);
+  const gameId = bingoGame?.id;
 
-  // ✅ Fetch conditions
-  const {
-    data: conditions = [],
-    isLoading: isConditionsLoading,
-    refetch: refetchConditions,
-  } = useGetBingoConditionsQuery(bingoGame?.id!, {
-    skip: !bingoGame?.id,
-  });
+  const { data: fetchedConditions = [], isLoading: isConditionsLoading } =
+    useGetBingoConditionsQuery(gameId!, { skip: !gameId });
 
-  // ✅ Fetch current match
   const {
     data: currentMatch,
     isLoading: isMatchLoading,
     refetch: refetchMatch,
-  } = useGetNextBingoMatchQuery(bingoGame?.id!, {
-    skip: !bingoGame?.id,
-  });
+  } = useGetNextBingoMatchQuery(gameId!, { skip: !gameId });
 
-  // ✅ Mutation to check condition
   const [checkCondition] = useCheckBingoConditionMutation();
 
-  // Sync local state with API data
+  // Set conditions
   useEffect(() => {
-    setLocalConditions(conditions);
-  }, [conditions]);
+    if (fetchedConditions.length) {
+      dispatch(setConditions(fetchedConditions));
+    }
+  }, [fetchedConditions]);
 
+  // Set matcher
+  useEffect(() => {
+    if (currentMatch) {
+      dispatch(setMatcher(currentMatch));
+    }
+  }, [currentMatch]);
+
+  // ✅ Click cell → request → refetch matcher
   const handleCellClick = async (pos: number) => {
-    if (!bingoGame) return alert("Network error");
+    if (!gameId) return;
 
     try {
-      const updatedCondition = await checkCondition({
-        gameId: bingoGame.id,
-        pos: pos,
-      }).unwrap();
-
-      // ✅ Update local state immediately
-      setLocalConditions((prev) =>
-        prev.map((c) => (c.pos === pos ? updatedCondition : c))
-      );
-
-      // ✅ Get the next match
+      const condition = await checkCondition({ gameId, pos }).unwrap();
+      dispatch(updateCondition(condition));
       await refetchMatch();
     } catch (error) {
-      console.error("Failed to check condition:", error);
+      console.error("Condition check failed:", error);
     }
   };
 
-  return (
-    <>
-      {isActive && bingoGame ? (
-        <div>
-          {/* ✅ Player Selector */}
-          {!isMatchLoading && currentMatch?.player && (
-            <BingoSelector matcher={currentMatch} />
-          )}
+  if (!isActive || !bingoGame) {
+    return (
+      <div className="flex items-center justify-center text-center p-4 border-2 border-purple-200 min-h-[20rem] rounded">
+        <p className="text-xl font-[900]">Bingo</p>
+      </div>
+    );
+  }
 
-          {/* ✅ Bingo Grid */}
-          {isConditionsLoading ? (
-            <div className="text-center p-4">Loading grid...</div>
-          ) : (
-            <BingoGrid
-              width={bingoGame.size}
-              height={bingoGame.size}
-              conditions={localConditions}
-              onCellClick={handleCellClick}
-            />
-          )}
-        </div>
+  return (
+    <div className="px-20">
+      <div className="mb-10">
+        {!isMatchLoading && matcher?.player && (
+          <BingoSelector matcher={matcher} onSkip={refetchMatch} />
+        )}
+      </div>
+
+      {isConditionsLoading ? (
+        <div className="text-center p-4">Loading grid...</div>
       ) : (
-        <div className="flex items-center justify-center text-center p-4 border-2 border-purple-200 min-h-[20rem] rounded">
-          <p className="text-xl font-[900]">Bingo</p>
-        </div>
+        <BingoGrid
+          width={bingoGame.size}
+          height={bingoGame.size}
+          conditions={conditions}
+          onCellClick={handleCellClick}
+        />
       )}
-    </>
+    </div>
   );
 }

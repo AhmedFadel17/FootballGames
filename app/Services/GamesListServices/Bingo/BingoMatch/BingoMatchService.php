@@ -9,19 +9,39 @@ use App\Models\GamesList\Bingo\BingoMatch;
 class BingoMatchService implements IBingoMatchService
 {
 
-    public function getByBingoGameId(int $id): BingoMatchResponseDTO
+    public function getByBingoGameId(int $gameId): BingoMatchResponseDTO
     {
-        $bingoGame = BingoGame::query()->findOrFail($id);
-        $remaining_answers = $bingoGame->remaining_answers ?? 0;
-        if ($remaining_answers == 0) abort(400, "Invalid Request");
-        $total_answers = $bingoGame->matches()->count() ?? 0;
-        $pos = $total_answers - $remaining_answers;
-        $query = BingoMatch::query();
-        $bingoMatch = $query->with(['player'])->where('bingo_game_id', $id)->where('pos', $pos)->first();
+        $bingoGame = BingoGame::query()->findOrFail($gameId);
+        $pos = $this->getCurrentGameMatchPosition($bingoGame);
+        $nextPos = $pos + 1;
+        $bingoMatch = BingoMatch::query()
+            ->with('player')
+            ->where('bingo_game_id', $gameId)
+            ->where('pos', $nextPos)
+            ->firstOrFail();
         if (!$bingoMatch) abort(400, "Invalid Request");
         $bingoGame->update([
-            "remaining_answers" => $remaining_answers - 1
+            "remaining_answers" => $bingoGame->remaining_answers - 1
         ]);
         return BingoMatchResponseDTO::fromModel($bingoMatch);
+    }
+
+    public function getBingoGameCurrentMatch(int $gameId): BingoMatch
+    {
+        $bingoGame = BingoGame::query()->findOrFail($gameId);
+        $pos = $this->getCurrentGameMatchPosition($bingoGame);
+        $bingoMatch = BingoMatch::query()
+            ->where('bingo_game_id', $gameId)
+            ->where('pos', $pos)
+            ->firstOrFail();
+        return $bingoMatch;
+    }
+
+    private function getCurrentGameMatchPosition(BingoGame $bingoGame): int
+    {
+        $remaining_answers = $bingoGame->remaining_answers + 1 ?? 0;
+        $totalAnswers = $bingoGame->matches()->count();
+        $pos = $totalAnswers - $remaining_answers;
+        return $pos;
     }
 }

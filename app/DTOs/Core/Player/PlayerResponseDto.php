@@ -9,6 +9,7 @@ class PlayerResponseDTO
     public int $id;
     public string $name;
     public string $position;
+    public string $img_src;
     public ?string $date_of_birth;
     public ?int $country_id;
 
@@ -18,6 +19,7 @@ class PlayerResponseDTO
         $this->name = $player->name;
         $this->position = $player->position;
         $this->date_of_birth = $player->date_of_birth;
+        $this->img_src = $player->img_src;
         $this->country_id = $player->country_id;
     }
 
@@ -29,6 +31,7 @@ class PlayerResponseDTO
             'position' => $this->position,
             'date_of_birth' => $this->date_of_birth,
             'country_id' => $this->country_id,
+            'img_src' => $this->img_src
         ];
     }
 }
