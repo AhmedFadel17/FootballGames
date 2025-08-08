@@ -16,6 +16,7 @@ class Competition extends Model
         'founded_year',
         'tier',
         'img_src',
+        'popularity',
         'is_active',
     ];
 

@@ -127,8 +127,8 @@ class BingoGameService implements IBingoGameService
             'remaining_answers' => $this::ANSWERS_SIZE
         ]);
 
-        $players = Player::inRandomOrder()->limit($size * 3)->get();
-        $teams = Team::inRandomOrder()->limit($size * 3)->get();
+        $players = Player::inRandomOrder()->where('popularity','>=',60)->limit($size * 3)->get();
+        $teams = Team::inRandomOrder()->where('popularity','>=',60)->limit($size * 3)->get();
         $items = collect()
             ->merge($players->map(fn($p) => ['type' => Player::class, 'con' => BingoConnectionType::PLAYED_WITH, 'id' => $p->id, 'name' => $p->name]))
             ->merge($teams->map(fn($t) => ['type' => Team::class, 'con' => BingoConnectionType::PLAYED_FOR, 'id' => $t->id, 'name' => $t->name]))
@@ -146,7 +146,7 @@ class BingoGameService implements IBingoGameService
             ];
         }
         BingoCondition::insert($bingoConditionsArr);
-        $playersToMatch = Player::inRandomOrder()->limit($this::ANSWERS_SIZE)->get();
+        $playersToMatch = Player::inRandomOrder()->where('popularity','>=',40)->limit($this::ANSWERS_SIZE)->get();
         $bingoMatchesArr = [];
         foreach ($playersToMatch as $idx => $player) {
             $bingoMatchesArr[] = [

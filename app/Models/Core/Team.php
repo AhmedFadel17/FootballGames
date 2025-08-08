@@ -13,6 +13,7 @@ class Team extends Model
         'short_name',
         'abbr',
         'img_src',
+        'popularity',
         'api_id',
         'country_id',
     ];

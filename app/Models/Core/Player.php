@@ -13,6 +13,7 @@ class Player extends Model
         'position',
         'date_of_birth',
         'img_src',
+        'popularity',
         'api_id',
         'country_id',
     ];
