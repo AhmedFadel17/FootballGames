@@ -10,6 +10,7 @@ import Cookies from 'js-cookie';
 import { useDispatch } from "react-redux";
 import { guestLogin } from '@/store/slices/authSlice';
 import { useAppDispatch, useAppSelector } from "@/store";
+import { Toaster } from "react-hot-toast";
 
 export default function App() {
    const dispatch = useAppDispatch();
@@ -25,6 +26,8 @@ export default function App() {
     <>
       <Router>
         <ScrollToTop />
+              <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
+
         <Routes>
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>

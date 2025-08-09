@@ -7,6 +7,7 @@ import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import { identityApi } from '@/services/identityApi';
 import { api } from '@/services/api';
 import { combineReducers } from 'redux';
+import { rtkQueryErrorLogger } from "@/middleware/rtkQueryErrorLogger";
 
 const persistConfig = {
   key: 'root',
@@ -30,7 +31,8 @@ export const store = configureStore({
       serializableCheck: false,
     })
     .concat(api.middleware)
-    .concat(identityApi.middleware),
+    .concat(identityApi.middleware)
+    .concat(rtkQueryErrorLogger)
 });
 
 export const persistor = persistStore(store);

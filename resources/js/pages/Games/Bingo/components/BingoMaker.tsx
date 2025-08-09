@@ -69,7 +69,7 @@ export default function BingoMaker({ }: BingoMakerProps) {
             {
                 loading: "Starting bingo game...",
                 success: "Bingo game created successfully!",
-                error: (err) => err?.error || "Failed to start bingo game",
+                // error: (err) => err?.error || "Failed to start bingo game",
             }
         ).then((newGame) => {
             dispatch(startBingo(newGame));
