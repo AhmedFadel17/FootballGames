@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Country extends Model
 {
     protected $fillable = ['name', 'code','popularity'];
+    protected $appends = ['img_src'];
 
      public function continent(): BelongsTo
     {
@@ -29,5 +30,11 @@ class Country extends Model
     public function players(): HasMany
     {
         return $this->hasMany(Player::class);
+    }
+
+     public function getImgSrcAttribute(): string
+    {
+        $code = strtolower($this->code);
+        return "https://flagcdn.com/w160/{$code}.png";
     }
 }

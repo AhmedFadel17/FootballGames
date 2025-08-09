@@ -16,10 +16,5 @@ class BingoMatchController extends Controller
         $this->_service = $service;
     }
 
-    public function getByGameId(Request $request,int $id): JsonResponse
-    {
-        $bingoMatch = $this->_service->getByBingoGameId($id);
-        return response()->json($bingoMatch);
-    }
 
 } 

@@ -9,10 +9,12 @@ use App\Http\Requests\GamesList\Bingo\BingoGame\BingoGameFilterRequest;
 use App\Http\Requests\GamesList\Bingo\BingoGame\CreateBingoGameRequest;
 use App\Http\Requests\GamesList\Bingo\BingoGame\UpdateBingoGameRequest;
 use App\Services\GamesListServices\Bingo\BingoGame\IBingoGameService;
+use App\Shared\Enums\GameDifficulty;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\UnauthorizedException;
+use Illuminate\Http\Request;
 
 class BingoGameController extends Controller
 {
@@ -23,45 +25,39 @@ class BingoGameController extends Controller
         $this->_service = $service;
     }
 
-    public function skip(int $id): JsonResponse
+    public function nextMatch(Request $request, int $id): JsonResponse
     {
-        $skipped = $this->_service->skip($id);
-        return response()->json(true);
+        $user = $request->user();
+        $match = $this->_service->nextMatch($user, $id);
+        return response()->json($match->toArray());
     }
-
-    public function check(int $id,int $pos): JsonResponse
+    public function check(Request $request, int $id, int $pos): JsonResponse
     {
-        $condition = $this->_service->check($id,$pos);
+        $user = $request->user();
+        $condition = $this->_service->check($user, $id, $pos);
         return response()->json($condition->toArray());
     }
 
-    public function index(BingoGameFilterRequest $request): JsonResponse
+
+    public function cancelGame(Request $request, int $id): JsonResponse
     {
-        $dto = $request->validated();
-        $bingoGames = $this->_service->getAll($dto);
-        return response()->json($bingoGames->toArray());
+        $user = $request->user();
+        $this->_service->cancelGame($user, $id);
+        return response()->json(true);
+    }
+
+    public function gameResults(Request $request, int $id): JsonResponse
+    {
+        $user = $request->user();
+        $res = $this->_service->results($user, $id);
+        return response()->json($res->toArray());
     }
 
     public function store(CreateBingoGameRequest $request): JsonResponse
     {
-        $user = Auth::user();
-        if (!$user) abort(403, 'Unauthorized action.');
+        $user = $request->user();
         $dto = $request->validated();
-        $bingoGame = $this->_service->create($dto["game_id"],$dto["size"],$user);
+        $bingoGame = $this->_service->create($user, $dto["game_id"], $dto["size"], $dto["difficulty"]);
         return response()->json($bingoGame, 201);
-    }
-
-    public function show($id): JsonResponse
-    {
-        $bingoGame = $this->_service->getById($id);
-        return response()->json($bingoGame);
-    }
-
-
-
-    public function destroy($id): JsonResponse
-    {
-        $this->_service->delete($id);
-        return response()->json(null, 204);
     }
 }

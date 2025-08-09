@@ -1,18 +1,12 @@
-import { useSkipBingoMatchMutation } from "@/services/bingoApi";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { setMatcher } from "@/store/slices/bingoSlice";
 
 interface BingoSelectorProps {
   matcher: BingoMatch;
+  remainingAnswers:number;
     onSkip: () => void; 
 
 }
 
-export default function BingoSelector({ matcher ,onSkip}: BingoSelectorProps) {
-  const [skipMatch, { isLoading }] = useSkipBingoMatchMutation();
-  const remainingAnswers = useAppSelector(
-    (state) => state.bingo.bingoGame?.remaining_answers
-  );
+export default function BingoSelector({ matcher,remainingAnswers ,onSkip}: BingoSelectorProps) {
 
   const handleSkip = async () => {
     try {
@@ -44,10 +38,9 @@ export default function BingoSelector({ matcher ,onSkip}: BingoSelectorProps) {
       <div>
         <button
           onClick={handleSkip}
-          disabled={isLoading}
           className={`btn rounded bg-purple-500 text-white font-bold px-5 py-2 transition-all duration-200 hover:bg-purple-600 disabled:bg-gray-400`}
         >
-          {isLoading ? "Skipping..." : "Skip"}
+          Skip
         </button>
         <p className="text-xs font-[800] text-black m-0">
           {remainingAnswers} Remaining

@@ -44,11 +44,13 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
 
     Route::prefix('u')->group(function () {
         Route::prefix('games-list')->group(function () {
-            Route::apiResource('bingo', BingoGameController::class);
             Route::get('bingo/{id}/conditions', [BingoConditionController::class, 'getByGameId']);
-            Route::get('bingo/{id}/next-match', [BingoMatchController::class, 'getByGameId']);
+            Route::post('bingo', [BingoGameController::class, 'store']);
+            Route::get('bingo/{id}/next-match', [BingoGameController::class, 'nextMatch']);
             Route::post('bingo/{id}/skip', [BingoGameController::class, 'skip']);
             Route::post('bingo/{id}/check/{pos}',  [BingoGameController::class, 'check']);
+            Route::get('bingo/{id}/results',  [BingoGameController::class, 'gameResults']);
+            Route::post('bingo/{id}/cancel',  [BingoGameController::class, 'cancelGame']);
         });
         Route::apiResource('games', GameController::class);
         Route::apiResource('game-types', GameTypeController::class);

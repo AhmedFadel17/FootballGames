@@ -14,12 +14,28 @@ export default function BingoMaker({ }: BingoMakerProps) {
     const [bingoSize, setBingoSize] = useState(3);
     const [bingoGames, setBingoGames] = useState([]);
     const [selectedBingoGame, setSelectedBingoGame] = useState<string | null>(null);
+    const [gameDifficulty, setgameDifficulty] = useState<string | null>("easy");
+
     const [createData] = useCreateDataMutation();
 
     const dispatch = useDispatch();
     const { data, isLoading, isSuccess } = useGetDataQuery({
         url: "/api/v1/u/games?game_type_id=1",
     });
+    const gameDiffOptions = [
+        {
+            value:"easy",
+            label:'Easy'
+        },
+        {
+            value:"normal",
+            label:'Normal'
+        },
+        {
+            value:"hard",
+            label:'Hard'
+        },
+    ]
 
     useEffect(() => {
         if (isSuccess && data) {
@@ -36,6 +52,10 @@ export default function BingoMaker({ }: BingoMakerProps) {
         setSelectedBingoGame(value)
     }
 
+    const handleGameDiffChange = (value: string) => {
+        setgameDifficulty(value)
+    }
+
     const handleBingoSubmit = async () => {
         await toast.promise(
             createData({
@@ -43,6 +63,7 @@ export default function BingoMaker({ }: BingoMakerProps) {
                 body: {
                     game_id: selectedBingoGame,
                     size: bingoSize,
+                    difficulty:gameDifficulty
                 },
             }).unwrap(),
             {
@@ -61,7 +82,9 @@ export default function BingoMaker({ }: BingoMakerProps) {
             <div className="py-2">
                 <Select options={bingoGames} onChange={(value) => handleBingoGameChange(value)} placeholder="Select Your Game" />
             </div>
-
+            <div className="py-2">
+                <Select options={gameDiffOptions} defaultValue="easy" onChange={(value) => handleGameDiffChange(value)} placeholder="Select Game difficulty" />
+            </div>
             <div className="py-2">
                 <Input
                     type="number"

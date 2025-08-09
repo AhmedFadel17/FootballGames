@@ -10,7 +10,7 @@ use App\Http\Requests\GamesList\Bingo\BingoCondition\BingoConditionFilterRequest
 use App\Http\Requests\GamesList\Bingo\BingoCondition\UpdateBingoConditionRequest;
 use App\Services\GamesListServices\Bingo\BingoCondition\IBingoConditionService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 
 class BingoConditionController extends Controller
 {
@@ -23,7 +23,8 @@ class BingoConditionController extends Controller
 
     public function getByGameId(Request $request,int $id): JsonResponse
     {
-        $bingoConditions = $this->_service->getByBingoGameId($id);
+        $user=$request->user();
+        $bingoConditions = $this->_service->getByBingoGameId($user,$id);
         return response()->json($bingoConditions);
     }
 

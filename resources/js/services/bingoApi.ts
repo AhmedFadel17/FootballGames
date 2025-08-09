@@ -46,6 +46,22 @@ export const bingoApi = api.injectEndpoints({
             }),
             invalidatesTags: ["BingoGame"],
         }),
+
+        // Cancel a bingo game
+        cancelBingoGame: builder.mutation<any, number>({
+            query: (gameId) => ({
+                url: `/api/v1/u/games-list/bingo/${gameId}/cancel`,
+            }),
+            invalidatesTags: ["BingoGame"],
+        }),
+
+        // get bingo game results
+        bingoGameResults: builder.mutation<any, number>({
+            query: (gameId) => ({
+                url: `/api/v1/u/games-list/bingo/${gameId}/results`,
+            }),
+            invalidatesTags: ["BingoGame"],
+        }),
     }),
 });
 
@@ -55,4 +71,5 @@ export const {
     useCheckBingoConditionMutation,
     useSkipBingoMatchMutation,
     useCreateBingoGameMutation,
+    useBingoGameResultsMutation,
 } = bingoApi;

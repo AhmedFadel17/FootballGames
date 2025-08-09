@@ -2,6 +2,7 @@ import {
   useGetBingoConditionsQuery,
   useGetNextBingoMatchQuery,
   useCheckBingoConditionMutation,
+  useBingoGameResultsMutation,
 } from "@/services/bingoApi";
 import BingoGrid from "./BingoGrid";
 import BingoSelector from "./BingoSelector";
@@ -20,7 +21,9 @@ interface BingoGameProps {
 export default function BingoGame({ isActive }: BingoGameProps) {
   const dispatch = useAppDispatch();
   const { bingoGame, conditions, matcher } = useAppSelector((state) => state.bingo);
-
+  const remainingAnswers = useAppSelector(
+    (state) => state.bingo.bingoGame?.remaining_answers
+  );
   const gameId = bingoGame?.id;
 
   const { data: fetchedConditions = [], isLoading: isConditionsLoading } =
@@ -33,7 +36,13 @@ export default function BingoGame({ isActive }: BingoGameProps) {
   } = useGetNextBingoMatchQuery(gameId!, { skip: !gameId });
 
   const [checkCondition] = useCheckBingoConditionMutation();
+  const [getResults, { data: results, isLoading: isResultsLoading, error: resultsError }] = useBingoGameResultsMutation();
 
+  useEffect(() => {
+    if (remainingAnswers === 0 && bingoGame) {
+      getResults(bingoGame.id);
+    }
+  }, [remainingAnswers, bingoGame, getResults]);
   // Set conditions
   useEffect(() => {
     if (fetchedConditions.length) {
@@ -70,23 +79,43 @@ export default function BingoGame({ isActive }: BingoGameProps) {
   }
 
   return (
-    <div className="px-20">
-      <div className="mb-10">
-        {!isMatchLoading && matcher?.player && (
-          <BingoSelector matcher={matcher} onSkip={refetchMatch} />
-        )}
-      </div>
+    <>
+      {(remainingAnswers && remainingAnswers > 0) ?
+        <div className="px-20">
+          <div className="mb-10">
+            {!isMatchLoading && matcher?.player && (
+              <BingoSelector matcher={matcher} remainingAnswers={remainingAnswers} onSkip={refetchMatch} />
+            )}
+          </div>
 
-      {isConditionsLoading ? (
-        <div className="text-center p-4">Loading grid...</div>
-      ) : (
-        <BingoGrid
-          width={bingoGame.size}
-          height={bingoGame.size}
-          conditions={conditions}
-          onCellClick={handleCellClick}
-        />
-      )}
-    </div>
+          {isConditionsLoading ? (
+            <div className="text-center p-4">Loading grid...</div>
+          ) : (
+            <BingoGrid
+              width={bingoGame.size}
+              height={bingoGame.size}
+              conditions={conditions}
+              onCellClick={handleCellClick}
+            />
+          )}
+        </div>
+        :
+        <div className="results-container">
+          {isResultsLoading && <p>Loading results...</p>}
+          {resultsError && <p>Error loading results.</p>}
+          {results && (
+            <div>
+              {results.status === 'won' ? (
+                <h2>🎉 Congratulations! You won the game!</h2>
+              ) : (
+                <h2>Game Over. Better luck next time!</h2>
+              )}
+              {/* render other details if needed */}
+            </div>
+          )}
+        </div>
+      }
+    </>
+
   );
 }
