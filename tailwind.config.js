@@ -22,7 +22,13 @@ export default {
                 outfit: ["'Outfit'", ...defaultTheme.fontFamily.sans],
 
             },
-            
+            colors: {
+                primary: '#a4193d',   
+                secondary: '#ffdfb9', 
+                accent: '#fcf7f8',  
+                // accent: '#0a174e',  
+                'steel-gray':'#1f1c2c'
+            },
         },
     },
 

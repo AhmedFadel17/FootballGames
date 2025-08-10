@@ -17,7 +17,7 @@ class CreateBingoGameRequest extends FormRequest
     {
         return [
             'game_id' => 'required|integer|exists:games,id',
-            'size' => 'required|integer|min:1',
+            'size' => 'required|integer|min:3|max:5',
             'difficulty' => [
                 'required',
                 'string',

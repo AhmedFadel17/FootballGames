@@ -16,7 +16,7 @@ type MutationWithIdArgs<T = any> = {
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: customBaseQuery,
-  tagTypes: ["BingoGame", "BingoConditions", "BingoMatch"], // ✅ أضف دي
+  tagTypes: ["BingoGame", "BingoConditions","BingoCondition", "BingoMatch"],
   endpoints: (builder) => ({
     getData: builder.query<any, GetArgs>({
       query: ({ url = "", params = "" }) => {

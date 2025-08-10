@@ -9,10 +9,14 @@ import BingoSelector from "./BingoSelector";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { useEffect } from "react";
 import {
+  finishGame,
+  resetBingo,
   setConditions,
   setMatcher,
   updateCondition,
 } from "@/store/slices/bingoSlice";
+import { motion, AnimatePresence } from "framer-motion";
+import { store } from "@/store";
 
 interface BingoGameProps {
   isActive: boolean;
@@ -23,6 +27,9 @@ export default function BingoGame({ isActive }: BingoGameProps) {
   const { bingoGame, conditions, matcher } = useAppSelector((state) => state.bingo);
   const remainingAnswers = useAppSelector(
     (state) => state.bingo.bingoGame?.remaining_answers
+  );
+  const isFinished = useAppSelector(
+    (state) => state.bingo.isFinished
   );
   const gameId = bingoGame?.id;
 
@@ -39,10 +46,10 @@ export default function BingoGame({ isActive }: BingoGameProps) {
   const [getResults, { data: results, isLoading: isResultsLoading, error: resultsError }] = useBingoGameResultsMutation();
 
   useEffect(() => {
-    if (remainingAnswers === 0 && bingoGame) {
+    if (isFinished && bingoGame) {
       getResults(bingoGame.id);
     }
-  }, [remainingAnswers, bingoGame, getResults]);
+  }, [isFinished, bingoGame, getResults]);
   // Set conditions
   useEffect(() => {
     if (fetchedConditions.length) {
@@ -59,15 +66,32 @@ export default function BingoGame({ isActive }: BingoGameProps) {
 
   // ✅ Click cell → request → refetch matcher
   const handleCellClick = async (pos: number) => {
-    if (!gameId) return;
-
+    if (!gameId || isFinished || remainingAnswers === undefined) return;
     try {
-      const condition = await checkCondition({ gameId, pos }).unwrap();
-      dispatch(updateCondition(condition));
-      await refetchMatch();
+      if (remainingAnswers > 0) {
+
+        const condition = await checkCondition({ gameId, pos }).unwrap();
+        dispatch(updateCondition(condition));
+        const f = store.getState().bingo.isFinished;
+        if (!f) {
+          await refetchMatch();
+        }
+      } else {
+        dispatch(finishGame())
+      }
     } catch (error) {
       console.error("Condition check failed:", error);
     }
+  };
+
+  const handleSkipClick = async () => {
+    if (!gameId || remainingAnswers === undefined) return;
+    if (remainingAnswers > 0) {
+      await refetchMatch();
+    } else {
+      dispatch(finishGame())
+    }
+
   };
 
   if (!isActive || !bingoGame) {
@@ -80,41 +104,74 @@ export default function BingoGame({ isActive }: BingoGameProps) {
 
   return (
     <>
-      {(remainingAnswers && remainingAnswers > 0) ?
-        <div className="px-20">
-          <div className="mb-10">
-            {!isMatchLoading && matcher?.player && (
-              <BingoSelector matcher={matcher} remainingAnswers={remainingAnswers} onSkip={refetchMatch} />
-            )}
-          </div>
+      <div className="px-20">
+        <div className="mb-10">
+          {isFinished ?
+            <div className="results-container">
+              {isResultsLoading && <p>Loading results...</p>}
+              {resultsError && <p>Error loading results.</p>}
+              {results && (
+                <div className="border-2 rounded border-primary">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold bg-primary rounded-top py-4 text-secondary">
+                      {results.status === 'won' ?
+                        "🎉 Congratulations!"
+                        : "Game Over"
+                      }
+                    </p>
+                  </div>
+                  <div className="p-4 text-center">
+                    {results.status === 'won' ? (
+                      <h2>🎉 Congratulations! You won the game!</h2>
+                    ) : (
+                      <h2>Game Over. Better luck next time!</h2>
+                    )}
 
-          {isConditionsLoading ? (
-            <div className="text-center p-4">Loading grid...</div>
-          ) : (
-            <BingoGrid
-              width={bingoGame.size}
-              height={bingoGame.size}
-              conditions={conditions}
-              onCellClick={handleCellClick}
-            />
-          )}
-        </div>
-        :
-        <div className="results-container">
-          {isResultsLoading && <p>Loading results...</p>}
-          {resultsError && <p>Error loading results.</p>}
-          {results && (
-            <div>
-              {results.status === 'won' ? (
-                <h2>🎉 Congratulations! You won the game!</h2>
-              ) : (
-                <h2>Game Over. Better luck next time!</h2>
+                    <div className="py-2 grid grid-cols-2 gap-4 text-lg">
+                      <span>Score</span>
+                      <span className="font-bold text-xl text-green-500">{results.score}</span>
+
+                      <span>Status</span>
+                      <span className={`font-bold text-xl  ${results.status === 'won' ? 'text-green-500' : 'text-red-500'}`}>{results.status}</span>
+                    </div>
+
+                    <div className="py-2">
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => dispatch(resetBingo())}
+                        className="rounded bg-primary uppercase hover:text-secondary text-white font-bold px-5 py-2"
+                      >
+                        Play Again
+                      </motion.button>
+                    </div>
+                  </div>
+                  {/* render other details if needed */}
+                </div>
               )}
-              {/* render other details if needed */}
             </div>
-          )}
+            :
+            <>
+              {!isMatchLoading && matcher?.player && (
+                <BingoSelector matcher={matcher} remainingAnswers={remainingAnswers || 0} onSkip={handleSkipClick} />
+              )}
+            </>
+          }
+
         </div>
-      }
+
+        {isConditionsLoading ? (
+          <div className="text-center p-4">Loading grid...</div>
+        ) : (
+          <BingoGrid
+            width={bingoGame.size}
+            height={bingoGame.size}
+            conditions={conditions}
+            onCellClick={handleCellClick}
+          />
+        )}
+      </div>
+
     </>
 
   );

@@ -6,7 +6,8 @@ import { Game } from "@/types/game";
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux";
 import toast from 'react-hot-toast';
-
+import Label from "@/components/form/Label";
+import { motion, AnimatePresence } from "framer-motion";
 interface BingoMakerProps {
 }
 export default function BingoMaker({ }: BingoMakerProps) {
@@ -24,16 +25,16 @@ export default function BingoMaker({ }: BingoMakerProps) {
     });
     const gameDiffOptions = [
         {
-            value:"easy",
-            label:'Easy'
+            value: "easy",
+            label: 'Easy'
         },
         {
-            value:"normal",
-            label:'Normal'
+            value: "normal",
+            label: 'Normal'
         },
         {
-            value:"hard",
-            label:'Hard'
+            value: "hard",
+            label: 'Hard'
         },
     ]
 
@@ -63,7 +64,7 @@ export default function BingoMaker({ }: BingoMakerProps) {
                 body: {
                     game_id: selectedBingoGame,
                     size: bingoSize,
-                    difficulty:gameDifficulty
+                    difficulty: gameDifficulty
                 },
             }).unwrap(),
             {
@@ -77,30 +78,55 @@ export default function BingoMaker({ }: BingoMakerProps) {
     };
 
     return (
-        <div className="items-center justify-center bg-white w-full min-h-[20rem] rounded p-4 text-center border-2 border-purple-200">
-            <p className="text-xl font-[800] m-0">Create Bingo</p>
-            <div className="py-2">
-                <Select options={bingoGames} onChange={(value) => handleBingoGameChange(value)} placeholder="Select Your Game" />
+        <div className="items-center justify-center text-primary w-full min-h-[20rem] rounded text-center border-2 border-primary">
+            <div className="text-2xl font-bold mb-5 rounded-top py-4 bg-primary text-secondary">
+                <p className="">Create Bingo</p>
             </div>
-            <div className="py-2">
-                <Select options={gameDiffOptions} defaultValue="easy" onChange={(value) => handleGameDiffChange(value)} placeholder="Select Game difficulty" />
-            </div>
-            <div className="py-2">
-                <Input
-                    type="number"
-                    placeholder="Bingo Size"
-                    value={bingoSize}
-                    onChange={(e) => handleBingoSizeChange(e)}
-                    step={1}
-                    min="3"
-                    max="5"
-                    hint="choose your bingo game size"
-                />
-            </div>
-            <div className="py-2">
-                <button
-                    onClick={handleBingoSubmit}
-                    className="btn rounded bg-purple-500 text-white font-bold px-5 py-2">Start Bingo</button>
+            <div className="p-4">
+                <div className="py-2">
+                    <Label htmlFor="" className="text-left">
+                        <span >
+                            Game Type
+                        </span>
+                    </Label>
+                    <Select options={bingoGames} onChange={(value) => handleBingoGameChange(value)} placeholder="Select Your Game" />
+                </div>
+                <div className="py-2">
+                    <Label htmlFor="" className="text-left">
+                        <span >
+                            Game Difficulty
+                        </span>
+                    </Label>
+                    <Select options={gameDiffOptions} defaultValue="easy" onChange={(value) => handleGameDiffChange(value)} placeholder="Select Game difficulty" />
+                </div>
+                <div className="py-2">
+                    <Label htmlFor="" className="text-left">
+                        <span >
+                            Game Size
+                        </span>
+                    </Label>
+                    <Input
+                        type="number"
+                        placeholder="Bingo Size"
+                        value={bingoSize}
+                        onChange={(e) => handleBingoSizeChange(e)}
+                        step={1}
+                        min="3"
+                        max="5"
+                    />
+                </div>
+                <div className="py-2">
+                    <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        onHoverStart={() => {}}
+                        onClick={handleBingoSubmit}
+                        className="rounded bg-primary hover:text-secondary text-white font-bold px-5 py-2"
+                    >
+                        Start Bingo
+                    </motion.button>
+                </div>
+
             </div>
         </div>
     )

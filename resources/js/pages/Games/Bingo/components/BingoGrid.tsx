@@ -12,7 +12,7 @@ export default function BingoGrid({ width, height, conditions, onCellClick }: Bi
 
   return (
     <div
-      className="grid gap-2"
+      className="grid gap-5"
       style={{
         gridTemplateColumns: `repeat(${width}, minmax(40px, 1fr))`,
       }}
@@ -24,7 +24,7 @@ export default function BingoGrid({ width, height, conditions, onCellClick }: Bi
           <BingoCard
             key={index}
             bingoCondition={condition}
-            onClick={() => condition && onCellClick?.(condition.pos)}
+            onClick={() => (condition && !condition.is_marked) && onCellClick?.(condition.pos)}
           />
         );
       })}

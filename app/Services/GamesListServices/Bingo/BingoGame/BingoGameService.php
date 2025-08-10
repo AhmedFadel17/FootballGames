@@ -48,7 +48,12 @@ class BingoGameService implements IBingoGameService
     public function check(User $user, int $gameId, int $conditionPos): BingoConditionResponseDTO
     {
         $bingoGame = BingoGame::query()->findOrFail($gameId);
-
+        if ($bingoGame->instance->status !== GameStatus::ACTIVE) abort(400, "Game is not Active");
+        $isFinished = $this->checkGameFinished($bingoGame);
+        if ($isFinished) {
+            $this->finishGame($user, $bingoGame);
+            abort(400, "Game is finished");
+        }
         $bingoCondition = $this->_conditionService::getByBingoGameIdAndPosition($bingoGame->id, $conditionPos);
 
         $bingoMatch = $this->getBingoGameCurrentMatch($bingoGame->id);
@@ -95,20 +100,25 @@ class BingoGameService implements IBingoGameService
                     break;
             }
         }
+        $acceptedAnswer = true;
 
         if ($acceptedAnswer) {
             $bingoCondition->update([
                 'bingo_match_id' => $bingoMatch->id,
                 'is_marked' => true,
             ]);
+            $bingoCondition->refresh();
+            $bingoCondition->load(['match.player']);
         } else {
             $this->updateRemainingAnswers($bingoGame, $bingoGame->remaining_answers - 1);
         }
-        if ($bingoGame->remaining_answers <= 0) {
+        $isFinished = $this->checkGameFinished($bingoGame);
+
+        if ($isFinished) {
             $this->finishGame($user, $bingoGame);
         }
 
-        return BingoConditionResponseDTO::fromModel($bingoCondition->refresh());
+        return BingoConditionResponseDTO::fromModel($bingoCondition);
     }
 
     public function cancelGame(User $user, int $gameId): void
@@ -179,7 +189,15 @@ class BingoGameService implements IBingoGameService
     public function results(User $user, int $gameId): GameResultResponseDTO
     {
         $bingoGame = BingoGame::query()->findOrFail($gameId);
-        if ($bingoGame->instance->status === GameStatus::ACTIVE) abort(400, "Game is still Active");
+        if ($bingoGame->instance->status !== GameStatus::FINISHED) {
+            $isFinished = $this->checkGameFinished($bingoGame);
+            if ($isFinished) {
+                $this->finishGame($user, $bingoGame);
+            } else {
+                abort(400, "Game is still Active");
+            }
+        }
+
         $gameEntry = GameEntry::where('user_id', $user->id)
             ->where('game_instance_id', $bingoGame->instance->id)
             ->first();
@@ -198,11 +216,12 @@ class BingoGameService implements IBingoGameService
     {
         $bingoGame = BingoGame::query()->findOrFail($gameId);
         if ($bingoGame->instance->status !== GameStatus::ACTIVE) abort(400, "Game is not Active");
-        $answers = $bingoGame->remaining_answers;
-        if ($answers === 0) {
+        $isFinished = $this->checkGameFinished($bingoGame);
+
+        if ($isFinished) {
             $this->finishGame($user, $bingoGame);
             abort(400, "Game is finished");
-        };
+        }
 
         $pos = $this->getCurrentGameMatchPosition($bingoGame);
         $nextPos = $pos + 1;
@@ -215,9 +234,7 @@ class BingoGameService implements IBingoGameService
         $bingoGame->update([
             "remaining_answers" => $bingoGame->remaining_answers - 1
         ]);
-        if ($answers - 1 === 0) {
-            $this->finishGame($user, $bingoGame);
-        };
+
         return BingoMatchResponseDTO::fromModel($bingoMatch);
     }
 
@@ -227,7 +244,7 @@ class BingoGameService implements IBingoGameService
     {
         if ($game->instance->status === GameStatus::FINISHED) abort(400, "Game is already finished");
 
-        $isWon = $this->checkGame($game);
+        $isWon = $this->evaluateBingoResult($game);
 
         $game->instance->update([
             'status' => $gameStatus->value,
@@ -238,22 +255,47 @@ class BingoGameService implements IBingoGameService
         $gameEntry = GameEntry::where('user_id', $user->id)
             ->where('game_instance_id', $game->instance->id)
             ->first();
+        $score = $this->evaluateBingoScore($game);
         GameResult::updateOrCreate(
             [
                 'game_entry_id' => $gameEntry->id,
             ],
             [
                 'status' => $status->value,
+                'score' => $score,
                 'is_winner' => $isWon
             ]
         );
     }
 
-    private function checkGame(BingoGame $bingoGame): bool
+
+    private function evaluateBingoScore(BingoGame $bingoGame): int
+    {
+        $markedCount = $bingoGame->conditions()->where('is_marked', true)->count();
+        $size = $bingoGame->size;
+        $startAt = $bingoGame->instance->start_at;
+        $endAt = $bingoGame->instance->end_at ?? now();
+        $completionRate = $markedCount / ($size * $size);
+        $preScore = ($completionRate == 1) ? 1000 : (int) round(1000 * pow($completionRate, 3));
+        $timeTaken = $endAt->diffInSeconds($startAt);
+        $score = ceil(($preScore) - ($timeTaken / 10));
+        $score = max(0, (int)$score);
+        return $score;
+    }
+
+
+    private function evaluateBingoResult(BingoGame $bingoGame): bool
+    {
+        $markedCount = $bingoGame->conditions()->where('is_marked', true)->count();
+        $size = $bingoGame->size;
+        return $markedCount === $size * $size;
+    }
+
+    private function checkGameFinished(BingoGame $bingoGame): bool
     {
         $unmarkedCount = $bingoGame->conditions()->where('is_marked', false)->count();
         $isFinished = $bingoGame->remaining_answers <= 0;
-        return $isFinished && ($unmarkedCount === 0);
+        return $isFinished || ($unmarkedCount === 0);
     }
     private function updateRemainingAnswers(BingoGame $game, int $answers): void
     {

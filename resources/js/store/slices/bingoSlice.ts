@@ -6,6 +6,7 @@ interface BingoState {
   conditions: BingoCondition[];
   matcher: BingoMatch | null;
   isActive: boolean;
+  isFinished: boolean;
   totalAnswers: number;
 }
 
@@ -14,6 +15,7 @@ const initialState: BingoState = {
   matcher: null,
   conditions: [],
   isActive: false,
+  isFinished: false,
   totalAnswers: 40
 };
 
@@ -31,6 +33,7 @@ const bingoSlice = createSlice({
       state.matcher = null;
       state.conditions = [];
       state.isActive = false;
+      state.isFinished = false;
     },
     setConditions: (state, action: PayloadAction<BingoCondition[]>) => {
       state.conditions = action.payload;
@@ -45,9 +48,16 @@ const bingoSlice = createSlice({
       state.conditions = state.conditions.map((c) =>
         c.pos === action.payload.pos ? action.payload : c
       );
-      if (!action.payload.match && state.bingoGame && state.bingoGame.remaining_answers > 0) {
-        state.bingoGame.remaining_answers -= 1;
+      if (!state.bingoGame) {
+        return;
       }
+      const unMarked = state.conditions.filter((c) => c.is_marked === false).length;
+      if (state.bingoGame.remaining_answers == 0 || unMarked === 0 || (state.bingoGame.remaining_answers == 1 && action.payload.bingo_match_id == null)) {
+      state.isFinished = true;
+      }
+    },
+    finishGame: (state) => {
+      state.isFinished = true;
     },
   },
   extraReducers: (builder) => {
@@ -75,6 +85,7 @@ export const {
   setConditions,
   setMatcher,
   updateCondition,
+  finishGame
 } = bingoSlice.actions;
 
 export default bingoSlice.reducer;

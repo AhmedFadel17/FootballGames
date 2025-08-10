@@ -24,7 +24,7 @@ export const bingoApi = api.injectEndpoints({
                 url: `/api/v1/u/games-list/bingo/${gameId}/check/${pos}`,
                 method: "POST",
             }),
-            invalidatesTags: ["BingoConditions"],
+            invalidatesTags: ["BingoCondition"],
         }),
 
 

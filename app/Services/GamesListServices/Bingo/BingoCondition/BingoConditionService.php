@@ -18,12 +18,6 @@ class BingoConditionService implements IBingoConditionService
     public function getByBingoGameId(User $user,int $id): array
     {
         $bingoGame = BingoGame::query()->findOrFail($id);
-        Log::info("ssssssssssssssss");
-        Log::info(GameStatus::ACTIVE->value);
-        Log::info("instanceeeeeeeeeeeeeeeee");
-        Log::info($bingoGame->instance->status->value);
-
-
         if ($bingoGame->instance->status !== GameStatus::ACTIVE) abort(400, "Game is not Active");
 
         $conditions = BingoCondition::query()
@@ -38,6 +32,7 @@ class BingoConditionService implements IBingoConditionService
     public static function getByBingoGameIdAndPosition(int $gameId, int $pos): BingoCondition
     {
         $condition = BingoCondition::query()
+            ->with(['objectable'])
             ->where('bingo_game_id', $gameId)
             ->where('pos', $pos)
             ->firstOrFail();
