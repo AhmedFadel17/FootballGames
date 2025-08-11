@@ -65,14 +65,16 @@ export default function BingoGame({ isActive }: BingoGameProps) {
   }, [currentMatch]);
 
   // ✅ Click cell → request → refetch matcher
-  const handleCellClick = async (pos: number) => {
+  const handleCellClick = async (pos: number): Promise<boolean | undefined> => {
     if (!gameId || isFinished || remainingAnswers === undefined) return;
+    let res: boolean = false;
     try {
       if (remainingAnswers > 0) {
 
         const condition = await checkCondition({ gameId, pos }).unwrap();
         dispatch(updateCondition(condition));
         const f = store.getState().bingo.isFinished;
+        res = condition.is_marked;
         if (!f) {
           await refetchMatch();
         }
@@ -82,6 +84,7 @@ export default function BingoGame({ isActive }: BingoGameProps) {
     } catch (error) {
       console.error("Condition check failed:", error);
     }
+    return res;
   };
 
   const handleSkipClick = async () => {

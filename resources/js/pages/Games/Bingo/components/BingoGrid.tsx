@@ -4,7 +4,7 @@ interface BingoGridProps {
   width: number;
   height: number;
   conditions: BingoCondition[];
-  onCellClick?: (conditionId: number) => void;
+  onCellClick: (conditionId: number) => Promise<boolean| undefined>;
 }
 
 export default function BingoGrid({ width, height, conditions, onCellClick }: BingoGridProps) {
@@ -24,7 +24,7 @@ export default function BingoGrid({ width, height, conditions, onCellClick }: Bi
           <BingoCard
             key={index}
             bingoCondition={condition}
-            onClick={() => (condition && !condition.is_marked) && onCellClick?.(condition.pos)}
+            onClick={async () => (condition && !condition.is_marked) && await onCellClick(condition.pos)}
           />
         );
       })}

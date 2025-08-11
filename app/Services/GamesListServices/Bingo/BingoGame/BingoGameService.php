@@ -100,7 +100,6 @@ class BingoGameService implements IBingoGameService
                     break;
             }
         }
-        $acceptedAnswer = true;
 
         if ($acceptedAnswer) {
             $bingoCondition->update([
