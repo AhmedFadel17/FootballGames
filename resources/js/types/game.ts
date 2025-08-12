@@ -1,11 +1,11 @@
-export type GameType = {
+type GameType = {
     id: number;
     slug: string,
     name: string;
     description: string;
     games?: Game[]
 }
-export type Game = {
+type Game = {
     id: number;
     title: string;
     description: string;
