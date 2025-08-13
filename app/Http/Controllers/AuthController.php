@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -12,20 +14,21 @@ class AuthController extends Controller
     /**
      * Register a new user.
      */
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|min:6',
-            'role' => 'nullable|string|in:user,admin,guest'
-        ]);
+        $dto = $request->validated();
+
+        // normalize
+        $email = strtolower(trim($dto['email']));
+        $username = strtolower(trim($dto['username']));
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password,
-            'role' => $request->role ?? 'user',
+            'first_name' => trim($dto['first_name']),
+            'last_name'  => trim($dto['last_name']),
+            'username'   => $username,
+            'email'      => $email,
+            'password'   => $dto['password'], // auto-hashed by cast
+            'role'       => $request->input('role', 'user'),
         ]);
 
         return $this->generateTokens($user);
@@ -34,16 +37,13 @@ class AuthController extends Controller
     /**
      * Login user with email & password.
      */
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
+        $dto = $request->validated();
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', strtolower(trim($dto['email'])))->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($dto['password'], $user->password)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
@@ -60,6 +60,19 @@ class AuthController extends Controller
             'email' => 'guest_' . Str::random(10) . '@example.com',
             'password' => Hash::make(Str::random(16)),
             'role' => 'guest',
+        ]);
+
+        $base = Str::lower(Str::random(6));
+        $username ='guest_' . $base;
+        $email = $base . '@guest.com';
+
+        $guest = User::create([
+            'first_name' => 'Guest',
+            'last_name'  => Str::upper(Str::random(4)),
+            'username'   => $username,
+            'email'      => $email,
+            'password'   => Str::random(16), // auto-hashed by cast
+            'role'       => 'guest',
         ]);
 
         return $this->generateTokens($guest);

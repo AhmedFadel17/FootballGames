@@ -4,24 +4,11 @@ import SignUp from "@/pages/AuthPages/SignUp";
 import NotFound from "@/pages/OtherPage/NotFound";
 import AppLayout from "@/layouts/AppLayout";
 import { ScrollToTop } from "@/components/common/ScrollToTop";
-import { AppUserRoutes, AppAdminRoutes } from "@/routes"
-import { useEffect } from "react";
-import Cookies from 'js-cookie';
-import { useDispatch } from "react-redux";
-import { guestLogin } from '@/store/slices/authSlice';
-import { useAppDispatch, useAppSelector } from "@/store";
+import { AppUserRoutes } from "@/routes"
 import { Toaster } from "react-hot-toast";
 
 export default function App() {
-   const dispatch = useAppDispatch();
-    const token = useAppSelector((state) => state.auth.token);
 
-  useEffect(() => {
-    // ✅ Auto guest login only if no token found
-    if (!token && !Cookies.get('token')) {
-      dispatch(guestLogin());
-    }
-  }, [dispatch, token]);
   return (
     <>
       <Router>

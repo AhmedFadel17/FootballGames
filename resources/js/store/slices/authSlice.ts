@@ -7,8 +7,10 @@ interface JwtPayload {
   id: number;
   role: string;
   email: string;
-  name: string;
-  imgSrc?:string;
+  username: string;
+  first_name: string;
+  last_name: string;
+  avatar?: string;
 }
 
 interface AuthState {
@@ -68,22 +70,13 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.expiresAt = Date.now() + expiresIn * 1000;
       state.rememberMe = rememberMe;
+      state.user = action.payload.user;
 
       // ✅ Store in cookies
       Cookies.set('token', token, { expires: rememberMe ? 7 : undefined });
       Cookies.set('refresh_token', refreshToken, { expires: rememberMe ? 7 : undefined });
 
-      try {
-        state.user = {
-          id: action.payload.user.id,
-          name: action.payload.user.name,
-          email: action.payload.user.email,
-          role: action.payload.user.role,
-        };
-      } catch (error) {
-        state.user = null;
-        console.error('Failed to decode token on login:', error);
-      }
+
     },
 
     logout: (state) => {

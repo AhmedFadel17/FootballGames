@@ -1,7 +1,7 @@
 import React from "react";
-import GridShape from "../../components/common/GridShape";
+import GridShape from "@/components/common/GridShape";
 import { Link } from "react-router";
-import ThemeTogglerTwo from "../../components/common/ThemeTogglerTwo";
+import ThemeTogglerTwo from "@/components/common/ThemeTogglerTwo";
 
 export default function AuthLayout({
   children,
@@ -16,17 +16,22 @@ export default function AuthLayout({
           <div className="relative flex items-center justify-center z-1">
             {/* <!-- ===== Common Grid Shape Start ===== --> */}
             <GridShape />
-            <div className="flex flex-col items-center max-w-xs">
+            <div className="flex flex-col justify-center items-center max-w-sm">
               <Link to="/" className="block mb-4">
                 <img
-                  width={231}
+                  width={80}
                   height={48}
-                  src="/images/logo/auth-logo.svg"
+                  src="/images/logo/logo.png"
                   alt="Logo"
+                  className="bg-primary rounded"
                 />
               </Link>
+              <h4 className="text-xl text-left font-bold mb-4">Join the Ultimate Football Challenge!</h4>
               <p className="text-center text-gray-400 dark:text-white/60">
-                Free and Open-Source Tailwind CSS Admin Dashboard Template
+                Build your dream team, play exciting mini-games like Bingo & Top 10, climb the leaderboards, and prove you’re the real football mastermind.
+                <br/>
+                <br/>
+                Free to join. Easy to play. Fun to win.
               </p>
             </div>
           </div>

@@ -2,6 +2,7 @@ import ApplicationLogo from '@/components/ApplicationLogo';
 import Dropdown from '@/components/Dropdown';
 import NavLink from '@/components/NavLink';
 import ResponsiveNavLink from '@/components/ResponsiveNavLink';
+import { useAppSelector } from '@/store';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -10,7 +11,8 @@ interface AuthenticatedLayoutProps {
     children: React.ReactNode;
 }
 export default function AuthenticatedLayout({ header, children }: AuthenticatedLayoutProps) {
-    const user = usePage().props.auth.user;
+    const isAuth=useAppSelector((state)=>state.auth.isAuthenticated);
+    const user=useAppSelector((state)=>state.auth.user);
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);

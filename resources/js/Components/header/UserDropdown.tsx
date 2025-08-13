@@ -55,7 +55,7 @@ export default function UserDropdown() {
           />
         </svg>
       </button>
-      {role !== "guest" &&
+      {role == "guest" &&
         <Dropdown
           isOpen={isOpen}
           onClose={closeDropdown}
