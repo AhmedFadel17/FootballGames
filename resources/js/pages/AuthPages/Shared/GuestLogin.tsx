@@ -11,16 +11,16 @@ export const GuestLogin = () => {
     const [loginGuest] = useGuestLoginMutation();
 
     const handleGuestLogin = async () => {
-        loginGuest()
-            .unwrap()
-            .then((d: any) => {
-                dispatch(loginSuccess(d))
-                toast.success("Welcome!");
-                navigate("/");
-            })
-            .catch((err) => {
-                toast.error(err?.data?.message || "Registration failed.");
-            });
+        await toast.promise(
+            loginGuest().unwrap(),
+            {
+                loading: "Logining in as guest...",
+                success: "Login successful",
+            }
+        ).then((d: any) => {
+            dispatch(loginSuccess({ ...d, rememberMe: true }))
+            navigate('/login')
+        });
     }
     return (
         <button

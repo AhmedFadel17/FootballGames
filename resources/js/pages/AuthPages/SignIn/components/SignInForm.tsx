@@ -27,17 +27,18 @@ export default function SignInForm() {
   const [loginUser] = useLoginMutation();
 
   const onSubmit = async (data: any) => {
-    loginUser({ ...data, remember_me: isChecked })
-      .unwrap()
-      .then((d: any) => {
-        d.rememberMe = isChecked;
-        dispatch(loginSuccess(d))
-        toast.success("Registration successful!");
-        navigate("/");
-      })
-      .catch((err) => {
-        toast.error(err?.data?.message || "Registration failed.");
-      });
+    await toast.promise(
+      loginUser(data)
+        .unwrap(),
+      {
+        loading: "logining in...",
+        success: "Login successful",
+        error:"Login failed"
+      }
+    ).then((d: any) => {
+      dispatch(loginSuccess({...d,rememberMe:isChecked}))
+      navigate('/')
+    });
   }
   return (
     <div className="flex flex-col flex-1">

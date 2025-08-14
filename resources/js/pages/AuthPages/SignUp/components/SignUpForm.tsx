@@ -30,16 +30,16 @@ export default function SignUpForm() {
   const [registerUser] = useRegisterMutation();
 
   const onSubmit = async (data: any) => {
-    registerUser(data)
-      .unwrap()
-      .then((d: any) => {
-        dispatch(loginSuccess(d))
-        toast.success("Registration successful!");
-        navigate("/");
-      })
-      .catch((err) => {
-        toast.error(err?.data?.message || "Registration failed.");
-      });
+    await toast.promise(
+      registerUser(data).unwrap(),
+      {
+        loading: "signing up...",
+        success: "Registration successful",
+      }
+    ).then((d: any) => {
+      dispatch(loginSuccess(d))
+      navigate('/')
+    });
   }
 
 
@@ -61,9 +61,7 @@ export default function SignUpForm() {
             <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
               Sign Up
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Enter your email and password to sign up!
-            </p>
+            
           </div>
           <div>
             <div className="grid grid-cols-1">

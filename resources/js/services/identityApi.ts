@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { LoginData,RegisterData } from '@/types/auth';
+import { LoginData, RegisterData } from '@/types/auth';
 
 const API_URL = import.meta.env.VITE_APP_URL ?? "/";
 
@@ -43,26 +43,35 @@ export const identityApi = createApi({
                     url: '/api/auth/register',
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json', 
+                        'Content-Type': 'application/json',
                     },
                     body: data
                     ,
                 }),
-                
+
             }
         ),
 
         guestLogin: builder.mutation<any, void>({
-  query: () => ({
-    url: '/api/auth/guest',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }),
-}),
+            query: () => ({
+                url: '/api/auth/guest',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }),
+        }),
 
-        
+        logout: builder.mutation<any, void>({
+            query: () => ({
+                url: '/api/auth/logout',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }),
+        }),
+
     }),
 });
 
