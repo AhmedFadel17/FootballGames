@@ -42,7 +42,7 @@ Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
 
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
 
-    Route::prefix('u')->group(function () {
+    Route::prefix('u')->middleware(['role:user,guest'])->group(function () {
         Route::prefix('games-list')->group(function () {
             Route::get('bingo/{id}/conditions', [BingoConditionController::class, 'getByGameId']);
             Route::post('bingo', [BingoGameController::class, 'store']);
@@ -57,7 +57,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     });
 
 
-    Route::prefix('admin')->group(function () {
+    Route::prefix('admin')->middleware(['role:admin'])->group(function () {
         Route::apiResource('competitions', CompetitionController::class);
         Route::apiResource('competition-participants', CompetitionParticipantController::class);
         Route::apiResource('competition-player-stats', CompetitionPlayerFullStatController::class);

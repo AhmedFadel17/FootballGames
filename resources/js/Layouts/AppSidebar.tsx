@@ -3,16 +3,19 @@ import { Link, useLocation } from "react-router";
 import { ChevronDownIcon, HorizontaLDots } from "@/icons";
 import { useSidebar } from "@/context/SidebarContext";
 import SidebarWidget from "@/layouts/SidebarWidget";
-import { SidebarAdminRoutes,SidebarUserRoutes } from "@/routes/sidebar";
+import { SidebarAdminRoutes, SidebarUserRoutes } from "@/routes/sidebar";
+import { useAppSelector } from "@/store";
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+  const role = useAppSelector((state) => state.auth.user?.role);
+  const AppRoutes = role === "admin" ? SidebarAdminRoutes : SidebarUserRoutes;
   const location = useLocation();
 
   const [openSubmenu, setOpenSubmenu] = useState<{ index: number } | null>(null);
   const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>({});
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
-const appName = import.meta.env.VITE_APP_NAME ?? "FG";
+  const appName = import.meta.env.VITE_APP_NAME ?? "FG";
 
   const isActive = useCallback(
     (path: string) => location.pathname === path,
@@ -21,7 +24,7 @@ const appName = import.meta.env.VITE_APP_NAME ?? "FG";
 
   useEffect(() => {
     let submenuMatched = false;
-    SidebarAdminRoutes.forEach((nav, index) => {
+    AppRoutes.forEach((nav, index) => {
       if (nav.subItems) {
         nav.subItems.forEach((subItem) => {
           if (isActive(subItem.path)) {
@@ -198,7 +201,7 @@ const appName = import.meta.env.VITE_APP_NAME ?? "FG";
                   <HorizontaLDots className="size-6" />
                 )}
               </h2>
-              {renderMenuItems(SidebarUserRoutes)}
+              {renderMenuItems(AppRoutes)}
             </div>
           </div>
         </nav>

@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
             // PlayersWithTeamsSeeder::class,
             // CompetitionPlayerFullStatsSeeder::class,
             // GameTypesTableSeeder::class,
-            GamesTableSeeder::class,
+            // GamesTableSeeder::class,
+            // AdminSeeder::class
         ]);
     }
 }

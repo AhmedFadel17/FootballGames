@@ -11,11 +11,6 @@ class AuthServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        Gate::before(function ($user, $ability) {
-        if ($user->role === 'guest') {
-            return true; // Allow all actions for guests
-        }
-        return null;
-    });
+
     }
 }

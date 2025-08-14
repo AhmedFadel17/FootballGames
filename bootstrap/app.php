@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
 
         $middleware->web(append: [
@@ -25,8 +26,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->api(append: [
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\RoleMiddleware::class,
         ]);
-
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

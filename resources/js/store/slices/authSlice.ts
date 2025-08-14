@@ -3,21 +3,11 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import storage from 'redux-persist/lib/storage'; // for clearing persist
 
-interface JwtPayload {
-  id: number;
-  role: string;
-  email: string;
-  username: string;
-  first_name: string;
-  last_name: string;
-  avatar?: string;
-}
-
 interface AuthState {
   isAuthenticated: boolean;
   token: string | null;
   refreshToken: string | null;
-  user: JwtPayload | null;
+  user: User | null;
   expiresAt: number | null;
   rememberMe: boolean;
 }

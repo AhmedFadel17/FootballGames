@@ -6,10 +6,10 @@ import AppSidebar from "@/layouts/AppSidebar";
 import { useAppSelector } from "@/store";
 import { useEffect } from "react";
 
+
 const LayoutContent: React.FC = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
   const isAuth = useAppSelector((state) => state.auth.isAuthenticated);
-  const user = useAppSelector((state) => state.auth.user);
   const navigate = useNavigate();
   useEffect(() => {
     if (!isAuth) {
