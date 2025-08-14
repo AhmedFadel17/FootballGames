@@ -14,6 +14,9 @@ import Seasons from "@/pages/Admin/Seasons";
 import Transfers from "@/pages/Admin/Transfers";
 import Statistics from "@/pages/Admin/Statistics";
 
+import Continents from "@/pages/Admin/Areas/Continents";
+import Countries from "@/pages/Admin/Areas/Countries";
+
 // =============================
 // 🚀 USER ROUTES
 // =============================
@@ -44,6 +47,16 @@ export const AppAdminRoutes: AppRoute[] = [
     path: "/",
     label: "Dashboard",
     element: <AdminHome />,
+  },
+  {
+    path: "/admin/continents",
+    label: "Continents",
+    element: <Continents />,
+  },
+  {
+    path: "/admin/countries",
+    label: "Countries",
+    element: <Countries />,
   },
   {
     path: "/admin/competitions",

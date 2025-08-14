@@ -12,11 +12,9 @@ class CountryFilterRequest extends FormRequest
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
             'search' => 'nullable|string|max:255',
-            'id' => 'nullable|integer',
-            'name' => 'nullable|string|max:255',
-            'code' => 'nullable|string|max:10',
+            'popularity' => 'nullable|integer',
             'continent_id' => 'nullable|integer',
-            'sort_by' => 'nullable|string|in:id,name,code,continent_id',
+            'sort_by' => 'nullable|string|in:id,name,code,popularity',
             'sort_order' => 'nullable|string|in:asc,desc',
         ];
     }

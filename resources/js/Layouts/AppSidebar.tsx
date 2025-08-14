@@ -140,6 +140,7 @@ const AppSidebar: React.FC = () => {
                         : "menu-dropdown-item-inactive"
                         }`}
                     >
+                      {subItem.icon}
                       {subItem.label}
                     </Link>
                   </li>

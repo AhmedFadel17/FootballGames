@@ -9,8 +9,16 @@ import {
   FaChartBar,
   FaGamepad,
   FaListOl,
-  FaMagic
+  FaMagic,
+  FaFlag,
+  FaGlobeAfrica,
+  FaThList,
+  FaRegChartBar
 } from "react-icons/fa";
+import { BiStats, BiWorld } from "react-icons/bi";
+import { SiSecurityscorecard } from "react-icons/si";
+import { IoBarChart, IoGameController } from "react-icons/io5";
+import { VscTypeHierarchy } from "react-icons/vsc";
 
 // =============================
 // 🚀 USER SIDEBAR ROUTES
@@ -43,38 +51,97 @@ export const SidebarUserRoutes: SidebarRoute[] = [
 // =============================
 export const SidebarAdminRoutes: SidebarRoute[] = [
   {
-    path: "/admin/competitions",
-    label: "Competitions",
-    icon: <FaTrophy size={18} />,
+    path: "#",
+    label: "Games",
+    icon: <IoGameController size={18} />,
+    subItems: [
+      {
+        path: "/admin/games/types",
+        label: "Game Types",
+        icon: <VscTypeHierarchy size={18} />,
+      },
+      {
+        path: "/admin/games/list",
+        label: "Games List",
+        icon: <FaThList size={18} />,
+      }
+    ]
   },
   {
-    path: "/admin/teams",
-    label: "Teams",
-    icon: <FaShieldAlt size={18} />,
+    path: "#",
+    label: "Core",
+    icon: <SiSecurityscorecard size={18} />,
+    subItems: [
+      {
+        path: "/admin/seasons",
+        label: "Seasons",
+        icon: <FaCalendarAlt size={18} />,
+      },
+      {
+        path: "/admin/competitions",
+        label: "Competitions",
+        icon: <FaTrophy size={18} />,
+      },
+      {
+        path: "/admin/teams",
+        label: "Teams",
+        icon: <FaShieldAlt size={18} />,
+      },
+      {
+        path: "/admin/players",
+        label: "Players",
+        icon: <FaUsers size={18} />,
+      },
+      {
+        path: "/admin/managers",
+        label: "Managers",
+        icon: <FaUserCog size={18} />,
+      },
+      {
+        path: "/admin/transfers",
+        label: "Transfers",
+        icon: <FaExchangeAlt size={18} />,
+      },
+    ]
   },
   {
-    path: "/admin/players",
-    label: "Players",
-    icon: <FaUsers size={18} />,
+    path: "#",
+    label: "Areas",
+    icon: <BiWorld size={18} />,
+    subItems: [
+      {
+        path: "/admin/continents",
+        label: "Continents",
+        icon: <FaGlobeAfrica size={18} />,
+      },
+      {
+        path: "/admin/countries",
+        label: "Countries",
+        icon: <FaFlag size={18} />,
+      }
+
+    ]
   },
   {
-    path: "/admin/managers",
-    label: "Managers",
-    icon: <FaUserCog size={18} />,
-  },
-  {
-    path: "/admin/seasons",
-    label: "Seasons",
-    icon: <FaCalendarAlt size={18} />,
-  },
-  {
-    path: "/admin/transfers",
-    label: "Transfers",
-    icon: <FaExchangeAlt size={18} />,
-  },
-  {
-    path: "/admin/statistics",
+    path: "#",
     label: "Statistics",
     icon: <FaChartBar size={18} />,
+    subItems: [
+      {
+        path: "/admin/teams/full-stats",
+        label: "Teams Stats",
+        icon: <IoBarChart size={18} />,
+      },
+      {
+        path: "/admin/players/full-stats",
+        label: "Players Stats",
+        icon: <FaRegChartBar size={18} />,
+      }
+    ]
   },
+
+
+
+
+
 ];

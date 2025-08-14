@@ -15,7 +15,7 @@ class ContinentService implements IContinentService
 
     public function getAll(PaginationDTO $dto): PaginationResponseDTO
     {
-        $allowedFilters = [];
+        $allowedFilters = ['name', 'code','id'];
         $searchableFields = ['name', 'code'];
 
         return $this->_paginationService

@@ -12,9 +12,6 @@ class ContinentFilterRequest extends FormRequest
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
             'search' => 'nullable|string|max:255',
-            'id' => 'nullable|integer',
-            'name' => 'nullable|string|max:255',
-            'code' => 'nullable|string|max:10',
             'sort_by' => 'nullable|string|in:id,name,code',
             'sort_order' => 'nullable|string|in:asc,desc',
         ];

@@ -15,7 +15,7 @@ class CountryService implements ICountryService
 
     public function getAll(PaginationDTO $dto): PaginationResponseDTO
     {
-        $allowedFilters = ['continent_id'];
+        $allowedFilters = ['name', 'code','popularity','id'];
         $searchableFields = ['name', 'code'];
 
         return $this->_paginationService
