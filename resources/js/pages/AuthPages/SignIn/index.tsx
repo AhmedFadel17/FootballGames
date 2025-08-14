@@ -1,13 +1,24 @@
 import PageMeta from "@/components/common/PageMeta";
 import AuthLayout from "./../AuthPageLayout";
 import SignInForm from "./components/SignInForm";
+import { useAppSelector } from "@/store";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function SignIn() {
+  const navigate = useNavigate();
+  const isAuth = useAppSelector((state) => state.auth.isAuthenticated);
+  useEffect(() => {
+    if (isAuth) {
+      navigate("/");
+    }
+  }, [isAuth])
+
   return (
     <>
       <PageMeta
-        title="React.js SignIn Dashboard | TailAdmin - Next.js Admin Dashboard Template"
-        description="This is React.js SignIn Tables Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
+        title="Login"
+        description="This is Login page"
       />
       <AuthLayout>
         <SignInForm />

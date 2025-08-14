@@ -3,15 +3,14 @@ import { Link, useNavigate } from "react-router";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
-import Checkbox from "@/components/form/input/Checkbox";
 import * as yup from "yup";
-import { useGuestLoginMutation, useRegisterMutation } from "@/services/identityApi";
+import { useRegisterMutation } from "@/services/identityApi";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FaUserSecret } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useAppDispatch } from "@/store";
-import { guestLogin, loginSuccess } from "@/store/slices/authSlice";
+import { loginSuccess } from "@/store/slices/authSlice";
+import { GuestLogin } from "../../Shared/GuestLogin";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +28,6 @@ export default function SignUpForm() {
     resolver: yupResolver(schema),
   });
   const [registerUser] = useRegisterMutation();
-  const [loginGuest] = useGuestLoginMutation();
 
   const onSubmit = async (data: any) => {
     registerUser(data)
@@ -44,18 +42,7 @@ export default function SignUpForm() {
       });
   }
 
-  const handleGuestLogin = async () => {
-    loginGuest()
-      .unwrap()
-      .then((d: any) => {
-        dispatch(loginSuccess(d))
-        toast.success("Welcome!");
-        navigate("/");
-      })
-      .catch((err) => {
-        toast.error(err?.data?.message || "Registration failed.");
-      });
-  }
+
 
   return (
     <div className="flex flex-col flex-1 w-full overflow-y-auto lg:w-1/2 no-scrollbar">
@@ -79,15 +66,8 @@ export default function SignUpForm() {
             </p>
           </div>
           <div>
-            <div className="grid grid-cols-1 gap-3  sm:gap-5">
-              <button
-                type="button"
-                onClick={handleGuestLogin}
-                className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
-                <FaUserSecret />
-                Join as Guest
-              </button>
-
+            <div className="grid grid-cols-1">
+              <GuestLogin />
             </div>
             <div className="relative py-3 sm:py-5">
               <div className="absolute inset-0 flex items-center">
