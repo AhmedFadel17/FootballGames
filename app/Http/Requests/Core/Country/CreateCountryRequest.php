@@ -11,7 +11,7 @@ class CreateCountryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,8 @@ class CreateCountryRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'code' => ['required', 'string', 'max:10'],
+            'popularity' => ['required', 'integer', 'min:0', 'max:100'],
             'continent_id' => ['nullable', 'exists:continents,id'],
         ];
     }
-} 
+}

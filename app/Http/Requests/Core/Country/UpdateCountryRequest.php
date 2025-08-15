@@ -11,7 +11,7 @@ class UpdateCountryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,6 +24,7 @@ class UpdateCountryRequest extends FormRequest
         return [
             'name' => ['sometimes', 'string', 'max:255'],
             'code' => ['sometimes', 'string', 'max:10'],
+            'popularity' => ['sometimes', 'integer', 'min:0', 'max:100'],
             'continent_id' => ['nullable', 'exists:continents,id'],
         ];
     }

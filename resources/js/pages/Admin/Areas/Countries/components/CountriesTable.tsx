@@ -1,50 +1,21 @@
-import React, { useState, useEffect, useMemo } from "react";
-import TableTemplate from "@/components/tables/BasicTables/TanBasicTable";
-import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
-import { useGetDataQuery } from "@/services/api";
-import { useDebounce } from "use-debounce";
+import { useDeleteByIdMutation, useGetDataQuery, useUpdateByIdMutation } from "@/services/api";
+import { EditableColumnDef } from "@/types/table";
+import GenericTable from "@/components/tables/GenericTable";
 
 export default function CountriesTable() {
-    const [countries, setCountries] = useState<Country[]>([]);
-    const [total, setTotal] = useState(0);
-    const [pagination, setPagination] = useState<PaginationState>({
-        pageIndex: 0,
-        pageSize: 10,
-    });
-
-    const [search, setSearch] = useState("");
-    const [sorting, setSorting] = useState<SortingState>([]);
-    const [debouncedSearch] = useDebounce(search, 300);
-
-    const params = useMemo(() => {
-        const p: Record<string, any> = {
-            page: pagination.pageIndex + 1,
-            per_page: pagination.pageSize,
-            search: debouncedSearch,
-            sort_by: sorting[0]?.id,
-            sort_order: sorting[0]?.desc ? "desc" : "asc",
-        };
-        Object.keys(p).forEach((key) => {
-            if (p[key] === undefined || p[key] === null || p[key] === "") {
-                delete p[key];
-            }
-        });
-        return p;
-    }, [pagination, debouncedSearch,  sorting]);
-
-    const { data, isLoading, isSuccess } = useGetDataQuery({
-        url: "/api/v1/admin/countries",
-        params
-    });
-
-    const columns: ColumnDef<Country>[] = [
-        { accessorKey: "id", header: "ID" },
+    const columns: EditableColumnDef<Country>[] = [
         {
             accessorKey: "name",
             header: "Name",
+            size: 2,
+            enableEditing: true,
             cell: ({ row }) => <b>{row.original.name}</b>,
         },
-        { accessorKey: "code", header: "Code" },
+        {
+            accessorKey: "code",
+            header: "Code",
+            enableEditing: true,
+        },
         {
             accessorKey: "img_src",
             header: "Flag",
@@ -58,29 +29,25 @@ export default function CountriesTable() {
                 />
             ),
         },
-        { accessorKey: "popularity", header: "Popularity" },
+        {
+            accessorKey: "popularity",
+            header: "Popularity",
+            enableEditing: true,
+
+        },
     ];
 
-    useEffect(() => {
-        if (isSuccess && data) {
-            setCountries(data.data);
-            setTotal(data.meta.total_records);
-        }
-    }, [isSuccess, data]);
-
     return (
-        <TableTemplate<Country>
+        <GenericTable<Country>
             title="Countries"
+            url="/api/v1/admin/countries"
+            itemName="Country"
             columns={columns}
-            data={countries}
-            total={total}
-            pagination={pagination}
-            setPagination={setPagination}
-            search={search}
-            setSearch={setSearch}
-            sorting={sorting}
-            setSorting={setSorting}
-            loading={isLoading}
+            useGetHook={useGetDataQuery}
+            useUpdateHook={useUpdateByIdMutation}
+            useDeleteHook={useDeleteByIdMutation}
+            enableEditing
+            enableDeleting
         />
     );
 }
