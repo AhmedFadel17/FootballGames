@@ -14,13 +14,10 @@ import {
     PiCaretRightBold,
     PiCaretUpBold,
     PiCaretDownBold,
-    PiPencilSimpleBold,
     PiXBold,
     PiCheckBold,
-    PiTrashBold,
 } from "react-icons/pi";
-import toast, { Toaster } from "react-hot-toast";
-import { FaEdit, FaPen, FaTrash } from "react-icons/fa";
+import { FaPen, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 interface TableTemplateProps<TData> {
@@ -30,8 +27,8 @@ interface TableTemplateProps<TData> {
     pagination: PaginationState;
     setPagination: React.Dispatch<React.SetStateAction<PaginationState>>;
     search: string;
-    title: string;
-    itemName:string;
+    title?: string;
+    itemName: string;
     setSearch: React.Dispatch<React.SetStateAction<string>>;
     sorting: SortingState;
     setSorting: React.Dispatch<React.SetStateAction<SortingState>>;
@@ -40,8 +37,6 @@ interface TableTemplateProps<TData> {
     enableEditing?: boolean;
     onSave?: (rowId: string | number, updatedRow: any) => Promise<void> | void;
     onDelete?: (rowId: string | number) => Promise<void> | void;
-    enableAdding?: boolean;
-    onAdd?: () => Promise<void> | void;
 }
 
 export default function TableTemplate<TData extends { id: string | number }>({
@@ -61,8 +56,6 @@ export default function TableTemplate<TData extends { id: string | number }>({
     itemName,
     enableDeleting,
     enableEditing,
-    enableAdding,
-    onAdd
 }: TableTemplateProps<TData>) {
     const [editingRowId, setEditingRowId] = useState<string | number | null>(null);
     const [editValues, setEditValues] = useState<Record<string, any>>({});
@@ -141,38 +134,42 @@ export default function TableTemplate<TData extends { id: string | number }>({
 
 
     return (
-        <div className="p-1 rounded-lg bg-primary">
-            <Toaster position="top-right" />
-
-            {/* Title + Search */}
-            <div className="py-2 px-3 flex items-center border-b-2 border-red-800 justify-between">
-                <h4 className="text-2xl font-bold text-white">{title}</h4>
-                <input
-                    type="text"
-                    value={search}
-                    onChange={(e) => {
-                        setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-                        setSearch(e.target.value);
-                    }}
-                    placeholder="Search..."
-                    className="border p-2 rounded w-64"
-                />
-                {enableAdding &&
-
-                    <div className="text-right">
-                        <button
-                            type="button"
-                            onClick={onAdd}
-                            className="btn bg-white text-primary rounded-full border border-primary hover:border-white hover:bg-secondary hover:text-primary sm:min-w-64 py-2 px-4 uppercase font-bold"
-                        >
-                            add {itemName}
-                        </button>
-                    </div>
+        <div className="p-1 rounded-b-lg bg-primary">
+            {/* Header */}
+            <div className="flex flex-wrap justify-between border-b-2 border-red-800 items-center p-3">
+                {title &&
+                <h2 className="text-2xl font-semibold text-white">{title}</h2>
                 }
-            </div>
-            <div className="py-2 px-3 flex items-center border-b-2 border-red-800 justify-end">
+                <select
+                    value={pagination.pageSize}
+                    onChange={(e) => {
+                        setPagination((prev) => ({
+                            ...prev,
+                            pageSize: Number(e.target.value),
+                            pageIndex: 0, // reset first page
+                        }));
+                    }}
+                    className="text-black rounded min-w-[80px] p-2"
+                >
+                    {[5, 10, 20, 50, 100].map((size) => (
+                        <option key={size} value={size}>
+                            {size}
+                        </option>
+                    ))}
+                </select>
+                   
 
+                    {/* Search Box */}
+                    <input
+                        type="text"
+                        placeholder={`Search for ${itemName}...`}
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="border rounded p-2 sm:min-w-[250px]"
+                    />
             </div>
+
+
             {/* Table */}
             <table className="w-full table-fixed">
                 <thead className="bg-primary text-white">
@@ -321,8 +318,9 @@ export default function TableTemplate<TData extends { id: string | number }>({
                 >
                     <PiCaretLeftBold size={20} />
                 </button>
-                <span>
+                <span className="text-center">
                     Page {pagination.pageIndex + 1} of {table.getPageCount()}
+                    <p className="text-xs text-gray-300">Total: {total}</p>
                 </span>
                 <button
                     className="flex items-center justify-center w-[40px] h-[40px] bg-white text-primary rounded-full disabled:opacity-50"

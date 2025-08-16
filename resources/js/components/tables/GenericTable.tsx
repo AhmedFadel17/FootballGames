@@ -4,20 +4,18 @@ import { PaginationState, SortingState } from "@tanstack/react-table";
 import { useDebounce } from "use-debounce";
 import toast from "react-hot-toast";
 import { EditableColumnDef } from "@/types/table";
+import RedixModal, { AddItemDialogField } from "@/components/modals/RedixModal";
+import { useCreateDataMutation, useDeleteByIdMutation, useGetDataQuery, useUpdateByIdMutation } from "@/services/api";
 
 interface GenericTableProps<T> {
-    title: string;
+    title?: string;
     url: string;
     columns: EditableColumnDef<T>[];
     itemName: string;
-    useGetHook: any;   // RTK Query hook for GET
-    useUpdateHook?: any; // RTK Query hook for UPDATE
-    useDeleteHook?: any; // RTK Query hook for DELETE
-    useCreateHook?: any; // RTK Query hook for CREATE
     enableEditing?: boolean;
     enableDeleting?: boolean;
     enableAdding?: boolean;
-    onAdd?: () => Promise<void> | void;
+    fields?: AddItemDialogField[];
 }
 
 export default function GenericTable<T extends { id: string | number }>({
@@ -25,13 +23,11 @@ export default function GenericTable<T extends { id: string | number }>({
     url,
     columns,
     itemName,
-    useGetHook,
-    useUpdateHook,
-    useDeleteHook,
     enableEditing = false,
     enableDeleting = false,
     enableAdding = false,
-    onAdd, // 👈 added
+    fields = []
+
 }: GenericTableProps<T>) {
 
     const [dataList, setDataList] = useState<T[]>([]);
@@ -40,7 +36,7 @@ export default function GenericTable<T extends { id: string | number }>({
     const [search, setSearch] = useState("");
     const [sorting, setSorting] = useState<SortingState>([]);
     const [debouncedSearch] = useDebounce(search, 300);
-
+    const [showModal, setShowModal] = useState(false);
     const params = useMemo(() => {
         const p: Record<string, any> = {
             page: pagination.pageIndex + 1,
@@ -55,9 +51,10 @@ export default function GenericTable<T extends { id: string | number }>({
         return p;
     }, [pagination, debouncedSearch, sorting]);
 
-    const { data, isLoading, isSuccess, refetch } = useGetHook({ url, params });
-    const [updateItem] = useUpdateHook ? useUpdateHook() : [null];
-    const [deleteItem] = useDeleteHook ? useDeleteHook() : [null];
+    const { data, isLoading, isSuccess, refetch } = useGetDataQuery({ url, params });
+    const [updateItem] = enableEditing ? useUpdateByIdMutation() : [null];
+    const [deleteItem] = enableDeleting ? useDeleteByIdMutation() : [null];
+    const [createItem] = enableAdding ? useCreateDataMutation() : [null];
 
     const handleSave = async (id: string | number, updatedRow: Partial<T>) => {
         if (!updateItem) return;
@@ -85,10 +82,17 @@ export default function GenericTable<T extends { id: string | number }>({
         refetch();
     };
 
-    const handleAddClick = async () => {
-        if (!onAdd) return;
-        await onAdd();
-        refetch(); // refresh after add
+    const handleAdding = async (body: any) => {
+        if (!createItem) return;
+        await toast.promise(
+            createItem({ url, body }).unwrap(),
+            {
+                loading: `Adding ${itemName}...`,
+                success: `${itemName} added successfully 🗑️`,
+                error: `Failed to add ${itemName} ❌`,
+            }
+        );
+        refetch();
     };
 
     useEffect(() => {
@@ -99,28 +103,55 @@ export default function GenericTable<T extends { id: string | number }>({
     }, [isSuccess, data]);
 
     return (
+        <div>
+            {enableAdding &&
+                <>
+                    <div className="py-4 flex items-center justify-between border-b-2 border-red-800 bg-steel-gray px-4 rounded-t-lg">
+                        <h4 className="text-2xl font-bold text-white capitalize">{title}</h4>
+                        <div className="text-right">
+                            <button
+                                type="button"
+                                onClick={() => setShowModal(true)}
+                                className="btn bg-white text-primary rounded-full border border-primary hover:border-white hover:bg-secondary hover:text-primary sm:min-w-64 py-2 px-4 uppercase font-bold"
+                            >
+                                add {itemName}
+                            </button>
+                        </div>
+
+                    </div>
+                    <RedixModal<T>
+                        title={"Add " + itemName}
+                        fields={fields}
+                        onAdd={handleAdding}
+                        isOpen={showModal}
+                        onClose={() => setShowModal(false)}
+                        size="lg"
+                    />
+                </>
+            }
 
 
-        <TableTemplate<T>
-            title={title}
-            itemName={itemName}
-            columns={columns}
-            data={dataList}
-            total={total}
-            pagination={pagination}
-            setPagination={setPagination}
-            search={search}
-            setSearch={setSearch}
-            sorting={sorting}
-            setSorting={setSorting}
-            loading={isLoading}
-            enableEditing={enableEditing}
-            onSave={enableEditing ? handleSave : undefined}
-            enableDeleting={enableDeleting}
-            onDelete={enableDeleting ? handleDelete : undefined}
-            enableAdding={enableAdding}
-            onAdd={enableAdding ? handleAddClick : undefined}
-        />
+            <TableTemplate<T>
+                title={!enableAdding ? title : undefined}
+                itemName={itemName}
+                columns={columns}
+                data={dataList}
+                total={total}
+                pagination={pagination}
+                setPagination={setPagination}
+                search={search}
+                setSearch={setSearch}
+                sorting={sorting}
+                setSorting={setSorting}
+                loading={isLoading}
+                enableEditing={enableEditing}
+                onSave={enableEditing ? handleSave : undefined}
+                enableDeleting={enableDeleting}
+                onDelete={enableDeleting ? handleDelete : undefined}
+            />
+
+
+        </div>
     );
 }
 
