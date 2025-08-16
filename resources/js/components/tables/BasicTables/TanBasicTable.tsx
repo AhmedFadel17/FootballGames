@@ -31,6 +31,7 @@ interface TableTemplateProps<TData> {
     setPagination: React.Dispatch<React.SetStateAction<PaginationState>>;
     search: string;
     title: string;
+    itemName:string;
     setSearch: React.Dispatch<React.SetStateAction<string>>;
     sorting: SortingState;
     setSorting: React.Dispatch<React.SetStateAction<SortingState>>;
@@ -39,7 +40,8 @@ interface TableTemplateProps<TData> {
     enableEditing?: boolean;
     onSave?: (rowId: string | number, updatedRow: any) => Promise<void> | void;
     onDelete?: (rowId: string | number) => Promise<void> | void;
-
+    enableAdding?: boolean;
+    onAdd?: () => Promise<void> | void;
 }
 
 export default function TableTemplate<TData extends { id: string | number }>({
@@ -56,8 +58,11 @@ export default function TableTemplate<TData extends { id: string | number }>({
     loading = false,
     onSave,
     onDelete,
+    itemName,
     enableDeleting,
-    enableEditing
+    enableEditing,
+    enableAdding,
+    onAdd
 }: TableTemplateProps<TData>) {
     const [editingRowId, setEditingRowId] = useState<string | number | null>(null);
     const [editValues, setEditValues] = useState<Record<string, any>>({});
@@ -113,7 +118,6 @@ export default function TableTemplate<TData extends { id: string | number }>({
         cancelEditing();
     };
 
-
     const handleDelete = async (id: string | number) => {
         if (!enableDeleting || !onDelete) return;
 
@@ -153,8 +157,22 @@ export default function TableTemplate<TData extends { id: string | number }>({
                     placeholder="Search..."
                     className="border p-2 rounded w-64"
                 />
-            </div>
+                {enableAdding &&
 
+                    <div className="text-right">
+                        <button
+                            type="button"
+                            onClick={onAdd}
+                            className="btn bg-white text-primary rounded-full border border-primary hover:border-white hover:bg-secondary hover:text-primary sm:min-w-64 py-2 px-4 uppercase font-bold"
+                        >
+                            add {itemName}
+                        </button>
+                    </div>
+                }
+            </div>
+            <div className="py-2 px-3 flex items-center border-b-2 border-red-800 justify-end">
+
+            </div>
             {/* Table */}
             <table className="w-full table-fixed">
                 <thead className="bg-primary text-white">
