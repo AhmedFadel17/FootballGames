@@ -1,15 +1,17 @@
 import { forwardRef } from "react";
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   success?: boolean;
   error?: boolean;
   hint?: string;
+  label?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       type = "text",
+      label = "",
       id,
       placeholder,
       className = "",
@@ -52,13 +54,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         />
         {hint && (
           <p
-            className={`mt-1.5 text-xs ${
-              error
+            className={`mt-1.5 text-xs ${error
                 ? "text-red-500"
                 : success
-                ? "text-success-500"
-                : "text-gray-500"
-            }`}
+                  ? "text-success-500"
+                  : "text-gray-500"
+              }`}
           >
             {hint}
           </p>

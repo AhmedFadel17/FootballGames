@@ -7,6 +7,10 @@ const columns: EditableColumnDef<Continent>[] = [
   { accessorKey: "code", header: "Code", enableEditing: true, size: 1 },
 ];
 
+const fields = [
+  { name: "name", label: "Name" },
+  { name: "code", label: "Code" },
+]
 export default function ContinentsTable() {
   return (
 
@@ -18,10 +22,7 @@ export default function ContinentsTable() {
       enableEditing
       enableDeleting
       enableAdding
-      fields={[
-        { name: "name", label: "Name" },
-        { name: "code", label: "Code" },
-      ]}
+      fields={fields}
     />
   );
 }

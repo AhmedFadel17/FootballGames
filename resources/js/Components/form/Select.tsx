@@ -1,11 +1,11 @@
 import { useState } from "react";
 
-interface Option {
+export interface Option {
   value: string;
   label: string;
 }
 
-interface SelectProps {
+export interface SelectProps {
   options: Option[];
   placeholder?: string;
   onChange: (value: string) => void;

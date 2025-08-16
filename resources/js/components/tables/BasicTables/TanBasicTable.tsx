@@ -24,6 +24,7 @@ interface TableTemplateProps<TData> {
     columns: ColumnDef<TData, any>[];
     data: TData[];
     total: number;
+    paginate: boolean;
     pagination: PaginationState;
     setPagination: React.Dispatch<React.SetStateAction<PaginationState>>;
     search: string;
@@ -35,6 +36,7 @@ interface TableTemplateProps<TData> {
     loading?: boolean;
     enableDeleting?: boolean;
     enableEditing?: boolean;
+    enableSearch?: boolean;
     onSave?: (rowId: string | number, updatedRow: any) => Promise<void> | void;
     onDelete?: (rowId: string | number) => Promise<void> | void;
 }
@@ -43,6 +45,7 @@ export default function TableTemplate<TData extends { id: string | number }>({
     columns,
     data,
     total,
+    paginate,
     pagination,
     search,
     title,
@@ -56,11 +59,14 @@ export default function TableTemplate<TData extends { id: string | number }>({
     itemName,
     enableDeleting,
     enableEditing,
+    enableSearch
 }: TableTemplateProps<TData>) {
     const [editingRowId, setEditingRowId] = useState<string | number | null>(null);
     const [editValues, setEditValues] = useState<Record<string, any>>({});
     const [originalRow, setOriginalRow] = useState<any>(null);
     const hasActionsColumn = (enableDeleting || enableEditing);
+    const hasHeader = (title || enableSearch || paginate);
+
     const totalSizeParts = columns.reduce((sum, col) => sum + (hasActionsColumn ? 1 : 0) + (col.size || 1), 0);
 
     const table = useReactTable({
@@ -136,39 +142,44 @@ export default function TableTemplate<TData extends { id: string | number }>({
     return (
         <div className="p-1 rounded-b-lg bg-primary">
             {/* Header */}
-            <div className="flex flex-wrap justify-between border-b-2 border-red-800 items-center p-3">
-                {title &&
-                <h2 className="text-2xl font-semibold text-white">{title}</h2>
-                }
-                <select
-                    value={pagination.pageSize}
-                    onChange={(e) => {
-                        setPagination((prev) => ({
-                            ...prev,
-                            pageSize: Number(e.target.value),
-                            pageIndex: 0, // reset first page
-                        }));
-                    }}
-                    className="text-black rounded min-w-[80px] p-2"
-                >
-                    {[5, 10, 20, 50, 100].map((size) => (
-                        <option key={size} value={size}>
-                            {size}
-                        </option>
-                    ))}
-                </select>
-                   
+            {hasHeader &&
+                <div className="flex flex-wrap justify-between border-b-2 border-red-800 items-center p-3">
+                    {title &&
+                        <h2 className="text-2xl font-semibold text-white">{title}</h2>
+                    }
+                    {paginate &&
+
+                        <select
+                            value={pagination.pageSize}
+                            onChange={(e) => {
+                                setPagination((prev) => ({
+                                    ...prev,
+                                    pageSize: Number(e.target.value),
+                                    pageIndex: 0, // reset first page
+                                }));
+                            }}
+                            className="text-black rounded min-w-[80px] p-2"
+                        >
+                            {[5, 10, 20, 50, 100].map((size) => (
+                                <option key={size} value={size}>
+                                    {size}
+                                </option>
+                            ))}
+                        </select>
+                    }
 
                     {/* Search Box */}
-                    <input
-                        type="text"
-                        placeholder={`Search for ${itemName}...`}
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="border rounded p-2 sm:min-w-[250px]"
-                    />
-            </div>
-
+                    {enableSearch &&
+                        <input
+                            type="text"
+                            placeholder={`Search for ${itemName}...`}
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="border rounded p-2 sm:min-w-[250px]"
+                        />
+                    }
+                </div>
+            }
 
             {/* Table */}
             <table className="w-full table-fixed">
@@ -303,40 +314,43 @@ export default function TableTemplate<TData extends { id: string | number }>({
             </table>
 
             {/* Pagination */}
-            <div className="flex justify-center gap-4 py-4 items-center text-white">
-                <button
-                    className="flex items-center justify-center w-[30px] h-[30px] bg-white text-primary rounded-full disabled:opacity-50"
-                    onClick={() => table.firstPage()}
-                    disabled={!table.getCanPreviousPage()}
-                >
-                    <PiCaretDoubleLeftBold size={20} />
-                </button>
-                <button
-                    className="flex items-center justify-center w-[40px] h-[40px] bg-white text-primary rounded-full disabled:opacity-50"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                >
-                    <PiCaretLeftBold size={20} />
-                </button>
-                <span className="text-center">
-                    Page {pagination.pageIndex + 1} of {table.getPageCount()}
-                    <p className="text-xs text-gray-300">Total: {total}</p>
-                </span>
-                <button
-                    className="flex items-center justify-center w-[40px] h-[40px] bg-white text-primary rounded-full disabled:opacity-50"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                >
-                    <PiCaretRightBold size={20} />
-                </button>
-                <button
-                    className="flex items-center justify-center w-[30px] h-[30px] bg-white text-primary rounded-full disabled:opacity-50"
-                    onClick={() => table.lastPage()}
-                    disabled={!table.getCanNextPage()}
-                >
-                    <PiCaretDoubleRightBold size={20} />
-                </button>
-            </div>
+            {paginate &&
+
+                <div className="flex justify-center gap-4 py-4 items-center text-white">
+                    <button
+                        className="flex items-center justify-center w-[30px] h-[30px] bg-white text-primary rounded-full disabled:opacity-50"
+                        onClick={() => table.firstPage()}
+                        disabled={!table.getCanPreviousPage()}
+                    >
+                        <PiCaretDoubleLeftBold size={20} />
+                    </button>
+                    <button
+                        className="flex items-center justify-center w-[40px] h-[40px] bg-white text-primary rounded-full disabled:opacity-50"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                    >
+                        <PiCaretLeftBold size={20} />
+                    </button>
+                    <span className="text-center">
+                        Page {pagination.pageIndex + 1} of {table.getPageCount()}
+                        <p className="text-xs text-gray-300">Total: {total}</p>
+                    </span>
+                    <button
+                        className="flex items-center justify-center w-[40px] h-[40px] bg-white text-primary rounded-full disabled:opacity-50"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                    >
+                        <PiCaretRightBold size={20} />
+                    </button>
+                    <button
+                        className="flex items-center justify-center w-[30px] h-[30px] bg-white text-primary rounded-full disabled:opacity-50"
+                        onClick={() => table.lastPage()}
+                        disabled={!table.getCanNextPage()}
+                    >
+                        <PiCaretDoubleRightBold size={20} />
+                    </button>
+                </div>
+            }
         </div>
     );
 }

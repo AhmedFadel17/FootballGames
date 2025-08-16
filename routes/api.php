@@ -42,6 +42,13 @@ Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
 
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
 
+    //----------------------------Shared----------------------------
+    //--------------------------------------------------------------
+    Route::apiResource('games', GameController::class);
+    Route::apiResource('game-types', GameTypeController::class);
+
+    //-----------------------------User-----------------------------
+    //--------------------------------------------------------------
     Route::prefix('u')->middleware(['role:user,guest'])->group(function () {
         Route::prefix('games-list')->group(function () {
             Route::get('bingo/{id}/conditions', [BingoConditionController::class, 'getByGameId']);
@@ -52,11 +59,11 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
             Route::get('bingo/{id}/results',  [BingoGameController::class, 'gameResults']);
             Route::post('bingo/{id}/cancel',  [BingoGameController::class, 'cancelGame']);
         });
-        Route::apiResource('games', GameController::class);
-        Route::apiResource('game-types', GameTypeController::class);
     });
 
 
+    //-----------------------------Admin-----------------------------
+    //--------------------------------------------------------------
     Route::prefix('admin')->middleware(['role:admin'])->group(function () {
         Route::apiResource('competitions', CompetitionController::class);
         Route::apiResource('competition-participants', CompetitionParticipantController::class);

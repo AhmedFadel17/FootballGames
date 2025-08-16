@@ -16,6 +16,8 @@ import Statistics from "@/pages/Admin/Statistics";
 
 import Continents from "@/pages/Admin/Areas/Continents";
 import Countries from "@/pages/Admin/Areas/Countries";
+import GameTypesPage from "@/pages/Admin/Games/GameTypes";
+import GamesListPage from "@/pages/Admin/Games/GamesList";
 
 // =============================
 // 🚀 USER ROUTES
@@ -57,6 +59,16 @@ export const AppAdminRoutes: AppRoute[] = [
     path: "/admin/countries",
     label: "Countries",
     element: <Countries />,
+  },
+  {
+    path: "/admin/games/types",
+    label: "Game Types",
+    element: <GameTypesPage />,
+  },
+  {
+    path: "/admin/games/list",
+    label: "Games List",
+    element: <GamesListPage />,
   },
   {
     path: "/admin/competitions",

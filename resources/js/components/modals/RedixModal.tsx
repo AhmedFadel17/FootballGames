@@ -3,20 +3,20 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { useEffect, useState } from "react";
 import { FaWindowClose } from "react-icons/fa";
 import { IoCloseSharp } from "react-icons/io5";
+import Input, { InputProps } from "../form/input/InputField";
+import Select, { Option, SelectProps } from "../form/Select";
 
-export interface AddItemDialogField {
-  name: string;
-  label: string;
-  type?: "text" | "number";
+export type RedixModalInputProps= InputProps & {
+  options?: Option[]
 }
 
 interface AddItemDialogProps<T> {
   title: string;
   isOpen: boolean;
-  fields: AddItemDialogField[];
+  fields: RedixModalInputProps[];
   onAdd: (data: T) => Promise<void> | void;
   onClose: () => void;
-  size?: "sm" | "md" | "lg" | "xl"; // 👈 إضافة حجم
+  size?: "sm" | "md" | "lg" | "xl";
 }
 
 const sizeClasses: Record<NonNullable<AddItemDialogProps<any>["size"]>, string> = {
@@ -32,7 +32,7 @@ export default function RedixModal<T>({
   onAdd,
   isOpen,
   onClose,
-  size = "md", // 👈 default
+  size = "md",
 }: AddItemDialogProps<T>) {
   const [formData, setFormData] = useState<Record<string, string>>({});
 
@@ -64,7 +64,7 @@ export default function RedixModal<T>({
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/40 z-[12]" /> {/* 👈 z-11 */}
+        <Dialog.Overlay className="fixed inset-0 bg-black/40 z-[12]" />
 
         <Dialog.Content
           className={`
@@ -87,18 +87,20 @@ export default function RedixModal<T>({
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 bg-white px-10 py-6 rounded-b-lg">
-            {fields.map((field) => (
-              <div key={field.name}>
-                <label className="block text-sm font-medium mb-1">{field.label}</label>
-                <input
-                  type={field.type || "text"}
-                  value={formData[field.name] || ""}
-                  onChange={(e) => handleChange(field.name, e.target.value)}
-                  className="w-full border rounded px-3 py-2 focus:ring focus:ring-blue-200 focus:border-blue-500"
-                  required
-                />
-              </div>
-            ))}
+            {fields.map((field, index) => {
+              const { type, options } = field;
+              return (
+                <div key={index}>
+                  <label className="block text-sm font-medium mb-1">{field.label}</label>
+                  {type == "select"
+                    ?
+                    <Select  options={options || []} onChange={(value) => handleChange(field.name || '', value)} />
+                    :
+                    <Input {...field} onChange={(e) => handleChange(field.name || '', e.target.value)} />
+                  }
+                </div>)
+            }
+            )}
 
             <div className="flex justify-center gap-2 mt-6">
               <Dialog.Close asChild>

@@ -1,4 +1,3 @@
-import { useDeleteByIdMutation, useGetDataQuery, useUpdateByIdMutation } from "@/services/api";
 import { EditableColumnDef } from "@/types/table";
 import GenericTable from "@/components/tables/GenericTable";
 
@@ -43,9 +42,6 @@ export default function CountriesTable() {
             url="/api/v1/admin/countries"
             itemName="Country"
             columns={columns}
-            useGetHook={useGetDataQuery}
-            useUpdateHook={useUpdateByIdMutation}
-            useDeleteHook={useDeleteByIdMutation}
             enableEditing
             enableDeleting
         />

@@ -4,7 +4,7 @@ import { PaginationState, SortingState } from "@tanstack/react-table";
 import { useDebounce } from "use-debounce";
 import toast from "react-hot-toast";
 import { EditableColumnDef } from "@/types/table";
-import RedixModal, { AddItemDialogField } from "@/components/modals/RedixModal";
+import RedixModal, { RedixModalInputProps } from "@/components/modals/RedixModal";
 import { useCreateDataMutation, useDeleteByIdMutation, useGetDataQuery, useUpdateByIdMutation } from "@/services/api";
 
 interface GenericTableProps<T> {
@@ -15,7 +15,9 @@ interface GenericTableProps<T> {
     enableEditing?: boolean;
     enableDeleting?: boolean;
     enableAdding?: boolean;
-    fields?: AddItemDialogField[];
+    paginate?: boolean;
+    enableSearch?:boolean;
+    fields?: RedixModalInputProps[];
 }
 
 export default function GenericTable<T extends { id: string | number }>({
@@ -26,6 +28,8 @@ export default function GenericTable<T extends { id: string | number }>({
     enableEditing = false,
     enableDeleting = false,
     enableAdding = false,
+    paginate = true,
+    enableSearch=true,
     fields = []
 
 }: GenericTableProps<T>) {
@@ -97,8 +101,14 @@ export default function GenericTable<T extends { id: string | number }>({
 
     useEffect(() => {
         if (isSuccess && data) {
-            setDataList(data.data);
-            setTotal(data.meta.total_records);
+            if (paginate) {
+                setDataList(data.data);
+                setTotal(data.meta.total_records);
+            } else {
+                setDataList(data);
+                setTotal(data.length);
+            }
+
         }
     }, [isSuccess, data]);
 
@@ -148,6 +158,8 @@ export default function GenericTable<T extends { id: string | number }>({
                 onSave={enableEditing ? handleSave : undefined}
                 enableDeleting={enableDeleting}
                 onDelete={enableDeleting ? handleDelete : undefined}
+                enableSearch={enableSearch}
+                paginate={paginate}
             />
 
 
