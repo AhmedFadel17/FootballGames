@@ -22,7 +22,7 @@ class GameService implements IGameService
             $query->where('game_type_id', $dto['game_type_id']);
         }
 
-        return $query->get()
+        return $query->with('type')->get()
             ->map(fn($game) => GameResponseDTO::fromModel($game))
             ->all();
     }

@@ -24,6 +24,12 @@ class GameTypeController extends Controller
         return response()->json($gameTypes);
     }
 
+    public function getAllWithGamesList(): JsonResponse
+    {
+        $gameTypes = $this->_service->getAllWithGamesList();
+        return response()->json($gameTypes);
+    }
+
     public function store(CreateGameTypeRequest $request): JsonResponse
     {
         $dto = new GameTypeDTO($request->validated());

@@ -16,7 +16,7 @@ export default function GameTypesTable() {
     return (
         <GenericTable<GameType>
             title="Game Types"
-            url="/api/v1/game-types"
+            url="/api/v1/admin/game-types"
             itemName="Game type"
             columns={columns}
             enableEditing

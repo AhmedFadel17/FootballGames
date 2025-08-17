@@ -6,13 +6,15 @@ import AdminHome from "@/pages/Admin/Home";
 import BingoGame from "@/pages/Games/Bingo";
 import Top10Game from "@/pages/Games/Top10";
 
-import Competitions from "@/pages/Admin/Competitions";
-import Teams from "@/pages/Admin/Teams";
-import Players from "@/pages/Admin/Players";
-import Managers from "@/pages/Admin/Managers";
-import Seasons from "@/pages/Admin/Seasons";
-import Transfers from "@/pages/Admin/Transfers";
-import Statistics from "@/pages/Admin/Statistics";
+import Competitions from "@/pages/Admin/Core/Competitions";
+import Teams from "@/pages/Admin/Core/Teams";
+import Players from "@/pages/Admin/Core/Players";
+import Managers from "@/pages/Admin/Core/Managers";
+import Seasons from "@/pages/Admin/Core/Seasons";
+import Transfers from "@/pages/Admin/Core/Transfers";
+
+import PlayerStats from "@/pages/Admin/Statistics/PlayersStats";
+import TeamStats from "@/pages/Admin/Statistics/TeamsStats";
 
 import Continents from "@/pages/Admin/Areas/Continents";
 import Countries from "@/pages/Admin/Areas/Countries";
@@ -101,8 +103,13 @@ export const AppAdminRoutes: AppRoute[] = [
     element: <Transfers />,
   },
   {
-    path: "/admin/statistics",
-    label: "Statistics",
-    element: <Statistics />,
+    path: "/admin/teams/full-stats",
+    label: "Teams Stats",
+    element: <TeamStats />,
+  },
+  {
+    path: "/admin/players/full-stats",
+    label: "Players Stats",
+    element: <PlayerStats />,
   },
 ];

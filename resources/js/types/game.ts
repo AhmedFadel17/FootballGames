@@ -11,6 +11,7 @@ type Game = {
     description: string;
     is_active: boolean;
     game_type_id: number;
+    type?: string;
 }
 
 type GameResult = {

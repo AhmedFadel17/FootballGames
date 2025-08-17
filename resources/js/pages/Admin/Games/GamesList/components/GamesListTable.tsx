@@ -6,7 +6,9 @@ import { useEffect, useState } from "react";
 
 const columns: EditableColumnDef<Game>[] = [
     { accessorKey: "title", header: "Title", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "description", header: "Description", enableEditing: true, enableSorting: false, size: 3 },
+    { accessorKey: "type", header: "Type",  enableSorting: false, size: 1},
+    { accessorKey: "description", header: "Description", enableEditing: true, enableSorting: false, size: 2 },
+
 
 ];
 
@@ -14,7 +16,7 @@ const columns: EditableColumnDef<Game>[] = [
 export default function GamesListTable() {
     const [fields, setFields] = useState<any>([]);
     const { data, isLoading, isSuccess } = useGetDataQuery({
-        url: "/api/v1/game-types",
+        url: "/api/v1/admin/game-types",
     });
 
     useEffect(() => {
@@ -30,7 +32,7 @@ export default function GamesListTable() {
     return (
         <GenericTable<Game>
             title="Games"
-            url="/api/v1/games"
+            url="/api/v1/admin/games"
             itemName="Game"
             columns={columns}
             enableEditing
