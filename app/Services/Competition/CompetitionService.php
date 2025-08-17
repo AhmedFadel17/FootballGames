@@ -18,19 +18,22 @@ class CompetitionService implements ICompetitionService
         $allowedFilters = ['country_id', 'type', 'tier', 'is_active'];
         $searchableFields = ['name', 'short_name'];
 
+        $query = Competition::with('country');
+
         return $this->_paginationService
-            ->paginate(Competition::query(), $dto, CompetitionResponseDTO::class, $allowedFilters, $searchableFields);
+            ->paginate($query, $dto, CompetitionResponseDTO::class, $allowedFilters, $searchableFields);
     }
 
     public function getById($id): CompetitionResponseDTO
     {
-        $competition = Competition::findOrFail($id);
+        $competition = Competition::with('country')->findOrFail($id);
         return new CompetitionResponseDTO($competition);
     }
 
     public function create(CompetitionDTO $data): CompetitionResponseDTO
     {
         $competition = Competition::create($data->toArray());
+        $competition->load('country');
         return new CompetitionResponseDTO($competition);
     }
 
@@ -38,6 +41,7 @@ class CompetitionService implements ICompetitionService
     {
         $competition = Competition::findOrFail($id);
         $competition->update($data->toArray());
+        $competition->load('country');
         return new CompetitionResponseDTO($competition);
     }
 

@@ -119,7 +119,6 @@ export const SidebarAdminRoutes: SidebarRoute[] = [
         label: "Countries",
         icon: <FaFlag size={18} />,
       }
-
     ]
   },
   {
@@ -128,20 +127,15 @@ export const SidebarAdminRoutes: SidebarRoute[] = [
     icon: <FaChartBar size={18} />,
     subItems: [
       {
-        path: "/admin/teams/full-stats",
+        path: "/admin/statistics/teams-stats",
         label: "Teams Stats",
         icon: <IoBarChart size={18} />,
       },
       {
-        path: "/admin/players/full-stats",
+        path: "/admin/statistics/players-stats",
         label: "Players Stats",
         icon: <FaRegChartBar size={18} />,
       }
     ]
   },
-
-
-
-
-
 ];

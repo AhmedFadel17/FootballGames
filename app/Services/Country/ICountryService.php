@@ -10,6 +10,7 @@ use App\DTOs\Pagination\PaginationResponseDTO;
 interface ICountryService
 {
     public function getAll(PaginationDTO $dto): PaginationResponseDTO;
+    public function getAllOptions(): array;
     public function getById(int $id) :CountryResponseDTO;
     public function create(CountryDTO $data) : CountryResponseDTO;
     public function update(int $id, CountryDTO $data) :CountryResponseDTO;

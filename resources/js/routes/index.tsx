@@ -103,12 +103,12 @@ export const AppAdminRoutes: AppRoute[] = [
     element: <Transfers />,
   },
   {
-    path: "/admin/teams/full-stats",
+    path: "/admin/statistics/teams-stats",
     label: "Teams Stats",
     element: <TeamStats />,
   },
   {
-    path: "/admin/players/full-stats",
+    path: "/admin/statistics/players-stats",
     label: "Players Stats",
     element: <PlayerStats />,
   },

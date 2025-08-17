@@ -72,6 +72,8 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
         Route::apiResource('competition-team-stats', CompetitionTeamFullStatController::class);
         Route::apiResource('continents', ContinentController::class);
         Route::apiResource('countries', CountryController::class);
+        Route::get('options/countries', [CountryController::class,'getAllOptions']);
+
         Route::apiResource('managers', ManagerController::class);
         Route::apiResource('manager-team-periods', ManagerTeamPeriodController::class);
         Route::apiResource('players', PlayerController::class);

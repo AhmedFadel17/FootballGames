@@ -1,27 +1,29 @@
 import { EditableColumnDef } from "@/types/table";
 import GenericTable from "@/components/tables/GenericTable";
 
-const columns: EditableColumnDef<Manager>[] = [
+const columns: EditableColumnDef<Continent>[] = [
     { accessorKey: "name", header: "Name", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "nationality", header: "Nationality", enableEditing: true, enableSorting: false, size: 1 },
+    { accessorKey: "code", header: "Code", enableEditing: true, enableSorting: false, size: 1 },
 ];
 
 const fields = [
     { name: "name", label: "Name", type: 'text' },
-    { name: "nationality", label: "Nationality", type: 'text' },
+    { name: "code", label: "Code", type: 'text' },
 ];
 
-export default function ManagersTable() {
+export default function ContinentsTable() {
     return (
-        <GenericTable<Manager>
-            title="Managers"
-            url="/api/v1/admin/managers"
-            itemName="Manager"
+        <GenericTable<Continent>
+            title="Continents"
+            url="/api/v1/admin/continents"
+            itemName="Continent"
             columns={columns}
             enableEditing
             enableDeleting
             enableAdding
+            paginate={false}
+            enableSearch={false}
             fields={fields}
         />
     );
-}
+} 

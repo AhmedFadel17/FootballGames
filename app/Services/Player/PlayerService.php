@@ -20,19 +20,22 @@ class PlayerService implements IPlayerService
         $allowedFilters = ['position', 'country_id', 'date_of_birth'];
         $searchableFields = ['name', 'fullname'];
 
+        $query = Player::with('country');
+
         return $this->_paginationService
-            ->paginate(Player::query(), $dto, PlayerResponseDTO::class, $allowedFilters, $searchableFields);
+            ->paginate($query, $dto, PlayerResponseDTO::class, $allowedFilters, $searchableFields);
     }
 
     public function getById($id): PlayerResponseDTO
     {
-        $player = Player::findOrFail($id);
+        $player = Player::with('country')->findOrFail($id);
         return new PlayerResponseDTO($player);
     }
 
     public function create(PlayerDTO $data): PlayerResponseDTO
     {
         $player = Player::create($data->toArray());
+        $player->load('country');
         return new PlayerResponseDTO($player);
     }
 
@@ -40,6 +43,7 @@ class PlayerService implements IPlayerService
     {
         $player = Player::findOrFail($id);
         $player->update($data->toArray());
+        $player->load('country');
         return new PlayerResponseDTO($player);
     }
 

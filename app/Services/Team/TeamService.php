@@ -18,19 +18,22 @@ class TeamService implements ITeamService
         $allowedFilters = ['country_id', 'api_id'];
         $searchableFields = ['name', 'short_name', 'abbr'];
 
+        $query = Team::with('country');
+
         return $this->_paginationService
-            ->paginate(Team::query(), $dto, TeamResponseDTO::class, $allowedFilters, $searchableFields);
+            ->paginate($query, $dto, TeamResponseDTO::class, $allowedFilters, $searchableFields);
     }
 
     public function getById($id): TeamResponseDTO
     {
-        $team = Team::findOrFail($id);
+        $team = Team::with('country')->findOrFail($id);
         return new TeamResponseDTO($team);
     }
 
     public function create(TeamDTO $data): TeamResponseDTO
     {
         $team = Team::create($data->toArray());
+        $team->load('country');
         return new TeamResponseDTO($team);
     }
 
@@ -38,6 +41,7 @@ class TeamService implements ITeamService
     {
         $team = Team::findOrFail($id);
         $team->update($data->toArray());
+        $team->load('country');
         return new TeamResponseDTO($team);
     }
 

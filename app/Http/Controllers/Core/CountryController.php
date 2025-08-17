@@ -27,6 +27,12 @@ class CountryController extends Controller
         return response()->json($countries->toArray());
     }
 
+    public function getAllOptions(): JsonResponse
+    {
+        $countries = $this->_service->getAllOptions();
+        return response()->json($countries);
+    }
+
     public function store(CreateCountryRequest $request): JsonResponse
     {
         $dto = new CountryDTO($request->validated());
