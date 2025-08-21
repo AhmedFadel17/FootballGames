@@ -8,8 +8,8 @@ const columns: EditableColumnDef<Continent>[] = [
 ];
 
 const fields = [
-  { name: "name", label: "Name" },
-  { name: "code", label: "Code" },
+  { name: "name", label: "Name",type:"text" },
+  { name: "code", label: "Code",type:"text",max:3 },
 ]
 export default function ContinentsTable() {
   return (

@@ -92,7 +92,7 @@ export default function GenericTable<T extends { id: string | number }>({
             createItem({ url, body }).unwrap(),
             {
                 loading: `Adding ${itemName}...`,
-                success: `${itemName} added successfully 🗑️`,
+                success: `${itemName} added successfully`,
                 error: `Failed to add ${itemName} ❌`,
             }
         );

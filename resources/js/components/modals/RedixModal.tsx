@@ -6,7 +6,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import Input, { InputProps } from "../form/input/InputField";
 import Select, { Option, SelectProps } from "../form/Select";
 
-export type RedixModalInputProps= InputProps & {
+export type RedixModalInputProps = InputProps & {
   options?: Option[]
 }
 
@@ -69,7 +69,7 @@ export default function RedixModal<T>({
         <Dialog.Content
           className={`
             fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
-            bg-primary rounded-lg shadow-lg focus:outline-none z-[12]  w-[90%]
+            bg-primary rounded-lg shadow-lg focus:outline-none z-[12]  w-[90%] max-h-[80%]
             ${sizeClasses[size]}
           `}
         >
@@ -86,21 +86,24 @@ export default function RedixModal<T>({
             </Dialog.Close>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4 bg-white px-10 py-6 rounded-b-lg">
-            {fields.map((field, index) => {
-              const { type, options } = field;
-              return (
-                <div key={index}>
-                  <label className="block text-sm font-medium mb-1">{field.label}</label>
-                  {type == "select"
-                    ?
-                    <Select  options={options || []} onChange={(value) => handleChange(field.name || '', value)} />
-                    :
-                    <Input {...field} onChange={(e) => handleChange(field.name || '', e.target.value)} />
-                  }
-                </div>)
-            }
-            )}
+          <form onSubmit={handleSubmit} className="bg-white py-6 rounded-b-lg  ">
+            <div className="max-h-[calc(80vh-160px)] overflow-y-auto px-10 space-y-3 grid grid-cols-2 items-center gap-x-3">
+              {fields.map((field, index) => {
+                const { type, options } = field;
+                return (
+                  <div key={index} className={(type == "select" ||type == 'text')?"col-span-2":""}>
+                    <label className="block text-sm font-medium mb-1">{field.label}</label>
+                    {type == "select"
+                      ?
+                      <Select options={options || []} onChange={(value) => handleChange(field.name || '', value)} />
+                      :
+                      <Input {...field} onChange={(e) => handleChange(field.name || '', e.target.value)} />
+                    }
+                  </div>)
+              }
+              )}
+            </div>
+
 
             <div className="flex justify-center gap-2 mt-6">
               <Dialog.Close asChild>

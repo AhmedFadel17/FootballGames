@@ -23,7 +23,7 @@ class UpdateContinentRequest extends FormRequest
     {
         return [
             'name' => ['sometimes', 'string', 'max:255'],
-            'code' => ['sometimes', 'string', 'max:10'],
+            'code' => ['sometimes', 'string', 'max:3'],
         ];
     }
 } 
