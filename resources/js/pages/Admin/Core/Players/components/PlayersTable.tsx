@@ -4,14 +4,30 @@ import { useGetDataQuery } from "@/services/api";
 import { useEffect, useState } from "react";
 
 const columns: EditableColumnDef<Player>[] = [
-    { accessorKey: "name", header: "Name", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "fullname", header: "Full Name", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "position", header: "Position", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "date_of_birth", header: "Date of Birth", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "country.name", header: "Country", enableEditing: false, enableSorting: false, size: 1 },
-    { accessorKey: "popularity", header: "Popularity", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "img_src", header: "Image", enableEditing: true, enableSorting: false, size: 1 },
-];
+    { accessorKey: "name", header: "Name", enableEditing: true, size: 2 },
+    { accessorKey: "fullname", header: "Full Name", enableEditing: true,  size: 2 },
+    { accessorKey: "position", header: "Position", enableEditing: true,  size: 1 },
+    { accessorKey: "date_of_birth", header: "DOB", enableEditing: true,  size: 1 },
+    {
+        accessorKey: "country.id", header: "Country", enableEditing: false, size: 1, cell: ({ row }) => (
+            <img
+                src={row.original.country?.img_src}
+                alt={row.original.country?.name}
+                className="w-8 h-8 object-cover rounded"
+            />
+        ),
+    },
+    { accessorKey: "popularity", header: "Popularity", enableEditing: true,enableSorting:true, size: 1 },
+    {
+        accessorKey: "img_src", header: "Image", enableEditing: true, enableSorting: false, size: 1,
+        cell: ({ row }) => (
+            <img
+                src={row.original.img_src}
+                alt={row.original.name}
+                className="w-8 h-8 rounded"
+            />
+        ),
+    },];
 
 export default function PlayersTable() {
     const [fields, setFields] = useState<any>([]);

@@ -17,7 +17,7 @@ class PlayerService implements IPlayerService
 
     public function getAll(PaginationDTO $dto): PaginationResponseDTO
     {
-        $allowedFilters = ['position', 'country_id', 'date_of_birth'];
+        $allowedFilters = ['position', 'country_id', 'date_of_birth','popularity','name','fullname'];
         $searchableFields = ['name', 'fullname'];
 
         $query = Player::with('country');

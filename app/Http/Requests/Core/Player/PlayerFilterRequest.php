@@ -17,7 +17,7 @@ class PlayerFilterRequest extends FormRequest
             'position'     => 'nullable|string|max:50',
             'country_id'   => 'nullable|integer',
             'date_of_birth'=> 'nullable|date',
-            'sort_by'      => 'nullable|string|in:id,name,position,date_of_birth,country_id',
+            'sort_by'      => 'nullable|string|in:id,name,position,fullname,date_of_birth,country_id,popularity',
             'sort_order'   => 'nullable|string|in:asc,desc',
         ];
     }
