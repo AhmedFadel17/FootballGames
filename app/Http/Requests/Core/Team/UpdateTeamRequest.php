@@ -28,6 +28,7 @@ class UpdateTeamRequest extends FormRequest
             'img_src' => ['nullable', 'string', 'max:500'],
             'api_id' => ['nullable', 'integer'],
             'country_id' => ['nullable', 'exists:countries,id'],
+            'popularity' => ['nullable', 'integer', 'min:0', 'max:100'],
         ];
     }
 } 

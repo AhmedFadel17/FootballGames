@@ -2,6 +2,7 @@
 
 namespace App\DTOs\Core\Team;
 
+use App\DTOs\Core\Country\CountryResponseDTO;
 use App\Models\Core\Team;
 
 class TeamResponseDTO
@@ -13,6 +14,8 @@ class TeamResponseDTO
     public ?string $img_src;
     public ?int $api_id;
     public ?int $country_id;
+    public ?CountryResponseDTO $country;
+    public int $popularity;
 
     public function __construct(Team $team)
     {
@@ -23,5 +26,7 @@ class TeamResponseDTO
         $this->img_src = $team->img_src;
         $this->api_id = $team->api_id;
         $this->country_id = $team->country_id;
+        $this->popularity = $team->popularity;
+        $this->country = $team->country ? new CountryResponseDTO($team->country) : null;
     }
-} 
+}

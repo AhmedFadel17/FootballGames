@@ -15,7 +15,7 @@ class TeamService implements ITeamService
 
     public function getAll(PaginationDTO $dto): PaginationResponseDTO
     {
-        $allowedFilters = ['country_id', 'api_id'];
+        $allowedFilters = ['country_id', 'api_id','name', 'short_name', 'abbr','popularity'];
         $searchableFields = ['name', 'short_name', 'abbr'];
 
         $query = Team::with('country');

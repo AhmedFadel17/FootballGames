@@ -10,6 +10,7 @@ class TeamDTO
     public ?string $img_src;
     public ?int $api_id;
     public ?int $country_id;
+    public int $popularity;
 
     public function __construct(array $data)
     {
@@ -19,6 +20,7 @@ class TeamDTO
         $this->img_src = $data['img_src'] ?? null;
         $this->api_id = $data['api_id'] ?? null;
         $this->country_id = $data['country_id'] ?? null;
+        $this->popularity = $data['popularity'] ?? 0;
     }
 
     public function toArray(): array
@@ -30,6 +32,7 @@ class TeamDTO
             'img_src' => $this->img_src,
             'api_id' => $this->api_id,
             'country_id' => $this->country_id,
+            'popularity' => $this->popularity,
         ];
     }
 } 

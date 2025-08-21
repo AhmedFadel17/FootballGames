@@ -4,11 +4,28 @@ import { useGetDataQuery } from "@/services/api";
 import { useEffect, useState } from "react";
 
 const columns: EditableColumnDef<Team>[] = [
-    { accessorKey: "name", header: "Name", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "short_name", header: "Short Name", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "abbr", header: "Abbreviation", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "country.name", header: "Country", enableEditing: false, enableSorting: false, size: 1 },
-    { accessorKey: "img_src", header: "Image", enableEditing: true, enableSorting: false, size: 1 },
+    { accessorKey: "name", header: "Name", enableEditing: true,  size: 1 },
+    { accessorKey: "short_name", header: "Short Name", enableEditing: true,  size: 1 },
+    { accessorKey: "abbr", header: "Abbreviation", enableEditing: true, size: 1 },
+    {
+        accessorKey: "country.id", header: "Country", enableEditing: false,  size: 1, cell: ({ row }) => (
+            <img
+                src={row.original.country?.img_src}
+                alt={row.original.country?.name}
+                className="w-8 h-8 object-cover rounded"
+            />
+        ),
+    }, { accessorKey: "popularity", header: "Popularity", enableEditing: true,  size: 1 },
+    {
+        accessorKey: "img_src", header: "Image", enableEditing: true, enableSorting: false, size: 1,
+        cell: ({ row }) => (
+            <img
+                src={row.original.img_src}
+                alt={row.original.name}
+                className="w-8 h-8 rounded"
+            />
+        ),
+    },
 ];
 
 export default function TeamsTable() {

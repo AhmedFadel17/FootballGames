@@ -5,12 +5,8 @@ type Team = {
     short_name: string;
     img_src: string;
     country_id: number;
-    api_id?: number;
-    country?: {
-        id: number;
-        name: string;
-        code: string;
-        img_src: string;
-    };
+    popularity: number;
+    api_id?: string;
+    country?: Country;
 }
 

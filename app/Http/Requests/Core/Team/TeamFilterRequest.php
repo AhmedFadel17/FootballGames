@@ -18,7 +18,7 @@ class TeamFilterRequest extends FormRequest
             'abbr' => 'nullable|string|max:10',
             'country_id' => 'nullable|integer',
             'api_id' => 'nullable|integer',
-            'sort_by' => 'nullable|string|in:id,name,short_name,abbr,country_id,api_id',
+            'sort_by' => 'nullable|string|in:id,name,short_name,popularity,abbr,country_id,api_id',
             'sort_order' => 'nullable|string|in:asc,desc',
         ];
     }
