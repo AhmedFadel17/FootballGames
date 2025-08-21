@@ -15,11 +15,26 @@ class CompetitionPlayerFullStatService implements ICompetitionPlayerFullStatServ
 
     public function getAll(PaginationDTO $dto): PaginationResponseDTO
     {
-        $allowedFilters = ['competition_id', 'player_id'];
-        $searchableFields = [];
+        $allowedFilters = [
+            'competition_id',
+            'player_id',
+            'appearances',
+            'minutes_played',
+            'goals',
+            'assists',
+            'yellow_cards',
+            'red_cards',
+            'clean_sheets',
+            'saves',
+            'penalties_saved',
+            'own_goals',
+            'goals_conceded'
+        ];
+        $searchableFields = ['player.name'];
+        $query = CompetitionPlayerFullStat::with('competition', 'player');
 
         return $this->_paginationService
-            ->paginate(CompetitionPlayerFullStat::query(), $dto, CompetitionPlayerFullStatResponseDTO::class, $allowedFilters, $searchableFields);
+            ->paginate($query, $dto, CompetitionPlayerFullStatResponseDTO::class, $allowedFilters, $searchableFields);
     }
 
     public function getById($id): CompetitionPlayerFullStatResponseDTO
@@ -47,4 +62,4 @@ class CompetitionPlayerFullStatService implements ICompetitionPlayerFullStatServ
         $stat->delete();
         return true;
     }
-} 
+}

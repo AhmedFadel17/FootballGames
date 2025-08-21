@@ -26,7 +26,7 @@ class CompetitionPlayerFullStatFilterRequest extends FormRequest
             'penalties_saved' => 'nullable|integer',
             'own_goals' => 'nullable|integer',
             'goals_conceded' => 'nullable|integer',
-            'sort_by' => 'nullable|string|in:id,competition_id,player_id,appearances,minutes_played,goals,assists',
+            'sort_by' => 'nullable|string|in:id,competition_id,player_id,appearances,minutes_played,goals,assists,yellow_cards,red_cards,clean_sheets,saves,penalties_saved,own_goals,goals_conceded',
             'sort_order' => 'nullable|string|in:asc,desc',
         ];
     }

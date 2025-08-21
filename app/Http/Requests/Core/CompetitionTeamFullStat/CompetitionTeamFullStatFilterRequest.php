@@ -25,7 +25,7 @@ class CompetitionTeamFullStatFilterRequest extends FormRequest
             'yellow_cards' => 'nullable|integer',
             'red_cards' => 'nullable|integer',
             'penalties_scored' => 'nullable|integer',
-            'sort_by' => 'nullable|string|in:id,competition_id,team_id,matches_played,wins,draws,losses,goals_for,goals_against',
+            'sort_by' => 'nullable|string|in:id,competition_id,team_id,matches_played,wins,draws,losses,goals_for,goals_against,clean_sheets,yellow_cards,red_cards,penalties_scored',
             'sort_order' => 'nullable|string|in:asc,desc',
         ];
     }

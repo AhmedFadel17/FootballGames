@@ -4,35 +4,59 @@ import { useGetDataQuery } from "@/services/api";
 import { useEffect, useState } from "react";
 
 const columns: EditableColumnDef<PlayerStat>[] = [
-    { accessorKey: "player.name", header: "Player", enableEditing: false, enableSorting: false, size: 1 },
-    { accessorKey: "competition.name", header: "Competition", enableEditing: false, enableSorting: false, size: 1 },
-    { accessorKey: "appearances", header: "Appearances", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "minutes_played", header: "Minutes", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "goals", header: "Goals", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "assists", header: "Assists", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "yellow_cards", header: "Yellow Cards", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "red_cards", header: "Red Cards", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "clean_sheets", header: "Clean Sheets", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "saves", header: "Saves", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "penalties_saved", header: "Penalties Saved", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "own_goals", header: "Own Goals", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "goals_conceded", header: "Goals Conceded", enableEditing: true, enableSorting: false, size: 1 },
+    {
+        accessorKey: "player.id", header: "Player", enableEditing: false, size: 3,
+        cell: ({ row }) => (
+            <div className="flex items-center gap-2">
+                <img
+                    src={row.original.player?.img_src}
+                    alt={row.original.player?.name}
+                    className="w-8 h-8 rounded"
+                />
+                <p>{row.original.player?.name}</p>
+            </div>
+
+        ),
+    },
+    {
+        accessorKey: "competition.id", header: "Comp.", enableEditing: false, size: 1,
+        cell: ({ row }) => (
+            <div className="flex items-center gap-2">
+                <img
+                src={row.original.competition?.img_src}
+                alt={row.original.competition?.name}
+                    className="w-8 h-8 rounded"
+                />
+            </div>
+        ),
+    },
+    { accessorKey: "appearances", header: "App.", enableEditing: true, size: 1 },
+    { accessorKey: "minutes_played", header: "Min.", enableEditing: true, size: 1 },
+    { accessorKey: "goals", header: "GS", enableEditing: true, size: 1 },
+    { accessorKey: "assists", header: "AS", enableEditing: true, size: 1 },
+    { accessorKey: "yellow_cards", header: "YC", enableEditing: true, size: 1 },
+    { accessorKey: "red_cards", header: "RC", enableEditing: true, size: 1 },
+    { accessorKey: "clean_sheets", header: "CS", enableEditing: true, size: 1 },
+    { accessorKey: "saves", header: "Saves", enableEditing: true, size: 1 },
+    { accessorKey: "penalties_saved", header: "PS", enableEditing: true, size: 1 },
+    { accessorKey: "own_goals", header: "OG", enableEditing: true, size: 1 },
+    { accessorKey: "goals_conceded", header: "GC", enableEditing: true, size: 1 },
 ];
 
 export default function PlayerStatsTable() {
     const [fields, setFields] = useState<any>([]);
     const { data: playersData, isLoading: playersLoading, isSuccess: playersSuccess } = useGetDataQuery({
-        url: "/api/v1/admin/players",
+        url: "/api/v1/admin/options/players",
     });
     const { data: competitionsData, isLoading: competitionsLoading, isSuccess: competitionsSuccess } = useGetDataQuery({
-        url: "/api/v1/admin/competitions",
+        url: "/api/v1/admin/options/competitions",
     });
 
     useEffect(() => {
         if (playersSuccess && playersData && competitionsSuccess && competitionsData) {
             let playersOptions = playersData.map((row: Player) => ({ value: row.id, label: row.name }));
             let competitionsOptions = competitionsData.map((row: Competition) => ({ value: row.id, label: row.name }));
-            
+
             setFields([
                 { name: "player_id", label: "Player", type: "select", options: playersOptions },
                 { name: "competition_id", label: "Competition", type: "select", options: competitionsOptions },
@@ -58,14 +82,12 @@ export default function PlayerStatsTable() {
     return (
         <GenericTable<PlayerStat>
             title="Player Statistics"
-            url="/api/v1/admin/player-stats"
+            url="/api/v1/admin/competition-player-stats"
             itemName="Player Stat"
             columns={columns}
             enableEditing
             enableDeleting
             enableAdding
-            paginate={false}
-            enableSearch={false}
             fields={fields}
         />
     );

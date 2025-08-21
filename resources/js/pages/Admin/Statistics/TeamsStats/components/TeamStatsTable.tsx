@@ -4,27 +4,51 @@ import { useGetDataQuery } from "@/services/api";
 import { useEffect, useState } from "react";
 
 const columns: EditableColumnDef<TeamStat>[] = [
-    { accessorKey: "team.name", header: "Team", enableEditing: false, enableSorting: false, size: 1 },
-    { accessorKey: "competition.name", header: "Competition", enableEditing: false, enableSorting: false, size: 1 },
-    { accessorKey: "matches_played", header: "Matches", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "wins", header: "Wins", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "draws", header: "Draws", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "losses", header: "Losses", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "goals_for", header: "Goals For", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "goals_against", header: "Goals Against", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "clean_sheets", header: "Clean Sheets", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "yellow_cards", header: "Yellow Cards", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "red_cards", header: "Red Cards", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "penalties_scored", header: "Penalties Scored", enableEditing: true, enableSorting: false, size: 1 },
+ {
+        accessorKey: "team.id", header: "Team", enableEditing: false, size: 3,
+        cell: ({ row }) => (
+            <div className="flex items-center gap-2">
+                <img
+                    src={row.original.team?.img_src}
+                    alt={row.original.team?.name}
+                    className="w-8 h-8 rounded"
+                />
+                <p>{row.original.team?.name}</p>
+            </div>
+
+        ),
+    },
+    {
+        accessorKey: "competition.id", header: "Comp.", enableEditing: false, size: 1,
+        cell: ({ row }) => (
+            <div className="flex items-center gap-2">
+                <img
+                src={row.original.competition?.img_src}
+                alt={row.original.competition?.name}
+                    className="w-8 h-8 rounded"
+                />
+            </div>
+        ),
+    },  
+    { accessorKey: "matches_played", header: "M", enableEditing: true, size: 1 },
+    { accessorKey: "wins", header: "W", enableEditing: true, size: 1 },
+    { accessorKey: "draws", header: "D", enableEditing: true, size: 1 },
+    { accessorKey: "losses", header: "L", enableEditing: true, size: 1 },
+    { accessorKey: "goals_for", header: "GF", enableEditing: true, size: 1 },
+    { accessorKey: "goals_against", header: "GA", enableEditing: true, size: 1 },
+    { accessorKey: "clean_sheets", header: "CS", enableEditing: true, size: 1 },
+    { accessorKey: "yellow_cards", header: "YC", enableEditing: true, size: 1 },
+    { accessorKey: "red_cards", header: "RC", enableEditing: true, size: 1 },
+    { accessorKey: "penalties_scored", header: "PS", enableEditing: true, size: 1 },
 ];
 
 export default function TeamStatsTable() {
     const [fields, setFields] = useState<any>([]);
     const { data: teamsData, isLoading: teamsLoading, isSuccess: teamsSuccess } = useGetDataQuery({
-        url: "/api/v1/admin/teams",
+        url: "/api/v1/admin/options/teams",
     });
     const { data: competitionsData, isLoading: competitionsLoading, isSuccess: competitionsSuccess } = useGetDataQuery({
-        url: "/api/v1/admin/competitions",
+        url: "/api/v1/admin/options/competitions",
     });
 
     useEffect(() => {
@@ -56,14 +80,12 @@ export default function TeamStatsTable() {
     return (
         <GenericTable<TeamStat>
             title="Team Statistics"
-            url="/api/v1/admin/team-stats"
+            url="/api/v1/admin/competition-team-stats"
             itemName="Team Stat"
             columns={columns}
             enableEditing
             enableDeleting
             enableAdding
-            paginate={false}
-            enableSearch={false}
             fields={fields}
         />
     );

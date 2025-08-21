@@ -2,6 +2,7 @@
 
 namespace App\DTOs\Core\Player;
 
+use App\DTOs\Core\Country\CountryResponseDTO;
 use App\Models\Core\Player;
 
 class PlayerResponseDTO
@@ -15,7 +16,7 @@ class PlayerResponseDTO
     public ?int $popularity;
     public ?int $api_id;
     public ?int $country_id;
-    public ?array $country;
+    public ?CountryResponseDTO $country;
 
     public function __construct(Player $player)
     {
@@ -28,12 +29,7 @@ class PlayerResponseDTO
         $this->popularity = $player->popularity;
         $this->api_id = $player->api_id;
         $this->country_id = $player->country_id;
-        $this->country = $player->country ? [
-            'id' => $player->country->id,
-            'name' => $player->country->name,
-            'code' => $player->country->code,
-            'img_src' => $player->country->img_src,
-        ] : null;
+        $this->country = $player->country ? new CountryResponseDTO($player->country) : null;
     }
 
     public function toArray(): array

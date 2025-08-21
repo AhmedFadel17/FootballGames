@@ -8,11 +8,6 @@ type Player = {
     popularity?: number;
     api_id?: number;
     country_id?: number;
-    country?: {
-        id: number;
-        name: string;
-        code: string;
-        img_src: string;
-    };
+    country?: Country;
 }
 

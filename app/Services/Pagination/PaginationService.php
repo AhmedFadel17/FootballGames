@@ -34,10 +34,19 @@ class PaginationService implements IPaginationService
             $search = $dto->filters['search'];
             $query->where(function ($q) use ($search, $searchableFields) {
                 foreach ($searchableFields as $field) {
-                    $q->orWhere($field, 'ILIKE', "%{$search}%");
+                    // handle nested relations like players.name
+                    if (str_contains($field, '.')) {
+                        [$relation, $column] = explode('.', $field);
+                        $q->orWhereHas($relation, function ($subQuery) use ($column, $search) {
+                            $subQuery->where($column, 'ILIKE', "%{$search}%");
+                        });
+                    } else {
+                        $q->orWhere($field, 'ILIKE', "%{$search}%");
+                    }
                 }
             });
         }
+
 
         if (in_array($dto->sortBy, $allowedFilters, true)) {
             $query->orderBy($dto->sortBy, $dto->sortOrder);

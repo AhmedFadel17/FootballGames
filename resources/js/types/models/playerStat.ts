@@ -13,13 +13,7 @@ type PlayerStat = {
     penalties_saved: number;
     own_goals: number;
     goals_conceded: number;
-    competition?: {
-        id: number;
-        name: string;
-    };
-    player?: {
-        id: number;
-        name: string;
-    };
+    competition?: Competition;
+    player?: Player;
 }
 

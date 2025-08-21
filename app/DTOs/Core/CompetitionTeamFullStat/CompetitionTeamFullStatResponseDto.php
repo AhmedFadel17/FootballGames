@@ -2,6 +2,8 @@
 
 namespace App\DTOs\Core\CompetitionTeamFullStat;
 
+use App\DTOs\Core\Competition\CompetitionResponseDTO;
+use App\DTOs\Core\Team\TeamResponseDTO;
 use App\Models\Core\CompetitionTeamFullStat;
 
 class CompetitionTeamFullStatResponseDTO
@@ -19,7 +21,8 @@ class CompetitionTeamFullStatResponseDTO
     public ?int $yellow_cards;
     public ?int $red_cards;
     public ?int $penalties_scored;
-
+    public ?CompetitionResponseDTO $competition;
+    public ?TeamResponseDTO $team;
     public function __construct(CompetitionTeamFullStat $stat)
     {
         $this->id = $stat->id;
@@ -35,5 +38,7 @@ class CompetitionTeamFullStatResponseDTO
         $this->yellow_cards = $stat->yellow_cards;
         $this->red_cards = $stat->red_cards;
         $this->penalties_scored = $stat->penalties_scored;
+        $this->team = $stat->team ? new TeamResponseDTO($stat->team) : null;
+        $this->competition = $stat->competition ? new CompetitionResponseDTO($stat->competition) : null;
     }
-} 
+}

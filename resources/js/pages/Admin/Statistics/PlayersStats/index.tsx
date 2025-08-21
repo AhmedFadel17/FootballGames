@@ -1,5 +1,5 @@
 import PageMeta from "@/components/common/PageMeta";
-import PlayersStatsTable from "./components/PlayersStatsTable";
+import PlayersStatsTable from "./components/PlayerStatsTable";
 
 export default function PlayersStatsPage() {
   return (

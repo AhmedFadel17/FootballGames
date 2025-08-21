@@ -12,13 +12,7 @@ type TeamStat = {
     yellow_cards: number;
     red_cards: number;
     penalties_scored: number;
-    competition?: {
-        id: number;
-        name: string;
-    };
-    team?: {
-        id: number;
-        name: string;
-    };
+    competition?: Competition;
+    team?: Team;
 }
 

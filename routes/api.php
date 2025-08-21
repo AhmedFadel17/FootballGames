@@ -67,12 +67,13 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
         Route::apiResource('game-types', GameTypeController::class);
         Route::apiResource('games', GameController::class);
         Route::apiResource('competitions', CompetitionController::class);
+
         Route::apiResource('competition-participants', CompetitionParticipantController::class);
         Route::apiResource('competition-player-stats', CompetitionPlayerFullStatController::class);
         Route::apiResource('competition-team-stats', CompetitionTeamFullStatController::class);
         Route::apiResource('continents', ContinentController::class);
+
         Route::apiResource('countries', CountryController::class);
-        Route::get('options/countries', [CountryController::class,'getAllOptions']);
 
         Route::apiResource('managers', ManagerController::class);
         Route::apiResource('manager-team-periods', ManagerTeamPeriodController::class);
@@ -81,5 +82,11 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
         Route::apiResource('seasons', SeasonController::class);
         Route::apiResource('teams', TeamController::class);
         Route::apiResource('transfers', TransferController::class);
+
+        Route::get('options/countries', [CountryController::class,'getAllOptions']);
+        Route::get('options/players', [CountryController::class,'getAllOptions']);
+        Route::get('options/teams', [CountryController::class,'getAllOptions']);
+        Route::get('options/competitions', [CountryController::class,'getAllOptions']);
+
     });
 });
