@@ -2,17 +2,38 @@ import { EditableColumnDef } from "@/types/table";
 import GenericTable from "@/components/tables/GenericTable";
 import { useGetDataQuery } from "@/services/api";
 import { useEffect, useState } from "react";
+import { FaDotCircle } from "react-icons/fa";
 
 const columns: EditableColumnDef<Competition>[] = [
-    { accessorKey: "name", header: "Name", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "short_name", header: "Short Name", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "country.name", header: "Country", enableEditing: false, enableSorting: false, size: 1 },
+    { accessorKey: "name", header: "Name", enableEditing: true, enableSorting: false, size: 2 },
+    { accessorKey: "short_name", header: "Abbr.", enableEditing: true, enableSorting: false, size: 1 },
+    {
+        accessorKey: "country.name", header: "Country", enableEditing: false, enableSorting: false, size: 1, cell: ({ row }) => (
+            <img
+                src={row.original.country?.img_src}
+                alt={row.original.country?.name}
+                className="w-8 h-8 object-cover rounded"
+            />
+        ),
+    },
     { accessorKey: "type", header: "Type", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "founded_year", header: "Founded Year", enableEditing: true, enableSorting: false, size: 1 },
+    { accessorKey: "founded_year", header: "FY", enableEditing: true, enableSorting: false, size: 1 },
     { accessorKey: "tier", header: "Tier", enableEditing: true, enableSorting: false, size: 1 },
     { accessorKey: "popularity", header: "Popularity", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "is_active", header: "Active", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "img_src", header: "Image", enableEditing: true, enableSorting: false, size: 1 },
+    {
+        accessorKey: "is_active", header: "Active", enableEditing: true, enableSorting: false, size: 1, cell: ({ row }) => (
+            <span className={` ${row.original.is_active ? "text-green-500" : "text-gray-500"}`}><FaDotCircle /></span>
+        ),
+    },
+    {
+        accessorKey: "img_src", header: "Image", enableEditing: true, enableSorting: false, size: 1, cell: ({ row }) => (
+            <img
+                src={row.original.img_src}
+                alt={row.original.name}
+                className="w-8 h-8 rounded"
+            />
+        ),
+    },
 ];
 
 export default function CompetitionsTable() {

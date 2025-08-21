@@ -29,6 +29,7 @@ class CreateCompetitionRequest extends FormRequest
             'founded_year' => ['nullable', 'integer', 'min:1800', 'max:2100'],
             'tier' => ['nullable', 'integer', 'min:1', 'max:10'],
             'img_src' => ['nullable', 'string', 'max:500'],
+            'popularity' => ['nullable', 'integer', 'min:0', 'max:100'],
             'is_active' => ['boolean'],
         ];
     }

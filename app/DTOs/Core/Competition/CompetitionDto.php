@@ -11,6 +11,7 @@ class CompetitionDTO
     public ?int $founded_year;
     public ?int $tier;
     public ?string $img_src;
+    public int $popularity;
     public bool $is_active;
 
     public function __construct(array $data)
@@ -23,6 +24,7 @@ class CompetitionDTO
         $this->tier = $data['tier'] ?? null;
         $this->img_src = $data['img_src'] ?? null;
         $this->is_active = $data['is_active'] ?? true;
+        $this->popularity = $data['popularity'] ?? 0;
     }
 
     public function toArray(): array
@@ -35,6 +37,7 @@ class CompetitionDTO
             'founded_year' => $this->founded_year,
             'tier' => $this->tier,
             'img_src' => $this->img_src,
+            'popularity' => $this->popularity,
             'is_active' => $this->is_active,
         ];
     }

@@ -28,6 +28,7 @@ class UpdateCompetitionRequest extends FormRequest
             'type' => ['nullable', 'string', 'max:50'],
             'founded_year' => ['nullable', 'integer', 'min:1800', 'max:2100'],
             'tier' => ['nullable', 'integer', 'min:1', 'max:10'],
+            'popularity' => ['nullable', 'integer', 'min:0', 'max:100'],
             'img_src' => ['nullable', 'string', 'max:500'],
             'is_active' => ['boolean'],
         ];

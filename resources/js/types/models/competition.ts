@@ -9,11 +9,6 @@ type Competition = {
     img_src?: string;
     popularity?: number;
     is_active: boolean;
-    country?: {
-        id: number;
-        name: string;
-        code: string;
-        img_src: string;
-    };
+    country?: Country;
 }
 

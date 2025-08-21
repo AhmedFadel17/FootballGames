@@ -2,6 +2,7 @@
 
 namespace App\DTOs\Core\Competition;
 
+use App\DTOs\Core\Country\CountryResponseDTO;
 use App\Models\Core\Competition;
 
 class CompetitionResponseDTO
@@ -15,6 +16,8 @@ class CompetitionResponseDTO
     public ?int $tier;
     public ?string $img_src;
     public bool $is_active;
+    public int $popularity;
+    public ?CountryResponseDTO $country;
 
     public function __construct(Competition $competition)
     {
@@ -27,5 +30,7 @@ class CompetitionResponseDTO
         $this->tier = $competition->tier;
         $this->img_src = $competition->img_src;
         $this->is_active = $competition->is_active;
+        $this->popularity = $competition->popularity;
+        $this->country = $competition->country ? new CountryResponseDTO($competition->country) : null;
     }
-} 
+}
