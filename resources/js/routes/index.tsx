@@ -20,6 +20,7 @@ import Continents from "@/pages/Admin/Areas/Continents";
 import Countries from "@/pages/Admin/Areas/Countries";
 import GameTypesPage from "@/pages/Admin/Games/GameTypes";
 import GamesListPage from "@/pages/Admin/Games/GamesList";
+import Top10Page from "@/pages/Admin/Games/Top10";
 
 // =============================
 // 🚀 USER ROUTES
@@ -71,6 +72,11 @@ export const AppAdminRoutes: AppRoute[] = [
     path: "/admin/games/list",
     label: "Games List",
     element: <GamesListPage />,
+  },
+  {
+    path: "/admin/games/types/top-10",
+    label: "Top 10",
+    element: <Top10Page />,
   },
   {
     path: "/admin/competitions",

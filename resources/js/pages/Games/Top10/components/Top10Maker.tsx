@@ -17,7 +17,7 @@ export default function Top10Maker() {
 
     const dispatch = useDispatch();
     const { data, isLoading, isSuccess } = useGetDataQuery({
-        url: "/api/v1/u/games?game_type_id=2",
+        url: "/api/v1/u/games-list/top-list",
     });
 
     useEffect(() => {
@@ -37,7 +37,7 @@ export default function Top10Maker() {
     const handleSubmit = async (value: number) => {
         await toast.promise(
             createData({
-                url: "/api/v1/u/games-list/top10",
+                url: "/api/v1/u/games-list/top-list",
                 body: {
                     game_id: value,
                 },

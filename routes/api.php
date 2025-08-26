@@ -19,6 +19,7 @@ use App\Http\Controllers\Game\GameTypeController;
 use App\Http\Controllers\GamesList\Bingo\BingoConditionController;
 use App\Http\Controllers\GamesList\Bingo\BingoGameController;
 use App\Http\Controllers\GamesList\Bingo\BingoMatchController;
+use App\Http\Controllers\GamesList\TopList\TopListGameController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -57,6 +58,12 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
             Route::post('bingo/{id}/check/{pos}',  [BingoGameController::class, 'check']);
             Route::get('bingo/{id}/results',  [BingoGameController::class, 'gameResults']);
             Route::post('bingo/{id}/cancel',  [BingoGameController::class, 'cancelGame']);
+
+            Route::apiResource('top-list', TopListGameController::class)->only(['index', 'show']);
+            Route::post('top-list', [TopListGameController::class,'startGame']);
+            Route::post('top-list/{id}/cancel', [TopListGameController::class,'cancelGame']);
+            Route::get('top-list/{id}/results', [TopListGameController::class,'gameResults']);
+            Route::post('bingo/{id}/check',  [TopListGameController::class, 'check']);
         });
     });
 
@@ -66,6 +73,9 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::prefix('admin')->middleware(['role:admin'])->group(function () {
         Route::apiResource('game-types', GameTypeController::class);
         Route::apiResource('games', GameController::class);
+        Route::prefix('games-list')->group(function () {
+            Route::apiResource('top-list', TopListGameController::class);
+        });
         Route::apiResource('competitions', CompetitionController::class);
 
         Route::apiResource('competition-participants', CompetitionParticipantController::class);
@@ -83,10 +93,9 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
         Route::apiResource('teams', TeamController::class);
         Route::apiResource('transfers', TransferController::class);
 
-        Route::get('options/countries', [CountryController::class,'getAllOptions']);
-        Route::get('options/players', [CountryController::class,'getAllOptions']);
-        Route::get('options/teams', [CountryController::class,'getAllOptions']);
-        Route::get('options/competitions', [CountryController::class,'getAllOptions']);
-
+        Route::get('options/countries', [CountryController::class, 'getAllOptions']);
+        Route::get('options/players', [CountryController::class, 'getAllOptions']);
+        Route::get('options/teams', [CountryController::class, 'getAllOptions']);
+        Route::get('options/competitions', [CountryController::class, 'getAllOptions']);
     });
 });

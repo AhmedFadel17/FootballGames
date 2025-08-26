@@ -51,6 +51,8 @@ use App\Services\GamesListServices\Bingo\BingoGame\BingoGameService;
 use App\Services\GamesListServices\Bingo\BingoGame\IBingoGameService;
 use App\Services\GamesListServices\Bingo\BingoMatch\BingoMatchService;
 use App\Services\GamesListServices\Bingo\BingoMatch\IBingoMatchService;
+use App\Services\GamesListServices\TopList\ITopListGameService;
+use App\Services\GamesListServices\TopList\TopListGameService;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Debug\ExceptionHandler;
@@ -88,6 +90,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(IBingoGameService::class, BingoGameService::class);
         $this->app->bind(IBingoConditionService::class, BingoConditionService::class);
         $this->app->bind(IBingoMatchService::class, BingoMatchService::class);
+        $this->app->bind(ITopListGameService::class, TopListGameService::class);
+
         $this->app->singleton(
         ExceptionHandler::class,
         Handler::class

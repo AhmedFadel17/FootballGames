@@ -13,7 +13,8 @@ import {
   FaFlag,
   FaGlobeAfrica,
   FaThList,
-  FaRegChartBar
+  FaRegChartBar,
+  FaHome
 } from "react-icons/fa";
 import { BiStats, BiWorld } from "react-icons/bi";
 import { SiSecurityscorecard } from "react-icons/si";
@@ -50,6 +51,11 @@ export const SidebarUserRoutes: SidebarRoute[] = [
 // 🚀 ADMIN SIDEBAR ROUTES
 // =============================
 export const SidebarAdminRoutes: SidebarRoute[] = [
+  {
+    path: "/",
+    label: "Home",
+    icon: <FaHome size={18} />,
+  },
   {
     path: "#",
     label: "Games",
