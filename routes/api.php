@@ -50,6 +50,8 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     //--------------------------------------------------------------
     Route::prefix('u')->middleware(['role:user,guest'])->group(function () {
         Route::get('game-types', [GameTypeController::class, 'getAllWithGamesList']);
+        Route::get('players', [PlayerController::class, 'index']);
+
         Route::prefix('games-list')->group(function () {
             Route::get('bingo/{id}/conditions', [BingoConditionController::class, 'getByGameId']);
             Route::post('bingo', [BingoGameController::class, 'store']);
@@ -60,10 +62,10 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
             Route::post('bingo/{id}/cancel',  [BingoGameController::class, 'cancelGame']);
 
             Route::apiResource('top-list', TopListGameController::class)->only(['index', 'show']);
-            Route::post('top-list', [TopListGameController::class,'startGame']);
-            Route::post('top-list/{id}/cancel', [TopListGameController::class,'cancelGame']);
-            Route::get('top-list/{id}/results', [TopListGameController::class,'gameResults']);
-            Route::post('bingo/{id}/check',  [TopListGameController::class, 'check']);
+            Route::post('top-list/{id}/start', [TopListGameController::class, 'startGame']);
+            Route::post('top-list/{id}/cancel', [TopListGameController::class, 'cancelGame']);
+            Route::get('top-list/{id}/results', [TopListGameController::class, 'gameResults']);
+            Route::post('top-list/{id}/check/{objectId}',  [TopListGameController::class, 'check']);
         });
     });
 

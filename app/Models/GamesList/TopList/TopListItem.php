@@ -20,14 +20,14 @@ class TopListItem extends Model
         'object_id',
     ];
 
-    public function topList()
+    public function game()
     {
-        return $this->belongsTo(TopListGame::class);
+        return $this->belongsTo(TopListGame::class,'top_list_game_id');
     }
 
     public function object()
     {
-        $type = $this->topList->items_type;
+        $type = $this->game->items_type;
 
         switch ($type) {
             case TopListItemstype::PLAYER->value:

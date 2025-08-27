@@ -28,18 +28,26 @@ class TopListGameController extends Controller
         $this->_service = $service;
     }
 
-    // public function nextMatch(Request $request, int $id): JsonResponse
-    // {
-    //     $user = $request->user();
-    //     $match = $this->_service->nextMatch($user, $id);
-    //     return response()->json($match->toArray());
-    // }
-    // public function check(Request $request, int $id, int $pos): JsonResponse
-    // {
-    //     $user = $request->user();
-    //     $condition = $this->_service->check($user, $id, $pos);
-    //     return response()->json($condition->toArray());
-    // }
+    public function index(): JsonResponse
+    {
+        $games = $this->_service->getAll();
+        return response()->json($games);
+    }
+
+    public function startGame(Request $request,$id): JsonResponse
+    {
+        $user = $request->user();
+        $match = $this->_service->startGame($user, $id);
+        return response()->json($match->toArray());
+    }
+
+
+    public function check(Request $request, int $id, int $objectId): JsonResponse
+    {
+        $user = $request->user();
+        $item = $this->_service->check($user, $id, $objectId);
+        return response()->json($item->toArray());
+    }
 
 
     public function cancelGame(Request $request, int $id): JsonResponse

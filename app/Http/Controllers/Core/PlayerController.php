@@ -52,4 +52,5 @@ class PlayerController extends Controller
         $this->_service->delete($id);
         return response()->json(null, 204);
     }
+
 }

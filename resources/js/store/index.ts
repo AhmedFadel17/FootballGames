@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import bingoReducer from "./slices/bingoSlice";
 import authReducer from "./slices/authSlice";
-import top10Reducer from "./slices/top10Slice";
+import topListGameReducer from "./slices/topListGameSlice";
 import adminTop10Reducer from "./slices/admin/adminTop10Slice";
 
 import storage from "redux-persist/lib/storage";
@@ -20,7 +20,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authReducer,
   bingo: bingoReducer,
-  top10:top10Reducer,
+  toplist:topListGameReducer,
   adminTop10:adminTop10Reducer,
   [api.reducerPath]: api.reducer,
   [identityApi.reducerPath]: identityApi.reducer,

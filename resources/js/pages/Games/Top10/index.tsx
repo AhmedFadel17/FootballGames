@@ -1,9 +1,10 @@
 import PageMeta from "@/components/common/PageMeta";
 import BingoMaker from "./components/Top10Maker";
 import { useAppSelector } from "@/store";
+import TopListGame from "./components/TopListGame";
 
 export default function Top10Page() {
-  const isActive = useAppSelector((state) => state.top10.isActive);
+  const isActive = useAppSelector((state) => state.toplist.isActive);
 
   return (
     <>
@@ -15,13 +16,12 @@ export default function Top10Page() {
         
 
         <div className="col-span-12">
-            <BingoMaker />
 
-          {/* {isActive ?
-            <BingoGame isActive={isActive} />
+          {isActive ?
+            <TopListGame />
             :
             <BingoMaker />
-          } */}
+          }
         </div>
 
         <div className="col-span-12">

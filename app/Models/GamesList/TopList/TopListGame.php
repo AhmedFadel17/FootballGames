@@ -19,7 +19,7 @@ class TopListGame extends Model
     ];
     public function instance()
     {
-        return $this->belongsTo(GameInstance::class);
+        return $this->belongsTo(GameInstance::class, 'game_instance_id');
     }
     public function items()
     {

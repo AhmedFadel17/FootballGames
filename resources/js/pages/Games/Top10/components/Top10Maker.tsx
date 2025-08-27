@@ -1,7 +1,7 @@
 import Input from "@/components/form/input/InputField"
 import Select from "@/components/form/Select";
 import { useCreateDataMutation, useGetDataQuery } from "@/services/api";
-import { startTop10 } from "@/store/slices/top10Slice";
+import { startTop10 } from "@/store/slices/topListGameSlice";
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux";
 import toast from 'react-hot-toast';
@@ -28,19 +28,17 @@ export default function Top10Maker() {
 
 
 
-    const handleGameChange = (value: number) => {
-        setSelectedGame(value)
-    }
+    // const handleGameChange = (value: number) => {
+    //     setSelectedGame(value)
+    // }
 
 
 
     const handleSubmit = async (value: number) => {
         await toast.promise(
             createData({
-                url: "/api/v1/u/games-list/top-list",
-                body: {
-                    game_id: value,
-                },
+                url: `/api/v1/u/games-list/top-list/${value}/start`,
+                body: {},
             }).unwrap(),
             {
                 loading: "Starting top10 game...",
@@ -59,21 +57,21 @@ export default function Top10Maker() {
             <div className="p-4">
                 <div className="py-2 grid grid-cols-3 gap-2">
                     {games && games.map((game: Game, index) => (
-                        <div className="rounded border-2 p-4 bg-secondary">
-                            <motion.div
-                                key={index}
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() => handleSubmit(game.id)}
-                                className="cursor-pointer"
-                            >
-                                <div className="flex gap-4 items-center justify-center uppercase mb-4">
-                                    <p className="flex items-center justify-center w-[30px] h-[30px] bg-primary rounded-full text-center text-white">#{game.id}</p>
-                                    <p className="text-lg font-bold">{game.title}</p>
-                                </div>
-                                <p className="text-black">{game.description}</p>
+                        <div className="rounded border-2 p-4 bg-secondary cursor-pointer" onClick={() => handleSubmit(game.id)}>
+                            <div className="flex gap-4 items-center justify-center uppercase mb-4">
+                                <p className="flex items-center justify-center w-[50px] h-[50px] p-4 bg-primary rounded-full text-center text-white">#{game.id}</p>
 
-                            </motion.div>
+                                <motion.p
+                                    key={index}
+                                    whileHover={{ scale: 1.1 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    
+                                    className=""
+                                >
+                                    <p className="text-lg font-bold">{game.title}</p>
+
+                                </motion.p>
+                            </div>
                         </div>
                     ))}
                 </div>
