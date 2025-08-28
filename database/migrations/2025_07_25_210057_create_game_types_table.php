@@ -8,8 +8,8 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('game_types', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique(); // e.g. Bingo, Top 10
-            $table->string('slug')->unique(); // for routing/api keys
+            $table->string('name')->unique(); 
+            $table->string('slug')->unique(); 
             $table->text('description')->nullable();
             $table->timestamps();
         });

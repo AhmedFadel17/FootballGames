@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('top_list_answers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('top_list_item_id')
+                ->nullable()
                 ->constrained('top_list_items')
                 ->onDelete('cascade');
             $table->foreignId('game_entry_id')

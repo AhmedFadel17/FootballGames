@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('games', function (Blueprint $table) {
             $table->id();
-            $table->string('title'); // e.g. "Top 10 EPL 2025"
+            $table->string('title');
             $table->foreignId('game_type_id')->constrained()->onDelete('cascade');
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);

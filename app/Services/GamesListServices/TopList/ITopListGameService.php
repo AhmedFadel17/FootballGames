@@ -2,6 +2,7 @@
 
 namespace App\Services\GamesListServices\TopList;
 
+use App\DTOs\Game\GameResult\GameResultResponseDTO;
 use App\DTOs\GamesList\TopList\TopListGameDTO;
 use App\DTOs\GamesList\TopList\TopListGameResponseDTO;
 use App\DTOs\GamesList\TopList\TopListItemResponseDTO;
@@ -16,5 +17,7 @@ interface ITopListGameService
     public function cancelGame(User $user, int $gameId): void;
     public function startGame(User $user, int $gameId): TopListGameResponseDTO;
     public function check(User $user,int $gameId, int $objectId): TopListItemResponseDTO;
+    public function results(User $user,int $gameId): GameResultResponseDTO;
+
 
 }

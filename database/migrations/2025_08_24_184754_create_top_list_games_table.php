@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('top_list_games', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('game_instance_id')
-                ->constrained("game_instances")
+            $table->foreignId('game_id')
+                ->constrained("games")
                 ->onDelete('cascade');
             $table->string('items_type', 100);
             $table->string('title');
