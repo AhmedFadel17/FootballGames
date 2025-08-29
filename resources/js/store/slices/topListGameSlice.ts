@@ -1,20 +1,25 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
 interface TopListSlot {
   pos: number;
-  item?: TopListItem;
+  answer?: TopListAnswer;
 }
 interface TopListGameState {
+  id: number | null;
   game: TopListGame | null;
   slots: TopListSlot[];
   answers: TopListAnswer[];
   isActive: boolean;
   isFinished: boolean;
+  wrongAnswers: number;
 }
 
 const initialState: TopListGameState = {
+  id: null,
   game: null,
   answers: [],
-  slots:[],
+  wrongAnswers: 0,
+  slots: [],
   isActive: false,
   isFinished: false,
 };
@@ -24,40 +29,60 @@ const topListGameSlice = createSlice({
   initialState,
   reducers: {
     startTop10: (state, action: PayloadAction<TopListGame>) => {
+      state.id = action.payload.game_instance_id ?? null;
       state.game = action.payload;
-      state.slots = Array.from({ length: action.payload.size }, (_, i) => ({
-        pos: i + 1,
-      }));
+
+      const answers = action.payload.answers ?? [];
+
+      state.answers = answers;
+      state.wrongAnswers = answers.filter(a => !a.item).length;
+      state.slots = Array.from({ length: action.payload.size }, (_, i) => {
+        const pos = i + 1;
+        const answer = answers.find(a => a.item && a.item.pos === pos) ?? undefined;
+        return {
+          pos,
+          answer,
+        };
+      });
+
       state.isActive = true;
     },
+
     resetTop10: (state) => {
+      state.id = null;
       state.game = null;
       state.answers = [];
+      state.wrongAnswers = 0;
       state.slots = [];
       state.isActive = false;
       state.isFinished = false;
     },
-    setItem: (state,action: PayloadAction<TopListItem>) => {
-      console.log("ITEEEEEEEEEEEM",action.payload)
-      const slot = state.slots.find((s) => s.pos === action.payload.pos);
-      if (slot) {
-        slot.item = action.payload;
-      }
-    },
     submitAnswer: (
       state,
-      action: PayloadAction<{ pos: number; answer: TopListAnswer }>
+      action: PayloadAction<TopListAnswer>
     ) => {
-      const slot = state.slots.find((s) => s.pos === action.payload.pos);
-      if (slot) {
-        slot.answer = action.payload.answer;
-        state.answers.push(action.payload.answer);
+      if (!action.payload.item) {
+        state.wrongAnswers += 1;
+        toast.error("Wrong Answer!");
+        if (state.wrongAnswers === state.game?.max_chances) {
+          state.isFinished = true;
+        }
       }
+      const slot = state.slots.find((s) => s.pos === action.payload.item?.pos);
+      if (slot) {
+        slot.answer = action.payload;
+        toast.success("Right Answer!");
+      }
+      state.answers.push(action.payload);
+      if (state.answers.filter(a => a.item).length === state.game?.size) {
+          state.isFinished = true;
+        }
     },
-    
+
     finishGame: (state) => {
       state.isFinished = true;
     },
+
   },
 });
 
@@ -65,7 +90,7 @@ export const {
   startTop10,
   resetTop10,
   finishGame,
-  setItem
+  submitAnswer
 } = topListGameSlice.actions;
 
 export default topListGameSlice.reducer;

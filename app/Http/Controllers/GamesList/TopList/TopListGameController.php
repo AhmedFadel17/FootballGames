@@ -57,12 +57,12 @@ class TopListGameController extends Controller
         return response()->json(true);
     }
 
-    // public function gameResults(Request $request, int $id): JsonResponse
-    // {
-    //     $user = $request->user();
-    //     $res = $this->_service->results($user, $id);
-    //     return response()->json($res->toArray());
-    // }
+    public function gameResults(Request $request, int $id): JsonResponse
+    {
+        $user = $request->user();
+        $res = $this->_service->results($user, $id);
+        return response()->json($res->toArray());
+    }
 
     public function store(CreateTopListGameRequest $request): JsonResponse
     {

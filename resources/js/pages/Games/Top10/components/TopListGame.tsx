@@ -1,38 +1,26 @@
-import {
-  useGetBingoConditionsQuery,
-  useGetNextBingoMatchQuery,
-  useCheckBingoConditionMutation,
-  useBingoGameResultsMutation,
-} from "@/services/bingoApi";
+
 import { useAppDispatch, useAppSelector } from "@/store";
 import { useEffect } from "react";
-import {
-  finishGame,
-  resetBingo,
-  setConditions,
-  setMatcher,
-  updateCondition,
-} from "@/store/slices/bingoSlice";
 import { motion, AnimatePresence } from "framer-motion";
-import { store } from "@/store";
 import TopListItemComponent from "./TopListItem";
-import Input from "@/components/form/input/InputField";
 import { FaHeart } from "react-icons/fa";
 import TopListSearch from "./TopListSearch";
+import { useTopListGameResultsMutation } from "@/services/topListGameApi";
+import { resetTop10 } from "@/store/slices/topListGameSlice";
 
 
 export default function TopListGame() {
   const dispatch = useAppDispatch();
-  const { game, slots, isActive, isFinished } = useAppSelector((state) => state.toplist);
+  const { id:gameId,game, slots, isActive, isFinished, wrongAnswers } = useAppSelector((state) => state.toplist);
 
 
-  const [getResults, { data: results, isLoading: isResultsLoading, error: resultsError }] = useBingoGameResultsMutation();
+  const [getResults, { data: results, isLoading: isResultsLoading, error: resultsError }] = useTopListGameResultsMutation();
 
-
-  useEffect(()=>{
-    console.log("SLLLLLLLLLLLLLOTS",slots)
-  },slots)
-
+  useEffect(() => {
+    if (isFinished && game && gameId) {
+      getResults(gameId)
+    }
+  }, [isFinished, game, getResults]);
 
   if (!isActive || !game) {
     return (
@@ -79,7 +67,7 @@ export default function TopListGame() {
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => dispatch(resetBingo())}
+                        onClick={() => dispatch(resetTop10())}
                         className="rounded bg-primary uppercase hover:text-secondary text-white font-bold px-5 py-2"
                       >
                         Play Again
@@ -97,7 +85,7 @@ export default function TopListGame() {
               </div>
               <div className="w-full p-4 space-y-4">
                 {slots.map((slot) => (
-                  <TopListItemComponent pos={slot.pos} item={slot.item} />
+                  <TopListItemComponent {...slot} />
                 ))}
               </div>
               <div className="flex items-center justify-between w-full p-4 mt-10">
@@ -106,14 +94,15 @@ export default function TopListGame() {
                 </div>
 
                 <div className="flex gap-1">
-                  {Array.from({ length: game?.max_chances ?? 0 }).map((_, i) => (
-                    <FaHeart key={i} color="red" size={20} />
-                  ))}
+                  {Array.from({ length: game?.max_chances ?? 0 }).map((_, i) => {
+                    const isFilled = i >= wrongAnswers;
+                    return <FaHeart key={i} color={isFilled ? "red" : "gray"} size={20} />;
+                  })}
                 </div>
               </div>
 
               <div className="w-full p-4">
-                <TopListSearch/>
+                <TopListSearch />
               </div>
             </div>
           }

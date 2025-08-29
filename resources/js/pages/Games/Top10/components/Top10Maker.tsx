@@ -1,19 +1,16 @@
-import Input from "@/components/form/input/InputField"
-import Select from "@/components/form/Select";
+
 import { useCreateDataMutation, useGetDataQuery } from "@/services/api";
 import { startTop10 } from "@/store/slices/topListGameSlice";
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux";
 import toast from 'react-hot-toast';
-import Label from "@/components/form/Label";
 import { motion, AnimatePresence } from "framer-motion";
+import { useStartTopListGameMutation } from "@/services/topListGameApi";
 
 export default function Top10Maker() {
 
     const [games, setGames] = useState([]);
-    const [selectedGame, setSelectedGame] = useState<number | null>(null);
-
-    const [createData] = useCreateDataMutation();
+    const [createData] = useStartTopListGameMutation();
 
     const dispatch = useDispatch();
     const { data, isLoading, isSuccess } = useGetDataQuery({
@@ -26,20 +23,9 @@ export default function Top10Maker() {
         }
     }, [isSuccess, data]);
 
-
-
-    // const handleGameChange = (value: number) => {
-    //     setSelectedGame(value)
-    // }
-
-
-
     const handleSubmit = async (value: number) => {
         await toast.promise(
-            createData({
-                url: `/api/v1/u/games-list/top-list/${value}/start`,
-                body: {},
-            }).unwrap(),
+            createData(value).unwrap(),
             {
                 loading: "Starting top10 game...",
                 success: "Top10 game started successfully!",

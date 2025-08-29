@@ -3,6 +3,7 @@
 namespace App\Services\GamesListServices\TopList;
 
 use App\DTOs\Game\GameResult\GameResultResponseDTO;
+use App\DTOs\GamesList\TopList\TopListAnswerResponseDTO;
 use App\DTOs\GamesList\TopList\TopListGameDTO;
 use App\DTOs\GamesList\TopList\TopListGameResponseDTO;
 use App\DTOs\GamesList\TopList\TopListItemResponseDTO;
@@ -59,22 +60,25 @@ class TopListGameService implements ITopListGameService
                 'status' => GameStatus::ACTIVE,
                 'start_at' => now(),
             ]);
-            GameEntry::firstOrCreate([
+            $entry = GameEntry::firstOrCreate([
                 'game_instance_id' => $gameInstance->id,
                 'user_id' => $user->id,
             ]);
-            return TopListGameResponseDTO::fromModel($game);
+            $answers = TopListAnswer::with('item', 'item.game')->where('game_entry_id', $entry->id)->get()->map(fn($c) => TopListAnswerResponseDTO::fromModel($c))->toArray();
+            return TopListGameResponseDTO::fromModel($game, $answers, $gameInstance->id);
         });
     }
 
-    public function results(User $user, int $gameId): GameResultResponseDTO
+    public function results(User $user, int $gameInstanceId): GameResultResponseDTO
     {
-        $game = TopListGame::query()->findOrFail($gameId);
-        if ($game->game->instance->status !== GameStatus::FINISHED) {
-            $entry = GameEntry::where('game_instance_id', $game->instance->id)->firstOrFail();
-            $isFinished = $this->checkGameFinished($game,$entry);
+
+        $gameInstance = GameInstance::query()->findOrFail($gameInstanceId);
+        $game = TopListGame::query()->where('game_id', $gameInstance->game_id)->firstOrFail();
+        $entry = GameEntry::where('game_instance_id', $gameInstance->id)->where('user_id', $user->id)->firstOrFail();
+        if ($gameInstance->status !== GameStatus::FINISHED) {
+            $isFinished = $this->checkGameFinished($game, $entry);
             if ($isFinished) {
-                $this->finishGame($user, $game);
+                $this->finishGame($gameInstance, $entry, $game);
             } else {
                 abort(400, "Game is still Active");
             }
@@ -85,63 +89,61 @@ class TopListGameService implements ITopListGameService
         return GameResultResponseDTO::fromModel($result);
     }
 
-    public function cancelGame(User $user, int $gameId): void
+    public function cancelGame(User $user, int $gameInstanceId): void
     {
-        $game = TopListGame::query()->findOrFail($gameId);
-        $this->finishGame($user, $game, GameStatus::CANCELLED);
+        $gameInstance = GameInstance::query()->findOrFail($gameInstanceId);
+        $game = TopListGame::query()->where('game_id', $gameInstance->game_id)->firstOrFail();
+        $entry = GameEntry::where('game_instance_id', $gameInstance->id)->where('user_id', $user->id)->firstOrFail();
+        $this->finishGame($gameInstance, $entry, $game, GameStatus::CANCELLED);
     }
 
-    public function check(User $user, int $gameId, int $objectId): TopListItemResponseDTO
+    public function check(User $user, int $gameInstanceId, int $objectId): TopListAnswerResponseDTO
     {
-        $game = TopListGame::query()->findOrFail($gameId);
-        if ($game->game->instance->status !== GameStatus::ACTIVE) abort(400, "Game is not Active");
-        $entry = GameEntry::where('game_instance_id', $game->instance->id)->firstOrFail();
+        $gameInstance = GameInstance::query()->findOrFail($gameInstanceId);
+        $game = TopListGame::query()->where('game_id', $gameInstance->game_id)->firstOrFail();
+        if ($gameInstance->status !== GameStatus::ACTIVE) abort(400, "Game is not Active");
+        $entry = GameEntry::where('game_instance_id', $gameInstance->id)->where('user_id', $user->id)->firstOrFail();
         $isFinished = $this->checkGameFinished($game, $entry);
         if ($isFinished) {
-            $this->finishGame($user, $game);
+            $this->finishGame($gameInstance, $entry, $game);
             abort(400, "Game is finished");
         }
+
         $item = $game->items()->with('game')->where('object_id', $objectId)->first();
         if ($item) {
-            $answer = TopListAnswer::where('top_list_item_id', $item->id)->first();
+            $answer = TopListAnswer::where('top_list_item_id', $item->id)->where('game_entry_id', $entry->id)->first();
             if ($answer) {
-                abort("Player Already answered");
+                abort(400, "Player Already answered");
             }
         }
 
-        TopListAnswer::create([
+        $answer = TopListAnswer::create([
             'top_list_item_id' => ($item) ? $item->id : null,
             'game_entry_id' => $entry->id,
         ]);
 
-        if (!$item) {
-            abort(400, "Wrong answer!");
-        }
-
         $isFinished = $this->checkGameFinished($game, $entry);
 
         if ($isFinished) {
-            $this->finishGame($user, $game);
+            $this->finishGame($gameInstance, $entry, $game);
         }
-        return TopListItemResponseDTO::fromModel($item);
+        $answer->load('item', 'item.game');
+        return TopListAnswerResponseDTO::fromModel($answer);
     }
 
-    private function finishGame(User $user, TopListGame $game, GameStatus $gameStatus = GameStatus::FINISHED): void
+    private function finishGame(GameInstance $gameInstance, GameEntry $gameEntry, TopListGame $game, GameStatus $gameStatus = GameStatus::FINISHED): void
     {
-        if ($game->game->instance->status === GameStatus::FINISHED) abort(400, "Game is already finished");
+        if ($gameInstance->status === GameStatus::FINISHED) abort(400, "Game is already finished");
 
-        $isWon = $this->evaluateGameResult($game, $game->game->entry);
+        $isWon = $this->evaluateGameResult($game, $gameEntry);
 
-        $game->game->instance->update([
+        $gameInstance->update([
             'status' => $gameStatus->value,
             'end_at' => now()
         ]);
 
         $status = $isWon ? GameResultStatus::WON : GameResultStatus::LOST;
-        $gameEntry = GameEntry::where('user_id', $user->id)
-            ->where('game_instance_id', $game->instance->id)
-            ->firstOrFail();
-        $score = $this->evaluateGameScore($game, $gameEntry);
+        $score = $this->evaluateGameScore($gameInstance, $game, $gameEntry);
         GameResult::updateOrCreate(
             [
                 'game_entry_id' => $gameEntry->id,
@@ -169,13 +171,13 @@ class TopListGameService implements ITopListGameService
         return $wrong >= $game->max_chances || $correct >= $game->size;
     }
 
-    private function evaluateGameScore(TopListGame $game, GameEntry $entry): int
+    private function evaluateGameScore(GameInstance $gameInstance, TopListGame $game, GameEntry $entry): int
     {
         $answers = TopListAnswer::where('game_entry_id', $entry->id);
         $correct = (clone $answers)->whereNotNull('top_list_item_id')->count();
         $size = $game->size;
-        $startAt = $game->game->instance->start_at;
-        $endAt = $game->game->instance->end_at ?? now();
+        $startAt = $gameInstance->start_at;
+        $endAt = $gameInstance->end_at ?? now();
         $completionRate = $correct / $size;
         $preScore = ($completionRate == 1) ? 1000 : (int) round(1000 * pow($completionRate, 3));
         $timeTaken = $endAt->diffInSeconds($startAt);

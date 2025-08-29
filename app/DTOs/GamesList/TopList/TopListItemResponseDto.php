@@ -8,7 +8,7 @@ class TopListItemResponseDTO
 {
     public readonly int $id;
     public readonly int $top_list_game_id;
-    public readonly string $object_id;
+    public readonly int $object_id;
     public readonly int $pos;
     public readonly array $object;
     public readonly string $created_at;
@@ -16,7 +16,7 @@ class TopListItemResponseDTO
     public function __construct(
         int $id,
         int $top_list_game_id,
-        string $object_id,
+        int $object_id,
         int $pos,
         string $created_at,
         string $updated_at,

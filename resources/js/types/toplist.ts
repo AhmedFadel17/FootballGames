@@ -1,11 +1,13 @@
 type TopListGame = {
     id: number;
-    game_instance_id: number;
+    game_id: number;
+    game_instance_id?:number;
     title: string;
     items_type: string;
     size: number;
     max_chances: number;
     items?: TopListItem[];
+    answers?:TopListAnswer[];
     created_at: string;
     updated_at: string;
 }
@@ -28,6 +30,5 @@ type TopListAnswer = {
     id: number;
     top_list_item_id: number;
     game_entry_id: number;
-    created_at: string;
-    updated_at: string;
+    item?: TopListItem | null;
 }
