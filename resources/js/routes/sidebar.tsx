@@ -40,11 +40,11 @@ export const SidebarUserRoutes: SidebarRoute[] = [
     label: "Top List",
     icon: <FaListOl size={18} />,
   },
-  {
-    path: "/games/fantasy",
-    label: "Fantasy League",
-    icon: <FaGamepad size={18} />,
-  },
+  // {
+  //   path: "/games/fantasy",
+  //   label: "Fantasy League",
+  //   icon: <FaGamepad size={18} />,
+  // },
 ];
 
 // =============================
