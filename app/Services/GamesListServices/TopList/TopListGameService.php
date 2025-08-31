@@ -6,10 +6,11 @@ use App\DTOs\Game\GameResult\GameResultResponseDTO;
 use App\DTOs\GamesList\TopList\TopListAnswerResponseDTO;
 use App\DTOs\GamesList\TopList\TopListGameDTO;
 use App\DTOs\GamesList\TopList\TopListGameResponseDTO;
-use App\DTOs\GamesList\TopList\TopListItemResponseDTO;
+use App\Models\Game\Game;
 use App\Models\Game\GameEntry;
 use App\Models\Game\GameInstance;
 use App\Models\Game\GameResult;
+use App\Models\Game\GameType;
 use App\Models\GamesList\TopList\TopListAnswer;
 use App\Models\GamesList\TopList\TopListGame;
 use App\Models\GamesList\TopList\TopListItem;
@@ -17,6 +18,7 @@ use App\Models\User;
 use App\Shared\Enums\GameResultStatus;
 use App\Shared\Enums\GameStatus;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TopListGameService implements ITopListGameService
 {
@@ -29,9 +31,15 @@ class TopListGameService implements ITopListGameService
     public function create(TopListGameDTO $dto): TopListGame
     {
         return DB::transaction(function () use ($dto) {
+            $gameType = GameType::query()->where('slug', 'top-list')->firstOrFail();
+            $game = Game::create([
+                'game_type_id' => $gameType->id,
+                'title'            => $dto->title,
+            ]);
+
             // Create Top List Game
-            $game = TopListGame::create([
-                'game_id' => $dto->gameId,
+            $topListGame = TopListGame::create([
+                'game_id' => $game->id,
                 'title'            => $dto->title,
                 'size'             => $dto->size,
                 'max_chances'      => $dto->maxChances,
@@ -41,13 +49,13 @@ class TopListGameService implements ITopListGameService
             // Insert Items
             foreach ($dto->items as $item) {
                 TopListItem::create([
-                    'top_list_game_id' => $game->id,
+                    'top_list_game_id' => $topListGame->id,
                     'pos'              => $item['pos'],
                     'object_id'        => $item['id'],
                 ]);
             }
 
-            return $game->load('items');
+            return $topListGame->load('items');
         });
     }
 
@@ -113,10 +121,11 @@ class TopListGameService implements ITopListGameService
         if ($item) {
             $answer = TopListAnswer::where('top_list_item_id', $item->id)->where('game_entry_id', $entry->id)->first();
             if ($answer) {
-                abort(400, "Player Already answered");
+                abort(400, "Already answered");
             }
         }
-
+        $l = $game->items()->count();
+        Log::info("item:   $l");
         $answer = TopListAnswer::create([
             'top_list_item_id' => ($item) ? $item->id : null,
             'game_entry_id' => $entry->id,

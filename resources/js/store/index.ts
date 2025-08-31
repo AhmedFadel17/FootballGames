@@ -3,7 +3,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import bingoReducer from "./slices/bingoSlice";
 import authReducer from "./slices/authSlice";
 import topListGameReducer from "./slices/topListGameSlice";
-import adminTop10Reducer from "./slices/admin/adminTop10Slice";
+import adminTopListReducer from "./slices/admin/adminTopListSlice";
 
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
@@ -21,7 +21,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   bingo: bingoReducer,
   toplist:topListGameReducer,
-  adminTop10:adminTop10Reducer,
+  adminTopList:adminTopListReducer,
   [api.reducerPath]: api.reducer,
   [identityApi.reducerPath]: identityApi.reducer,
 

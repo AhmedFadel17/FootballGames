@@ -15,7 +15,14 @@ class CreateGameTypeRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
+            'slug' => [
+                'required',
+                'string',
+                'min:3',
+                'max:10',
+                'regex:/^[a-zA-Z0-9-]+$/',
+            ],
             'description' => 'nullable|string|max:1000',
         ];
     }
-} 
+}

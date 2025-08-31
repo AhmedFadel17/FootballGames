@@ -8,7 +8,7 @@ use App\Shared\Enums\TopListItemstype;
 class TopListGameDTO
 {
     public function __construct(
-        public int $gameId,
+        // public int $gameId,
         public string $title,
         public int $size,
         public int $maxChances,
@@ -23,9 +23,9 @@ class TopListGameDTO
     public static function fromRequest(array $data): self
 {
     return new self(
-        gameId: $data['game_id'],
+        // gameId: $data['game_id'],
         title: $data['title'],
-        size: $data['size'],
+        size: count($data['items']),
         maxChances: $data['max_chances'],
         type: TopListItemstype::from($data['type']),
         items: array_map(fn($item) => [

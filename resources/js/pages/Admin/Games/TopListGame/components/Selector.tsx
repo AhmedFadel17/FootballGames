@@ -1,13 +1,7 @@
-
-
-import Input from '@/components/form/input/InputField';
-import Select from '@/components/form/Select';
-import InputLabel from '@/components/InputLabel';
 import TableTemplate from '@/components/tables/BasicTables/TanBasicTable';
-import { ArrowDownIcon, ArrowUpIcon, CloseIcon } from '@/icons';
 import { useGetDataQuery } from '@/services/api';
 import { useAppDispatch, useAppSelector } from '@/store';
-import { addItem, Top10Item } from '@/store/slices/admin/adminTop10Slice';
+import { addItem, TopListItem } from '@/store/slices/admin/adminTopListSlice';
 import { EditableColumnDef } from '@/types/table';
 import { PaginationState, SortingState } from '@tanstack/react-table';
 import React, { useEffect, useState } from 'react';
@@ -16,8 +10,7 @@ import React, { useEffect, useState } from 'react';
 
 
 export const Selector = () => {
-    const objectUrl = useAppSelector((state) => state.adminTop10.objectUrl);
-    const title = useAppSelector((state) => state.adminTop10.objectType);
+    const {objectUrl,title} = useAppSelector((state) => state.adminTopList);
 
     const dispatch = useAppDispatch();
     const handleItemClick = (v: any) => {
@@ -28,8 +21,8 @@ export const Selector = () => {
     const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
     const [sorting, setSorting] = useState<SortingState>([]);
 
-    const [dataList, setDataList] = useState<Top10Item[]>([]);
-    const columns: EditableColumnDef<Top10Item>[] = [
+    const [dataList, setDataList] = useState<TopListItem[]>([]);
+    const columns: EditableColumnDef<TopListItem>[] = [
         {
             accessorKey: "name", header: "Name", enableSorting: false, size: 2,
             cell: ({ row }) => (
@@ -44,7 +37,6 @@ export const Selector = () => {
 
             ),
         },
-        // { accessorKey: "date_of_birth", header: "DOT", enableEditing: true, enableSorting: false, size: 1 },
     ];
     const { data, isLoading, isSuccess, refetch } = useGetDataQuery({
         url: `/api/v1/admin/${objectUrl}`, params: {
@@ -65,7 +57,7 @@ export const Selector = () => {
             <h2 className="text-2xl font-bold mb-4">Selector</h2>
 
             <div className="overflow-x-auto">
-                <TableTemplate<Top10Item>
+                <TableTemplate<TopListItem>
                     title=""
                     itemName={title || ''}
                     columns={columns}

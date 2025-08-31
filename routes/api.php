@@ -51,6 +51,8 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::prefix('u')->middleware(['role:user,guest'])->group(function () {
         Route::get('game-types', [GameTypeController::class, 'getAllWithGamesList']);
         Route::get('players', [PlayerController::class, 'index']);
+        Route::get('countries', [CountryController::class, 'index']);
+        Route::get('teams', [TeamController::class, 'index']);
 
         Route::prefix('games-list')->group(function () {
             Route::get('bingo/{id}/conditions', [BingoConditionController::class, 'getByGameId']);

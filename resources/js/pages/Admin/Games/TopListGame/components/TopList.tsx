@@ -1,7 +1,7 @@
 import { ArrowDownIcon, ArrowUpIcon, CloseIcon } from '@/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
-import { moveItemUp, moveItemDown, removeItem, resetTop10, Top10Item } from '@/store/slices/admin/adminTop10Slice';
+import { moveItemUp, moveItemDown, removeItem, resetTopList, TopListItem } from '@/store/slices/admin/adminTopListSlice';
 import { useCreateDataMutation } from '@/services/api';
 import toast from 'react-hot-toast';
 
@@ -9,12 +9,12 @@ export const TopList = () => {
   const dispatch = useDispatch();
   const [createItem] = useCreateDataMutation();
 
-  const { items, objectType, title, size, maxChances,gameId } = useSelector((state: RootState) => state.adminTop10);
+  const { items, objectType, title, maxChances } = useSelector((state: RootState) => state.adminTopList);
 
   const handleMoveUp = (id: number) => dispatch(moveItemUp(id));
   const handleMoveDown = (id: number) => dispatch(moveItemDown(id));
   const handleRemoveRow = (id: number) => dispatch(removeItem(id));
-  const handleReset = () => dispatch(resetTop10());
+  const handleReset = () => dispatch(resetTopList());
 
   const handleSubmit = async () => {
     console.log("Submitting data:", items, objectType);
@@ -25,8 +25,6 @@ export const TopList = () => {
             pos: index + 1,
             id: r.id
           })),
-          game_id:gameId,
-          size: size,
           max_chances: maxChances,
           title: title,
           type: objectType
@@ -63,7 +61,7 @@ export const TopList = () => {
                 </td>
               </tr>
             )}
-            {items.map((row: Top10Item, index) => (
+            {items.map((row: TopListItem, index) => (
               <tr key={row.id} className="border-b border-gray-200 hover:bg-gray-100">
                 <td className="py-3 px-6 text-left whitespace-nowrap">{index + 1}</td>
                 <td className="py-3 px-6 text-left">{row.name}</td>

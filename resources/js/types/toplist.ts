@@ -3,7 +3,7 @@ type TopListGame = {
     game_id: number;
     game_instance_id?:number;
     title: string;
-    items_type: string;
+    type: string;
     size: number;
     max_chances: number;
     items?: TopListItem[];

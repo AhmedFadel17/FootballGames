@@ -19,9 +19,7 @@ class CreateTopListGameRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'game_id' => 'required|integer|exists:games,id',
             'title'   => 'required|string|min:1|max:255',
-            'size'    => 'required|integer|min:5|max:20',
             'max_chances'    => 'required|integer|min:1|max:20',
             'type'    => [
                 'required',

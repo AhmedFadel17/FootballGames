@@ -1,16 +1,16 @@
 import PageMeta from "@/components/common/PageMeta";
-import BingoMaker from "./components/Top10Maker";
+import BingoMaker from "./components/TopListMaker";
 import { useAppSelector } from "@/store";
 import TopListGame from "./components/TopListGame";
 
-export default function Top10Page() {
+export default function TopListPage() {
   const isActive = useAppSelector((state) => state.toplist.isActive);
 
   return (
     <>
       <PageMeta
         title="Top 10"
-        description="This is the football top 10 page"
+        description="This is the football top list page"
       />
       <div className="grid grid-cols-12 gap-4 md:gap-6">
         

@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from "framer-motion";
 import { useStartTopListGameMutation } from "@/services/topListGameApi";
 
-export default function Top10Maker() {
+export default function TopListMaker() {
 
     const [games, setGames] = useState([]);
     const [createData] = useStartTopListGameMutation();

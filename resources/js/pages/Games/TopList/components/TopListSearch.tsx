@@ -5,6 +5,8 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { submitAnswer } from "@/store/slices/topListGameSlice";
 import { useCreateDataMutation, useGetDataQuery } from "@/services/api";
 import toast from "react-hot-toast";
+import { pluralize } from "@/utils/stringUtils";
+
 
 export default function TopListSearch() {
   const dispatch = useAppDispatch();
@@ -12,14 +14,15 @@ export default function TopListSearch() {
 
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [results, setResults] = useState<Player[]>([]);
+  const [results, setResults] = useState<any[]>([]);
+  const pluralType = game?.type ? pluralize(game.type) : "";
 
   const { data, isLoading: loading, isSuccess } = useGetDataQuery({
-    url: "/api/v1/u/players",
+    url: `/api/v1/u/${pluralType}`,
     params: {
       search: debouncedQuery,
     },
-  },{skip: debouncedQuery.length < 3});
+  }, { skip: debouncedQuery.length < 3 || !pluralType });
 
   const [createData] = useCreateDataMutation();
 
@@ -72,20 +75,20 @@ export default function TopListSearch() {
           type="search"
           value={query}
           onChange={(e) => handleSearch(e.target.value)}
-          placeholder="Search player..."
+          placeholder={`Search ${game?.type}...`}
           className="pr-10"
         />
         <FaSearch className="absolute right-3 top-3 text-gray-400" />
 
         {results.length > 0 && (
           <ul className="absolute z-10 mt-1 w-full bg-white border rounded shadow max-h-60 overflow-y-auto">
-            {results.map((player) => (
+            {results.map((item) => (
               <li
-                key={player.id}
+                key={item.id}
                 className="px-3 py-2 cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSelect(player.id)}
+                onClick={() => handleSelect(item.id)}
               >
-                {player.name}
+                {item.name}
               </li>
             ))}
           </ul>

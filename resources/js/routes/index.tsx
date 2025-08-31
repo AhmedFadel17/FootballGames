@@ -4,7 +4,7 @@ import UserHome from "@/pages/Dashboard/Home";
 import AdminHome from "@/pages/Admin/Home";
 
 import BingoGame from "@/pages/Games/Bingo";
-import Top10Game from "@/pages/Games/Top10";
+import TopListGame from "@/pages/Games/TopList";
 
 import Competitions from "@/pages/Admin/Core/Competitions";
 import Teams from "@/pages/Admin/Core/Teams";
@@ -20,7 +20,7 @@ import Continents from "@/pages/Admin/Areas/Continents";
 import Countries from "@/pages/Admin/Areas/Countries";
 import GameTypesPage from "@/pages/Admin/Games/GameTypes";
 import GamesListPage from "@/pages/Admin/Games/GamesList";
-import Top10Page from "@/pages/Admin/Games/Top10";
+import TopListPage from "@/pages/Admin/Games/TopListGame";
 
 // =============================
 // 🚀 USER ROUTES
@@ -37,9 +37,9 @@ export const AppUserRoutes: AppRoute[] = [
     element: <BingoGame />,
   },
   {
-    path: "/games/top10",
-    label: "Top 10",
-    element: <Top10Game />,
+    path: "/games/top-list",
+    label: "Top List",
+    element: <TopListGame />,
   },
 
 ];
@@ -74,9 +74,9 @@ export const AppAdminRoutes: AppRoute[] = [
     element: <GamesListPage />,
   },
   {
-    path: "/admin/games/types/top-10",
-    label: "Top 10",
-    element: <Top10Page />,
+    path: "/admin/games/types/top-list",
+    label: "Top List",
+    element: <TopListPage />,
   },
   {
     path: "/admin/competitions",
