@@ -14,6 +14,7 @@ interface IPaginationService
         PaginationDTO $dto,
         string $responseDTOClass,
         array $allowedFilters = [],
-        array $searchableFields = []
+        array $searchableFields = [],
+        ?int $cacheSeconds = null
     ): PaginationResponseDTO;
 }

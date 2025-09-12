@@ -21,8 +21,20 @@ use App\Http\Controllers\GamesList\Bingo\BingoGameController;
 use App\Http\Controllers\GamesList\Bingo\BingoMatchController;
 use App\Http\Controllers\GamesList\TopList\TopListGameController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/test-cache', function () {
+    // لو موجود في الكاش يرجع القيمة
+    if (Cache::has('my_key')) {
+        return 'From Cache: ' . Cache::get('my_key');
+    }
+
+    // لو مش موجود يخزنه لمدة 10 دقايق
+    Cache::put('my_key', 'Hello from Redis!', 600);
+
+    return 'Stored in Cache!';
+});
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');

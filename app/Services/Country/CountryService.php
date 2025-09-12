@@ -23,7 +23,7 @@ class CountryService implements ICountryService
         $query = Country::with('continent');
 
         return $this->_paginationService
-            ->paginate($query, $dto, CountryResponseDTO::class, $allowedFilters, $searchableFields);
+            ->paginate($query, $dto, CountryResponseDTO::class, $allowedFilters, $searchableFields,3600);
     }
 
     public function getAllOptions(): array
