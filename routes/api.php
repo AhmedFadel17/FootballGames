@@ -24,17 +24,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/test-cache', function () {
-    // لو موجود في الكاش يرجع القيمة
-    if (Cache::has('my_key')) {
-        return 'From Cache: ' . Cache::get('my_key');
-    }
 
-    // لو مش موجود يخزنه لمدة 10 دقايق
-    Cache::put('my_key', 'Hello from Redis!', 600);
-
-    return 'Stored in Cache!';
-});
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -62,6 +52,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     //--------------------------------------------------------------
     Route::prefix('u')->middleware(['role:user,guest'])->group(function () {
         Route::get('game-types', [GameTypeController::class, 'getAllWithGamesList']);
+        Route::get('games', [GameController::class,'index']);
         Route::get('players', [PlayerController::class, 'index']);
         Route::get('countries', [CountryController::class, 'index']);
         Route::get('teams', [TeamController::class, 'index']);
