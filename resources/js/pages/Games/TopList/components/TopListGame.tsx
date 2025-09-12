@@ -11,7 +11,7 @@ import { resetTop10 } from "@/store/slices/topListGameSlice";
 
 export default function TopListGame() {
   const dispatch = useAppDispatch();
-  const { id:gameId,game, slots, isActive, isFinished, wrongAnswers } = useAppSelector((state) => state.toplist);
+  const { id: gameId, game, slots, isActive, isFinished, wrongAnswers } = useAppSelector((state) => state.toplist);
 
 
   const [getResults, { data: results, isLoading: isResultsLoading, error: resultsError }] = useTopListGameResultsMutation();
@@ -33,21 +33,24 @@ export default function TopListGame() {
   return (
     <>
       <div className="px-20">
-        <div className="mb-10">
+
+        <div className="border-2 border-primary rounded-lg space-y-4">
+          <div className="p-4 text-center text-secondary bg-primary rounded-t">
+            <h4 className="text-2xl font-[900] ">Top List</h4>
+          </div>
+          <div className="w-full p-4 space-y-4">
+            {slots.map((slot) => (
+              <TopListItemComponent {...slot} />
+            ))}
+          </div>
+ <div className="mb-10">
           {isFinished ?
             <div className="results-container">
               {isResultsLoading && <p>Loading results...</p>}
               {resultsError && <p>Error loading results.</p>}
               {results && (
-                <div className="border-2 rounded border-primary">
-                  <div className="text-center">
-                    <p className="text-2xl font-bold bg-primary rounded-top py-4 text-secondary">
-                      {results.status === 'won' ?
-                        "🎉 Congratulations!"
-                        : "Game Over"
-                      }
-                    </p>
-                  </div>
+                <div className="">
+                  
                   <div className="p-4 text-center">
                     {results.status === 'won' ? (
                       <h2>🎉 Congratulations! You won the game!</h2>
@@ -79,15 +82,7 @@ export default function TopListGame() {
               )}
             </div>
             :
-            <div className="border-2 border-primary rounded-lg space-y-4">
-              <div className="p-4 text-center text-secondary bg-primary rounded-t">
-                <h4 className="text-2xl font-[900] ">Top List</h4>
-              </div>
-              <div className="w-full p-4 space-y-4">
-                {slots.map((slot) => (
-                  <TopListItemComponent {...slot} />
-                ))}
-              </div>
+            <>
               <div className="flex items-center justify-between w-full p-4 mt-10">
                 <div className="flex-1 flex justify-center">
                   <h4 className="font-[500]">{game?.title}</h4>
@@ -104,10 +99,12 @@ export default function TopListGame() {
               <div className="w-full p-4">
                 <TopListSearch />
               </div>
-            </div>
+            </>
           }
 
         </div>
+        </div>
+       
 
 
       </div>
