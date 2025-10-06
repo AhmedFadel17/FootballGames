@@ -21,13 +21,44 @@ import Countries from "@/pages/Admin/Areas/Countries";
 import GameTypesPage from "@/pages/Admin/Games/GameTypes";
 import GamesListPage from "@/pages/Admin/Games/GamesList";
 import TopListPage from "@/pages/Admin/Games/TopListGame";
+import Home from "@/pages/Main/Home";
 
+// =============================
+// 🚀 MAIN ROUTES
+// =============================
+export const MainRoutes: AppRoute[] = [
+  {
+    path: "/",
+    label: "Home",
+    element: <Home />,
+  },
+  {
+    path: "/",
+    label: "Games",
+    element: <Home />,
+  },
+  {
+    path: "/",
+    label: "Fans",
+    element: <Home />,
+  },
+  {
+    path: "/",
+    label: "Contact Us",
+    element: <Home />,
+  },
+  {
+    path: "/",
+    label: "About Us",
+    element: <Home />,
+  },
+];
 // =============================
 // 🚀 USER ROUTES
 // =============================
 export const AppUserRoutes: AppRoute[] = [
   {
-    path: "/",
+    path: "/dashboard",
     label: "Dashboard",
     element: <UserHome />,
   },
@@ -49,7 +80,7 @@ export const AppUserRoutes: AppRoute[] = [
 // =============================
 export const AppAdminRoutes: AppRoute[] = [
   {
-    path: "/",
+    path: "/dashboard",
     label: "Dashboard",
     element: <AdminHome />,
   },

@@ -4,9 +4,10 @@ import SignUp from "@/pages/AuthPages/SignUp";
 import NotFound from "@/pages/OtherPage/NotFound";
 import AppLayout from "@/layouts/AppLayout";
 import { ScrollToTop } from "@/components/common/ScrollToTop";
-import { AppAdminRoutes, AppUserRoutes } from "@/routes"
+import { AppAdminRoutes, AppUserRoutes,MainRoutes } from "@/routes"
 import { Toaster } from "react-hot-toast";
 import { useAppSelector } from "./store";
+import MainLayout from "@/layouts/MainLayout";
 
 export default function App() {
   const userRole = useAppSelector((state) => state.auth.user?.role);
@@ -21,6 +22,12 @@ export default function App() {
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
             {routes.map((route, index) => (
+              <Route key={index} index={index == 0} path={route.path} element={route.element} />
+            ))}
+          </Route>
+
+          <Route element={<MainLayout />}>
+            {MainRoutes.map((route, index) => (
               <Route key={index} index={index == 0} path={route.path} element={route.element} />
             ))}
           </Route>
