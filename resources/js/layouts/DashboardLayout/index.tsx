@@ -1,0 +1,60 @@
+import { SidebarProvider, useSidebar } from "@/context/SidebarContext";
+import { Navigate, Outlet, useNavigate } from "react-router";
+import AppHeader from "@/layouts/DashboardLayout/DashboardHeader";
+import Backdrop from "@/layouts/Shared/Backdrop";
+import AppSidebar from "@/layouts/DashboardLayout/DashboardSidebar";
+import { useAppSelector } from "@/store";
+import { useEffect } from "react";
+import AppFooter from "../Shared/AppFooter";
+
+
+const LayoutContent: React.FC = () => {
+    const { isExpanded, isHovered, isMobileOpen } = useSidebar();
+    const isAuth = useAppSelector((state) => state.auth.isAuthenticated);
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (!isAuth) {
+            navigate('/login');
+            return;
+        }
+    }, [isAuth])
+
+    return (
+        <div className="min-h-screen xl:flex">
+
+            <div>
+                <AppSidebar />
+                <Backdrop />
+            </div>
+            <div
+                className={`flex-1 transition-all duration-300 ease-in-out ${isExpanded || isHovered ? "lg:ml-[290px]" : "lg:ml-[90px]"
+                    } ${isMobileOpen ? "ml-0" : ""}`}
+            >
+                <div className="min-h-screen">
+                    <AppHeader />
+                    <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-10">
+                        <Outlet />
+                    </div>
+                </div>
+
+                <div className="mt-10">
+                    <AppFooter />
+
+                </div>
+
+            </div>
+
+        </div>
+
+    );
+};
+
+const AppLayout: React.FC = () => {
+    return (
+        <SidebarProvider>
+            <LayoutContent />
+        </SidebarProvider>
+    );
+};
+
+export default AppLayout;

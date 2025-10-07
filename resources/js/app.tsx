@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router";
 import SignIn from "@/pages/AuthPages/SignIn";
 import SignUp from "@/pages/AuthPages/SignUp";
 import NotFound from "@/pages/OtherPage/NotFound";
-import AppLayout from "@/layouts/AppLayout";
+import AppLayout from "@/layouts/DashboardLayout";
 import { ScrollToTop } from "@/components/common/ScrollToTop";
 import { AppAdminRoutes, AppUserRoutes,MainRoutes } from "@/routes"
 import { Toaster } from "react-hot-toast";

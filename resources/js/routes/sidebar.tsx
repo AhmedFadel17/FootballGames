@@ -26,8 +26,8 @@ import { VscTypeHierarchy } from "react-icons/vsc";
 // =============================
 export const SidebarUserRoutes: SidebarRoute[] = [
   {
-    path: "/",
-    label: "Dashboard",
+    path: "/dashboard",
+    label: "Home",
     icon: <FaTrophy size={18} />,
   },
   {
@@ -52,7 +52,7 @@ export const SidebarUserRoutes: SidebarRoute[] = [
 // =============================
 export const SidebarAdminRoutes: SidebarRoute[] = [
   {
-    path: "/",
+    path: "/dashboard",
     label: "Home",
     icon: <FaHome size={18} />,
   },

@@ -1,10 +1,5 @@
 import { SidebarProvider, useSidebar } from "@/context/SidebarContext";
 import { Navigate, Outlet, useNavigate } from "react-router";
-import AppHeader from "@/layouts/AppHeader";
-import Backdrop from "@/layouts/Backdrop";
-import AppSidebar from "@/layouts/AppSidebar";
-import { useAppSelector } from "@/store";
-import { useEffect } from "react";
 import MainHeader from "./MainHeader";
 import AppFooter from "../Shared/AppFooter";
 

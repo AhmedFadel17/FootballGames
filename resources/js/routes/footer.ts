@@ -1,5 +1,5 @@
-import {FaHome, FaTshirt, FaExchangeAlt, FaChartLine, FaCog ,FaTrophy, FaUsers,  FaInfoCircle, FaPhone, FaFacebookF, FaInstagram, FaTwitter, FaYoutube, FaRegQuestionCircle, FaClipboardList, FaUserFriends, FaShieldAlt } from "react-icons/fa";
-import { VscActivateBreakpoints,VscGitPullRequestCreate } from "react-icons/vsc";
+import { FaHome, FaTshirt, FaExchangeAlt, FaChartLine, FaCog, FaTrophy, FaUsers, FaInfoCircle, FaPhone, FaFacebookF, FaInstagram, FaTwitter, FaYoutube, FaRegQuestionCircle, FaClipboardList, FaUserFriends, FaShieldAlt } from "react-icons/fa";
+import { VscActivateBreakpoints, VscGitPullRequestCreate } from "react-icons/vsc";
 import { GoLaw } from "react-icons/go";
 import { IoLogoGameControllerB } from "react-icons/io";
 export const footerData = {
@@ -8,20 +8,20 @@ export const footerData = {
 
   links: [
     {
-      title: "Game Info",
+      title: "Games",
       icon: FaClipboardList,
       links: [
-        { title: 'How to Play', path: '/how-to-play' },
-        { title: 'Game Rules', path: '/rules' },
-        { title: 'About Us', path: '/about' },
+        { title: 'Bingo', path: '/games/bingo' },
+        { title: 'Top List', path: 'games/top-list' },
       ]
     },
     {
-      title: "My Account",
+      title: "Quick Links",
       icon: FaUserFriends,
       links: [
         { title: 'Dashboard', path: '/dashboard' },
         { title: 'Register', path: '/register' },
+        { title: 'About Us', path: '/about' },
       ]
     },
     {
@@ -45,9 +45,9 @@ export const footerData = {
   ],
 
   social: [
-    { title: 'Facebook', path: 'https://facebook.com/laligafantasy', icon: FaFacebookF },
-    { title: 'Instagram', path: 'https://instagram.com/laligafantasy', icon: FaInstagram },
-    { title: 'Twitter', path: 'https://twitter.com/laligafantasy', icon: FaTwitter },
-    { title: 'YouTube', path: 'https://youtube.com/laligafantasy', icon: FaYoutube },
+    { title: 'Facebook', path: 'https://facebook.com/footabllgames', icon: FaFacebookF },
+    { title: 'Instagram', path: 'https://instagram.com/footabllgames', icon: FaInstagram },
+    { title: 'Twitter', path: 'https://twitter.com/footabllgames', icon: FaTwitter },
+    { title: 'YouTube', path: 'https://youtube.com/footabllgames', icon: FaYoutube },
   ]
 };

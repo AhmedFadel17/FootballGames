@@ -1,10 +1,42 @@
 import PageMeta from "@/components/common/PageMeta";
 import Button from "@/components/ui/button/Button";
 import { motion } from "framer-motion";
-import { FaFootballBall, FaUsers, FaTrophy } from "react-icons/fa";
+import { FaFootballBall, FaUsers, FaTrophy, FaGamepad, FaFutbol } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { GiSoccerBall } from "react-icons/gi";
+import { GiTrophyCup } from "react-icons/gi";
 
 export default function Home() {
+  const features = [
+    
+    {
+      icon: <FaFutbol size={100}  />,
+
+      slug:"Play",
+      title: "Play Unique Football Games",
+
+      description:
+        "Dive into creative football-inspired games like Bingo and Top List. Every round brings a new challenge and a chance to win.",
+      buttonText: "Explore Games",
+    },
+    {
+      slug:"Compete",
+      icon: <FaGamepad size={100} />,
+
+      title: "Test Your Football Knowledge",
+      description:
+        "Prove your passion and football IQ through exciting challenges. Predict, guess, and score points while learning more about the game you love.",
+      buttonText: "Start Playing",
+    },
+    {
+      icon: <FaTrophy size={100}  />,
+      slug:"Win",
+      title: "Compete and Win Rewards",
+      description:
+        "Climb the leaderboard, challenge your friends, and earn your place among the top players. Every correct move takes you closer to victory!",
+      buttonText: "View Leaderboard",
+    },
+  ];
   return (
     <>
       <PageMeta
@@ -57,10 +89,34 @@ export default function Home() {
           </div>
         </div>
       </div>
-
+{/* [
+              { title: "Games", icon: <GiSoccerBall size={100} /> },
+              { title: "Top List", icon: <GiTrophyCup size={100} /> },
+              { title: "Quick Picks", icon: <FaUsers size={100} /> },
+            ] */}
       {/* Featured Games Section */}
-
-      <div className="py-10 md:py-20 bg-white flex items-center justify-center">
+      <div className="py-20 bg-white">
+        <div className="w-full md:w-8/12 mx-auto px-6">
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {features.map((feature, i) => (
+              <motion.div
+                key={i}
+                whileHover={{ scale: 1.05 }}
+                className="p-6 shadow hover:shadow-lg flex flex-col items-center bg-gray-50"
+              >
+                <div className="mb-4 text-primary">{feature.icon}</div>
+                <h3 className="text-4xl font-bold mb-3 uppercase text-primary">{feature.slug}</h3>
+                {/* <p className="font-bold">{feature.title}</p> */}
+                <p className="text-gray-600 mb-6 leading-relaxed text-center">
+                {feature.description}
+              </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="py-10 md:py-20  bg-gray-200 flex items-center justify-center">
         <div className="w-full md:w-8/12 px-6 md:px-0">
           <div className="grid grid-cols-12 gap-10 items-center">
             <div className="col-span-8 xl:col-span-7">
@@ -102,7 +158,7 @@ export default function Home() {
               <div className="flex items-center gap-6 mt-10">
                 <Link to="/games/bingo">
 
-                <Button>Play Bingo</Button>
+                  <Button>Play Bingo</Button>
                 </Link>
                 <Button variant="outline">
                   Explore All Games
@@ -122,7 +178,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="py-10 md:py-20 bg-gray-200 flex items-center justify-center">
+      <div className="py-10 md:py-20 bg-white flex items-center justify-center">
         <div className="w-full md:w-8/12 px-6 md:px-0">
           <div className="grid grid-cols-12 gap-10 items-center">
             <div className="col-span-8 xl:col-span-7">
@@ -168,7 +224,7 @@ export default function Home() {
 
               <div className="flex items-center gap-6 mt-10">
                 <Link to="/games/top-list">
-                <Button>Play Top List</Button>
+                  <Button>Play Top List</Button>
 
                 </Link>
                 <Button variant="outline">
@@ -189,6 +245,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+
     </>
   );
 }
