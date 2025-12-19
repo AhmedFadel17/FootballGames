@@ -24,7 +24,7 @@ export default function GamesList() {
                         <p className="text-secondary">{description}</p>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-4 py-10 px-4">
+                    <div className="grid md:grid-cols-3 gap-4 py-10 px-4">
                         {games && games.map(({ id, title, description, is_active }: Game, idx: number) => (
                             <Link
                                 to={"/games/" + slug}
