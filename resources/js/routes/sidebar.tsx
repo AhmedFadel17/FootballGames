@@ -20,6 +20,7 @@ import { BiStats, BiWorld } from "react-icons/bi";
 import { SiSecurityscorecard } from "react-icons/si";
 import { IoBarChart, IoGameController } from "react-icons/io5";
 import { VscTypeHierarchy } from "react-icons/vsc";
+import { VscActivateBreakpoints } from "react-icons/vsc";
 
 // =============================
 // 🚀 USER SIDEBAR ROUTES
@@ -39,6 +40,11 @@ export const SidebarUserRoutes: SidebarRoute[] = [
     path: "/games/top-list",
     label: "Top List",
     icon: <FaListOl size={18} />,
+  },
+  {
+    path: "/multi",
+    label: "Multi",
+    icon: <VscActivateBreakpoints size={18} />,
   },
   // {
   //   path: "/games/fantasy",

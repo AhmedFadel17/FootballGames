@@ -4,7 +4,7 @@ import bingoReducer from "./slices/bingoSlice";
 import authReducer from "./slices/authSlice";
 import topListGameReducer from "./slices/topListGameSlice";
 import adminTopListReducer from "./slices/admin/adminTopListSlice";
-
+import roomReducer from "./slices/roomSlice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 import { identityApi } from '@/services/identityApi';
@@ -19,6 +19,7 @@ const persistConfig = {
 };
 const rootReducer = combineReducers({
   auth: authReducer,
+  room:roomReducer,
   bingo: bingoReducer,
   toplist:topListGameReducer,
   adminTopList:adminTopListReducer,

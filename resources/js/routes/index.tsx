@@ -22,6 +22,7 @@ import GameTypesPage from "@/pages/Admin/Games/GameTypes";
 import GamesListPage from "@/pages/Admin/Games/GamesList";
 import TopListPage from "@/pages/Admin/Games/TopListGame";
 import Home from "@/pages/Main/Home";
+import Multi from "@/pages/Dashboard/Multi";
 
 // =============================
 // 🚀 MAIN ROUTES
@@ -72,7 +73,11 @@ export const AppUserRoutes: AppRoute[] = [
     label: "Top List",
     element: <TopListGame />,
   },
-
+{
+    path: "/multi",
+    label: "Multi",
+    element: <Multi />,
+  },
 ];
 
 // =============================
