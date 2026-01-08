@@ -27,13 +27,14 @@ export default function RoomInitializer() {
             </div>
             <div className="p-4 text-center flex items-center justify-center gap-10">
                 {players.map((player, index) => (
-                    <UserProfilePic key={index} user={player?.user} />
+                    <UserProfilePic key={index} user={player?.user} isMe={player?.isMe} />
                 ))}
             </div>
             <div>
                 <p className="bolder text-4xl py-4 text-black">
                     <span className="text-gray-400 pr-2">{activePlayers}</span>
-                    /{totalPlayers}</p>
+                    /{totalPlayers}
+                </p>
 
             </div>
             <div className="p-4 text-center flex items-center justify-center">

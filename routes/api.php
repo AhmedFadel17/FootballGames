@@ -71,6 +71,8 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
             Route::post('top-list/{id}/cancel', [TopListGameController::class, 'cancelGame']);
             Route::get('top-list/{id}/results', [TopListGameController::class, 'gameResults']);
             Route::post('top-list/{id}/check/{objectId}',  [TopListGameController::class, 'check']);
+
+            
         });
     });
 

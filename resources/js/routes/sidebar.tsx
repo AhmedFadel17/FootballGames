@@ -41,6 +41,11 @@ export const SidebarUserRoutes: SidebarRoute[] = [
     label: "Top List",
     icon: <FaListOl size={18} />,
   },
+   {
+    path: "/games/guess-the-player",
+    label: "Guess The Player",
+    icon: <VscActivateBreakpoints size={18} />,
+  },
   {
     path: "/multi",
     label: "Multi",

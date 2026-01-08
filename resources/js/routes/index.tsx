@@ -23,6 +23,7 @@ import GamesListPage from "@/pages/Admin/Games/GamesList";
 import TopListPage from "@/pages/Admin/Games/TopListGame";
 import Home from "@/pages/Main/Home";
 import Multi from "@/pages/Dashboard/Multi";
+import GuessThePlayerPage from "@/pages/Games/GuessThePlayer";
 
 // =============================
 // 🚀 MAIN ROUTES
@@ -73,7 +74,12 @@ export const AppUserRoutes: AppRoute[] = [
     label: "Top List",
     element: <TopListGame />,
   },
-{
+    {
+    path: "/games/guess-the-player",
+    label: "Guess The Player",
+    element: <GuessThePlayerPage />,
+  },
+  {
     path: "/multi",
     label: "Multi",
     element: <Multi />,

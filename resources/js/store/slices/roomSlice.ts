@@ -1,4 +1,6 @@
+import { RoomStatus } from "@/types/room";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
 interface GameUser {
     user: User | null,
     isMe: boolean
@@ -7,13 +9,13 @@ interface RoomState {
     players: GameUser[];
     activePlayers:number,
     totalPlayers: number;
-    isActive: boolean;
+    isActive: RoomStatus;
 }
 
 
 const initialState: RoomState = {
     players: [],
-    isActive: false,
+    isActive: RoomStatus.IDLE,
     activePlayers:1,
     totalPlayers: 4
 };
@@ -27,7 +29,7 @@ const roomSlice = createSlice({
             totalPlayers: number
         }>) => {
             const { user, totalPlayers } = action.payload;
-            state.isActive = true;
+            state.isActive = RoomStatus.ACTIVE;
             state.totalPlayers = totalPlayers;
             const meAsGameUser: GameUser = {
                 user,
@@ -41,7 +43,7 @@ const roomSlice = createSlice({
         },
         endRoom: (state) => {
             state.players = [];
-            state.isActive = false;
+            state.isActive = RoomStatus.IDLE;
             state.totalPlayers = 4;
             state.activePlayers=1;
         },

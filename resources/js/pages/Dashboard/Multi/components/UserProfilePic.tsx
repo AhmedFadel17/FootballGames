@@ -2,9 +2,10 @@ import { motion } from "framer-motion";
 
 interface UserProfilePicProps {
   user?: User | null;
+  isMe?: boolean;
   src?: string;
   name?: string;
-  size?: number; 
+  size?: number;
 }
 
 const pulseVariants = {
@@ -20,10 +21,22 @@ const pulseVariants = {
 };
 
 const UserProfilePic = ({
-  user=null,
+  user = null,
+  isMe = false,
   size = 20,
 }: UserProfilePicProps) => {
-  const borderStyle = !user ? "border-dashed border-gray-300" : "border-transparent";
+  let borderStyle;
+  if (user) {
+    if (isMe) {
+      borderStyle = "border-green-300";
+
+    } else {
+      borderStyle = "border-blue-300";
+
+    }
+  } else {
+    borderStyle = "border-dashed border-gray-300";
+  }
   return (
     <div className="flex flex-col items-center gap-2">
       <div
@@ -49,7 +62,7 @@ const UserProfilePic = ({
           />
         )}
       </div>
-      <p className="font-bold capitalize text-sm">{user?user.username:"...."}</p>
+      <p className="font-bold capitalize text-sm">{user ? user.username : "...."}</p>
     </div>
   );
 };

@@ -25,8 +25,8 @@ export default function MultiMaker() {
         }));
     }
     return (
-        <div className="items-center justify-center text-primary w-full min-h-[20rem] rounded text-center border-2 border-primary">
-            <div className="text-2xl font-bold mb-5 rounded-top py-4 bg-primary text-secondary">
+        <div className="items-center justify-center text-primary w-full min-h-[20rem] text-center">
+            <div className="text-2xl font-bold mb-5 rounded-top py-4">
                 <p className="">Create Multi Game</p>
             </div>
             <div className="p-4">

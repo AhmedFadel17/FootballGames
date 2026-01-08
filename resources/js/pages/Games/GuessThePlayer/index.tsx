@@ -1,13 +1,7 @@
 import PageMeta from "@/components/common/PageMeta";
-import MultiMaker from "./components/MultiMaker";
-import { useAppSelector } from "@/store";
-import RoomInitializer from "./components/RoomInitializer";
-import MultiIndex from "./components/MultiIndex";
-import { RoomStatus } from "@/types/room";
+import GuessThePlayerGrid from "./components/GuessThePlayerGrid";
 
-export default function Multi() {
-    const { isActive } = useAppSelector((state) => state.room);
-
+export default function GuessThePlayerPage() {
     return (
         <>
             <PageMeta
@@ -16,20 +10,21 @@ export default function Multi() {
             />
             <div className="grid grid-cols-12 gap-4 md:gap-6">
                 <div className="col-span-12">
-                    <MultiIndex />
-                    <RoomInitializer />
-                    {isActive === RoomStatus.IDLE && <MultiIndex />}
-                    {isActive === RoomStatus.PENDING && <RoomInitializer />}
-                    {/* {isActive === RoomStatus.ACTIVE && } */}
+                    <GuessThePlayerGrid totalPlayers={4}/>
+
 
                 </div>
                 <div className="col-span-12 space-y-6 xl:col-span-7">
                 </div>
 
                 <div className="col-span-12 xl:col-span-5">
+                    <GuessThePlayerGrid totalPlayers={3}/>
+
                 </div>
 
                 <div className="col-span-12">
+                    <GuessThePlayerGrid totalPlayers={2}/>
+
                 </div>
 
                 <div className="col-span-12 xl:col-span-5">
