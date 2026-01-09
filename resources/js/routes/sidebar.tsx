@@ -32,7 +32,7 @@ export const SidebarUserRoutes: SidebarRoute[] = [
     icon: <FaTrophy size={18} />,
   },
   {
-    path: "/games/bingo",
+    path: "/games/bingo-football",
     label: "Bingo",
     icon: <FaMagic size={18} />,
   },

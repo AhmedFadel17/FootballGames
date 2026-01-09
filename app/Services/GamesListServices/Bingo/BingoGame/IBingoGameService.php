@@ -25,5 +25,5 @@ interface IBingoGameService
     // public function getById(int $id): BingoGameResponseDTO;
     public function nextMatch(User $user,int $gameId): BingoMatchResponseDTO;
     public function results(User $user,int $gameId): GameResultResponseDTO;
-    public function create(User $user,int $game_id, int $size, string $difficulty): BingoGameResponseDTO;
+    public function create(User $user,int $size, string $difficulty): BingoGameResponseDTO;
 }

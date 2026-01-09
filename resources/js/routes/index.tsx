@@ -64,7 +64,7 @@ export const AppUserRoutes: AppRoute[] = [
     element: <UserHome />,
   },
   {
-    path: "/games/bingo",
+    path: "/games/bingo-football",
     label: "Bingo",
     element: <BingoGame />,
   },

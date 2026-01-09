@@ -20,9 +20,7 @@ export default function BingoMaker({ }: BingoMakerProps) {
     const [createData] = useCreateDataMutation();
 
     const dispatch = useDispatch();
-    const { data, isLoading, isSuccess } = useGetDataQuery({
-        url: "/api/v1/u/games?game_type_id=1",
-    });
+
     const gameDiffOptions = [
         {
             value: "easy",
@@ -37,12 +35,6 @@ export default function BingoMaker({ }: BingoMakerProps) {
             label: 'Hard'
         },
     ]
-
-    useEffect(() => {
-        if (isSuccess && data) {
-            setBingoGames(data.map((row: Game) => ({ value: row.id, label: row.title })));
-        }
-    }, [isSuccess, data]);
 
     const handleBingoSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -83,14 +75,6 @@ export default function BingoMaker({ }: BingoMakerProps) {
                 <p className="">Create Bingo</p>
             </div>
             <div className="p-4">
-                <div className="py-2">
-                    <Label htmlFor="" className="text-left">
-                        <span >
-                            Game Type
-                        </span>
-                    </Label>
-                    <Select options={bingoGames} onChange={(value) => handleBingoGameChange(value)} placeholder="Select Your Game" />
-                </div>
                 <div className="py-2">
                     <Label htmlFor="" className="text-left">
                         <span >

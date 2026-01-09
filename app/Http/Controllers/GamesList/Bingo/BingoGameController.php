@@ -57,7 +57,7 @@ class BingoGameController extends Controller
     {
         $user = $request->user();
         $dto = $request->validated();
-        $bingoGame = $this->_service->create($user, $dto["game_id"], $dto["size"], $dto["difficulty"]);
+        $bingoGame = $this->_service->create($user, $dto["size"], $dto["difficulty"]);
         return response()->json($bingoGame, 201);
     }
 }

@@ -14,7 +14,7 @@ class GameFilterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'game_type_id' => 'nullable|integer|exists:game_types,id',
+            'slug' => 'nullable|string|exists:games,slug',
         ];
     }
 } 

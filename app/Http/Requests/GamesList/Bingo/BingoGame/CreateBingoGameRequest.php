@@ -16,7 +16,6 @@ class CreateBingoGameRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'game_id' => 'required|integer|exists:games,id',
             'size' => 'required|integer|min:3|max:5',
             'difficulty' => [
                 'required',

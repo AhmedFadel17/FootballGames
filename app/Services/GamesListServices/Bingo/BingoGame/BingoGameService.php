@@ -13,6 +13,7 @@ use App\Models\Core\Country;
 use App\Models\Core\Player;
 use App\Models\Core\PlayerTeamPeriod;
 use App\Models\Core\Team;
+use App\Models\Game\Game;
 use App\Models\Game\GameEntry;
 use App\Models\Game\GameInstance;
 use App\Models\Game\GameResult;
@@ -38,6 +39,7 @@ class BingoGameService implements IBingoGameService
 
 
     const ANSWERS_SIZE = 40;
+    const SLUG='bingo-football';
     public function __construct(
         private readonly IPaginationService $_paginationService,
         private readonly IBingoMatchService $_matcherService,
@@ -126,8 +128,10 @@ class BingoGameService implements IBingoGameService
         $this->finishGame($user, $bingoGame, GameStatus::CANCELLED);
     }
 
-    public function create(User $user, int $game_id, int $size, string $difficulty): BingoGameResponseDTO
+    public function create(User $user, int $size, string $difficulty): BingoGameResponseDTO
     {
+        $game=Game::where('slug',$this::SLUG)->firstOr();
+        $game_id=$game->id;
         $gameInstance = GameInstance::create([
             'game_id' => $game_id,
             'status' => GameStatus::ACTIVE,
