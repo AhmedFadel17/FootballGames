@@ -41,7 +41,7 @@ export const SidebarUserRoutes: SidebarRoute[] = [
     label: "Top List",
     icon: <FaListOl size={18} />,
   },
-   {
+  {
     path: "/games/guess-the-player",
     label: "Guess The Player",
     icon: <VscActivateBreakpoints size={18} />,
@@ -68,21 +68,9 @@ export const SidebarAdminRoutes: SidebarRoute[] = [
     icon: <FaHome size={18} />,
   },
   {
-    path: "#",
     label: "Games",
+    path: "/admin/games",
     icon: <IoGameController size={18} />,
-    subItems: [
-      {
-        path: "/admin/games/types",
-        label: "Game Types",
-        icon: <VscTypeHierarchy size={18} />,
-      },
-      {
-        path: "/admin/games/list",
-        label: "Games List",
-        icon: <FaThList size={18} />,
-      }
-    ]
   },
   {
     path: "#",

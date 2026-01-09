@@ -5,30 +5,23 @@ import { useGetDataQuery } from "@/services/api";
 import { useEffect, useState } from "react";
 
 const columns: EditableColumnDef<Game>[] = [
-    { accessorKey: "title", header: "Title", enableEditing: true, enableSorting: false, size: 1 },
-    { accessorKey: "type", header: "Type",  enableSorting: false, size: 1},
+    { accessorKey: "name", header: "Name", enableEditing: true, enableSorting: false, size: 1 },
+    { accessorKey: "slug", header: "Slug", enableEditing: true, enableSorting: false, size: 1 },
+    { accessorKey: "min_players", header: "Min Players", enableEditing: true, enableSorting: false, size: 1 },
+    { accessorKey: "max_players", header: "Max Players", enableEditing: true, enableSorting: false, size: 1 },
     { accessorKey: "description", header: "Description", enableEditing: true, enableSorting: false, size: 2 },
 
 
 ];
 
-
+const fields = [
+    { name: "name", label: "Name", type: 'text' },
+    { name: "slug", label: "Slug", type: 'text' },
+    { name: "min_players", label: "Min Players", type:"number" },
+    { name: "max_players", label: "Max Players", type:"number" },
+    { name: "description", label: "Description",type:"text" },
+]
 export default function GamesListTable() {
-    const [fields, setFields] = useState<any>([]);
-    const { data, isLoading, isSuccess } = useGetDataQuery({
-        url: "/api/v1/admin/game-types",
-    });
-
-    useEffect(() => {
-        if (isSuccess && data) {
-            let typesOptions = data.map((row: GameType) => ({ value: row.id, label: row.name }));
-            setFields([
-                { name: "title", label: "Title", type: 'text' },
-                { name: "description", label: "Description" },
-                { name: "game_type_id", label: "Game Type", type: "select", options: typesOptions },
-            ])
-        }
-    }, [isSuccess, data]);
     return (
         <GenericTable<Game>
             title="Games"

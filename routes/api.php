@@ -15,7 +15,6 @@ use App\Http\Controllers\Core\SeasonController;
 use App\Http\Controllers\Core\TeamController;
 use App\Http\Controllers\Core\TransferController;
 use App\Http\Controllers\Game\GameController;
-use App\Http\Controllers\Game\GameTypeController;
 use App\Http\Controllers\GamesList\Bingo\BingoConditionController;
 use App\Http\Controllers\GamesList\Bingo\BingoGameController;
 use App\Http\Controllers\GamesList\Bingo\BingoMatchController;
@@ -51,7 +50,6 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     //-----------------------------User-----------------------------
     //--------------------------------------------------------------
     Route::prefix('u')->middleware(['role:user,guest'])->group(function () {
-        Route::get('game-types', [GameTypeController::class, 'getAllWithGamesList']);
         Route::get('games', [GameController::class,'index']);
         Route::get('players', [PlayerController::class, 'index']);
         Route::get('countries', [CountryController::class, 'index']);
@@ -80,7 +78,6 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     //-----------------------------Admin-----------------------------
     //--------------------------------------------------------------
     Route::prefix('admin')->middleware(['role:admin'])->group(function () {
-        Route::apiResource('game-types', GameTypeController::class);
         Route::apiResource('games', GameController::class);
         Route::prefix('games-list')->group(function () {
             Route::apiResource('top-list', TopListGameController::class);

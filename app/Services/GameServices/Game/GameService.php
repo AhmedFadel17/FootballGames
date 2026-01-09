@@ -7,6 +7,7 @@ use App\Services\Pagination\IPaginationService;
 use App\DTOs\Game\Game\GameDTO;
 use App\DTOs\Game\Game\GameResponseDTO;
 use App\DTOs\Pagination\PaginationDTO;
+use App\Resources\GameStructure\Game\GameResource;
 
 class GameService implements IGameService
 {
@@ -17,34 +18,29 @@ class GameService implements IGameService
     public function getAll(array $dto): array
     {
         $query = Game::query();
-
-        if (!empty($dto['game_type_id'])) {
-            $query->where('game_type_id', $dto['game_type_id']);
-        }
-
-        return $query->with('type')->get()
-            ->map(fn($game) => GameResponseDTO::fromModel($game))
+        return $query->get()
+            ->map(fn($game) => GameResource::make($game))
             ->all();
     }
 
 
-    public function getById(int $id): GameResponseDTO
+    public function getById(int $id): GameResource
     {
         $game = Game::findOrFail($id);
-        return GameResponseDTO::fromModel($game);
+        return GameResource::make($game);
     }
 
-    public function create(GameDTO $dto): GameResponseDTO
+    public function create(GameDTO $dto): GameResource
     {
         $game = Game::create($dto->toArray());
-        return GameResponseDTO::fromModel($game);
+        return GameResource::make($game);
     }
 
-    public function update(int $id, GameDTO $dto): GameResponseDTO
+    public function update(int $id, GameDTO $dto): GameResource
     {
         $game = Game::findOrFail($id);
         $game->update($dto->toArray());
-        return GameResponseDTO::fromModel($game);
+        return GameResource::make($game);
     }
 
     public function delete(int $id): void

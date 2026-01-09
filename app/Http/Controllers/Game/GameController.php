@@ -29,7 +29,7 @@ class GameController extends Controller
 
     public function store(CreateGameRequest $request): JsonResponse
     {
-        $dto = new GameDTO($request->validated());
+        $dto = GameDTO::fromRequest($request);
         $game = $this->_service->create($dto);
         return response()->json($game, 201);
     }
@@ -42,7 +42,7 @@ class GameController extends Controller
 
     public function update(UpdateGameRequest $request, $id): JsonResponse
     {
-        $dto = new GameDTO($request->validated());
+        $dto = GameDTO::fromRequest($request);
         $game = $this->_service->update($id, $dto);
         return response()->json($game);
     }

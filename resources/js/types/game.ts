@@ -1,17 +1,11 @@
-type GameType = {
-    id: number;
-    slug: string,
-    name: string;
-    description: string;
-    games?: Game[]
-}
 type Game = {
     id: number;
-    title: string;
+    name: string;
+    slug:string;
     description: string;
+    min_players:number;
+    max_players:number;
     is_active: boolean;
-    game_type_id: number;
-    type?: string;
 }
 
 type GameResult = {

@@ -14,10 +14,24 @@ class CreateGameRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string|max:1000',
-            'game_type_id' => 'required|integer|exists:game_types,id',
+            'name' => 'required|string|max:255|unique:games,name',
+            'description' => 'required|string|max:1000',
+            'slug' => [
+                'required',
+                'string',
+                'min:3',
+                'max:50',
+                'alpha_dash',
+                'unique:games,slug',
+            ],
+            'min_players' => 'required|integer|min:1|max:100',
+            'max_players' => [
+                'required',
+                'integer',
+                'max:100',
+                'gte:min_players',
+            ],
+            'default_config' => 'nullable|array',
         ];
     }
-} 
-
+}

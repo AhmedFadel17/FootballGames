@@ -18,7 +18,6 @@ import TeamStats from "@/pages/Admin/Statistics/TeamsStats";
 
 import Continents from "@/pages/Admin/Areas/Continents";
 import Countries from "@/pages/Admin/Areas/Countries";
-import GameTypesPage from "@/pages/Admin/Games/GameTypes";
 import GamesListPage from "@/pages/Admin/Games/GamesList";
 import TopListPage from "@/pages/Admin/Games/TopListGame";
 import Home from "@/pages/Main/Home";
@@ -106,12 +105,7 @@ export const AppAdminRoutes: AppRoute[] = [
     element: <Countries />,
   },
   {
-    path: "/admin/games/types",
-    label: "Game Types",
-    element: <GameTypesPage />,
-  },
-  {
-    path: "/admin/games/list",
+    path: "/admin/games",
     label: "Games List",
     element: <GamesListPage />,
   },
