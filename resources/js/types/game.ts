@@ -15,3 +15,9 @@ type GameResult = {
     rank: number;
     status: "won" | "lost" | "playing";
 }
+
+type GameConfig = {
+    route: string;
+    sliceName: string;
+    displayName: string;
+}

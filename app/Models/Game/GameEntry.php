@@ -13,11 +13,11 @@ class GameEntry extends Model
     protected $fillable = ['user_id', 'game_instance_id'];
     public function instance(): BelongsTo
     {
-        return $this->belongsTo(GameInstance::class);
+        return $this->belongsTo(GameInstance::class,'game_instance_id');
     }
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'user_id');
     }
 }

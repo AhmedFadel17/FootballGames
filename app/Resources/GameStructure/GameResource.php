@@ -1,5 +1,5 @@
 <?php
-namespace App\Resources\GameStructure\Game;
+namespace App\Resources\GameStructure;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 

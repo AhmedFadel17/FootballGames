@@ -2,6 +2,7 @@ import '../css/app.css';
 import './bootstrap';
 import "swiper/swiper-bundle.css";
 import "flatpickr/dist/flatpickr.css";
+import './lib/echo';
 import { createRoot } from 'react-dom/client';
 import { StrictMode, useEffect, useState } from "react";
 import { ThemeProvider } from "@/context/ThemeContext";

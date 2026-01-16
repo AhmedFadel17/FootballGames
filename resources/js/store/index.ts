@@ -4,6 +4,8 @@ import bingoReducer from "./slices/bingoSlice";
 import authReducer from "./slices/authSlice";
 import topListGameReducer from "./slices/topListGameSlice";
 import adminTopListReducer from "./slices/admin/adminTopListSlice";
+import guessThePlayerReducer from "./slices/games/geussThePlayerSlice";
+
 import roomReducer from "./slices/roomSlice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
@@ -19,10 +21,11 @@ const persistConfig = {
 };
 const rootReducer = combineReducers({
   auth: authReducer,
-  room:roomReducer,
+  room: roomReducer,
   bingo: bingoReducer,
-  toplist:topListGameReducer,
-  adminTopList:adminTopListReducer,
+  guessThePlayer: guessThePlayerReducer,
+  toplist: topListGameReducer,
+  adminTopList: adminTopListReducer,
   [api.reducerPath]: api.reducer,
   [identityApi.reducerPath]: identityApi.reducer,
 
@@ -35,9 +38,9 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: false,
     })
-    .concat(api.middleware)
-    .concat(identityApi.middleware)
-    .concat(rtkQueryErrorLogger)
+      .concat(api.middleware)
+      .concat(identityApi.middleware)
+      .concat(rtkQueryErrorLogger)
 });
 
 export const persistor = persistStore(store);

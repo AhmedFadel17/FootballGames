@@ -3,7 +3,7 @@
 namespace App\Services\GameServices\Game;
 
 use App\DTOs\Game\Game\GameDTO;
-use App\Resources\GameStructure\Game\GameResource;
+use App\Resources\GameStructure\GameResource;
 
 interface IGameService
 {

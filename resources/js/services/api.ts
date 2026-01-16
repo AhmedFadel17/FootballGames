@@ -54,6 +54,7 @@ export const api = createApi({
 
 export const {
   useGetDataQuery,
+  useLazyGetDataQuery,
   useDeleteByIdMutation,
   useUpdateByIdMutation,
   useCreateDataMutation,

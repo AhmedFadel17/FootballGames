@@ -1,13 +1,19 @@
+import { configureEcho } from '@laravel/echo-react';
+
+configureEcho({
+  broadcaster: 'reverb',
+});
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 import SignIn from "@/pages/AuthPages/SignIn";
 import SignUp from "@/pages/AuthPages/SignUp";
 import NotFound from "@/pages/OtherPage/NotFound";
 import AppLayout from "@/layouts/DashboardLayout";
 import { ScrollToTop } from "@/components/common/ScrollToTop";
-import { AppAdminRoutes, AppUserRoutes,MainRoutes } from "@/routes"
+import { AppAdminRoutes, AppUserRoutes, GamesRoutes, MainRoutes } from "@/routes"
 import { Toaster } from "react-hot-toast";
 import { useAppSelector } from "./store";
 import MainLayout from "@/layouts/MainLayout";
+import GameLayout from './layouts/GameLayout';
 
 export default function App() {
   const userRole = useAppSelector((state) => state.auth.user?.role);
@@ -24,6 +30,13 @@ export default function App() {
             {routes.map((route, index) => (
               <Route key={index} index={index == 0} path={route.path} element={route.element} />
             ))}
+            {userRole != "admin" &&
+              <Route element={<GameLayout />}>
+                {GamesRoutes.map((route, index) => (
+                  <Route key={index} index={index == 0} path={route.path} element={route.element} />
+                ))}
+              </Route>
+            }
           </Route>
 
           <Route element={<MainLayout />}>

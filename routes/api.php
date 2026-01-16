@@ -18,8 +18,10 @@ use App\Http\Controllers\Game\GameController;
 use App\Http\Controllers\GamesList\Bingo\BingoConditionController;
 use App\Http\Controllers\GamesList\Bingo\BingoGameController;
 use App\Http\Controllers\GamesList\Bingo\BingoMatchController;
+use App\Http\Controllers\GamesList\GuessThePlayerController;
 use App\Http\Controllers\GamesList\TopList\TopListGameController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
@@ -27,7 +29,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
-
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
@@ -50,7 +52,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     //-----------------------------User-----------------------------
     //--------------------------------------------------------------
     Route::prefix('u')->middleware(['role:user,guest'])->group(function () {
-        Route::get('games', [GameController::class,'index']);
+        Route::get('games', [GameController::class, 'index']);
         Route::get('players', [PlayerController::class, 'index']);
         Route::get('countries', [CountryController::class, 'index']);
         Route::get('teams', [TeamController::class, 'index']);
@@ -70,7 +72,13 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
             Route::get('top-list/{id}/results', [TopListGameController::class, 'gameResults']);
             Route::post('top-list/{id}/check/{objectId}',  [TopListGameController::class, 'check']);
 
-            
+            Route::prefix('guess-the-player')->group(function () {
+                Route::get('instance/{room_id}', [GuessThePlayerController::class, 'getByInstanceId']);
+                Route::get('game/{id}', [GuessThePlayerController::class, 'getById']);
+                Route::post('create', [GuessThePlayerController::class, 'create']);
+                Route::post('join', [GuessThePlayerController::class, 'join']);
+                Route::post('join-with-code', [GuessThePlayerController::class, 'joinWithCode']);
+            });
         });
     });
 

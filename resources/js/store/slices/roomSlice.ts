@@ -1,79 +1,53 @@
-import { RoomStatus } from "@/types/room";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface GameUser {
-    user: User | null,
-    isMe: boolean
-}
 interface RoomState {
-    players: GameUser[];
-    activePlayers:number,
-    totalPlayers: number;
-    isActive: RoomStatus;
+    currentInstance: GameInstance | null;
+    onlineUsers: User[];
+    isLoading: boolean;
+    game: GameConfig | null;
 }
-
 
 const initialState: RoomState = {
-    players: [],
-    isActive: RoomStatus.IDLE,
-    activePlayers:1,
-    totalPlayers: 4
+    currentInstance: null,
+    onlineUsers: [],
+    isLoading: false,
+    game: null
 };
 
 const roomSlice = createSlice({
-    name: "room",
+    name: 'room',
     initialState,
     reducers: {
-        startRoom: (state, action: PayloadAction<{
-            user: User,
-            totalPlayers: number
-        }>) => {
-            const { user, totalPlayers } = action.payload;
-            state.isActive = RoomStatus.ACTIVE;
-            state.totalPlayers = totalPlayers;
-            const meAsGameUser: GameUser = {
-                user,
-                isMe: true
-            };
-
-            state.players = [
-                meAsGameUser,
-                ...Array(totalPlayers - 1).fill(null)
-            ];
+        setRoom: (state, action: PayloadAction<{ instance: GameInstance, game: GameConfig }>) => {
+            state.currentInstance = action.payload.instance;
+            state.game = action.payload.game;
         },
-        endRoom: (state) => {
-            state.players = [];
-            state.isActive = RoomStatus.IDLE;
-            state.totalPlayers = 4;
-            state.activePlayers=1;
+        setOnlineUsers: (state, action: PayloadAction<User[]>) => {
+            state.onlineUsers = action.payload;
         },
-        // setPlayers: (state, action: PayloadAction<User[]>) => {
-        //     state.players = action.payload;
-        // },
+        userJoined: (state, action: PayloadAction<User>) => {
+            if (!state.onlineUsers.find(u => u.id === action.payload.id)) {
+                state.onlineUsers.push(action.payload);
+            }
+        },
+        userLeft: (state, action: PayloadAction<number>) => {
+            state.onlineUsers = state.onlineUsers.filter(u => u.id !== action.payload);
+        },
+        startGame: (state, action: PayloadAction<any>) => {
+            if (state.currentInstance == null) return
+            state.currentInstance.status = 'active';
+        },
+        resetRoom: () => initialState,
     },
-    // extraReducers: (builder) => {
-    //     builder
-    //         .addMatcher(
-    //             bingoApi.endpoints.createBingoGame.matchFulfilled,
-    //             (state, { payload }) => {
-    //                 state.bingoGame = payload;
-    //                 state.isActive = true;
-    //             }
-    //         )
-    //         .addMatcher(
-    //             bingoApi.endpoints.createBingoGame.matchRejected,
-    //             (state) => {
-    //                 state.bingoGame = null;
-    //                 state.isActive = false;
-    //             }
-    //         );
-    // },
 });
 
 export const {
-    startRoom,
-    // setPlayers,
-    endRoom
+    setRoom,
+    setOnlineUsers,
+    userJoined,
+    userLeft,
+    startGame,
+    resetRoom
 } = roomSlice.actions;
 
 export default roomSlice.reducer;

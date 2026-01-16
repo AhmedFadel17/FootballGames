@@ -63,6 +63,11 @@ export const AppUserRoutes: AppRoute[] = [
     label: "Dashboard",
     element: <UserHome />,
   },
+];
+// =============================
+// 🚀 GAMES ROUTES
+// =============================
+export const GamesRoutes: AppRoute[] = [
   {
     path: "/games/bingo-football",
     label: "Bingo",
@@ -79,12 +84,11 @@ export const AppUserRoutes: AppRoute[] = [
     element: <GuessThePlayerPage />,
   },
   {
-    path: "/multi",
-    label: "Multi",
+    path: "/lobby",
+    label: "Lobby",
     element: <Multi />,
   },
 ];
-
 // =============================
 // 🚀 ADMIN ROUTES
 // =============================

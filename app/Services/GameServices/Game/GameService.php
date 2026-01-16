@@ -7,7 +7,7 @@ use App\Services\Pagination\IPaginationService;
 use App\DTOs\Game\Game\GameDTO;
 use App\DTOs\Game\Game\GameResponseDTO;
 use App\DTOs\Pagination\PaginationDTO;
-use App\Resources\GameStructure\Game\GameResource;
+use App\Resources\GameStructure\GameResource;
 
 class GameService implements IGameService
 {
