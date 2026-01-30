@@ -4,6 +4,7 @@ namespace App\Services\GamesListServices\GuessThePlayer;
 
 use App\DTOs\GamesList\GuessThePlayer\CreateGuessThePlayerGameDto;
 use App\DTOs\GamesList\GuessThePlayer\JoinGuessThePlayerGameDto;
+use App\Events\GameActionEvent;
 use App\Events\GameStartedEvent;
 use App\Models\Core\Player;
 use App\Models\Game\Game;
@@ -124,6 +125,27 @@ class GuessThePlayerGameService implements IGuessThePlayerGameService
     {
         $guessThePlayerGame = GuessThePlayerGame::findOrFail($id);
         return GuessThePlayerRescource::make($guessThePlayerGame->load(['instance.entries.user', 'assignments.entry.user', 'assignments.player.country']));
+    }
+
+    public function submitAnswer(User $user, $assignmentId, $answerId): bool
+    {
+        $assignment = GuessThePlayerGameAssignment::with('player')->findOrFail($assignmentId);
+        if ($assignment->game->instance->status !== GameStatus::ACTIVE) {
+            abort(400, "Game is not active");
+        }
+        if ($assignment->target_player_id === $answerId) {
+            $assignment->update(['is_solved' => true, 'solved_at' => now()]);
+            broadcast(new GameActionEvent(
+                $assignment->game->game_instance_id,
+                'assignment.solved',
+                ['assignment' => $assignment->load('player')]
+            ));
+            return true;
+        } else {
+        broadcast(new GameStartedEvent($assignment->game->game_instance_id));
+
+            abort(400, "wrong answer");
+        }
     }
     private function generateUniqueRoomCode(): string
     {

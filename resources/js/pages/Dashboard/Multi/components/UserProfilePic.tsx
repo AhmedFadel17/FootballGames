@@ -3,8 +3,7 @@ import { motion } from "framer-motion";
 interface UserProfilePicProps {
   user?: User | null;
   isMe?: boolean;
-  src?: string;
-  name?: string;
+  hasName?: boolean;
   size?: number;
 }
 
@@ -24,6 +23,7 @@ const UserProfilePic = ({
   user = null,
   isMe = false,
   size = 20,
+  hasName = true
 }: UserProfilePicProps) => {
   let borderStyle;
   if (user) {
@@ -62,7 +62,9 @@ const UserProfilePic = ({
           />
         )}
       </div>
-      <p className="font-bold capitalize text-sm">{user ? user.username : "...."}</p>
+      {hasName &&
+        <p className="font-bold capitalize text-sm">{user ? user.username : "...."}</p>
+      }
     </div>
   );
 };

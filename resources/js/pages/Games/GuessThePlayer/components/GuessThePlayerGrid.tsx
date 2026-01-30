@@ -27,7 +27,7 @@ export default function GuessThePlayerGrid({}: GuessThePlayerGridProps) {
 
   return (
     <div className="border-4 border p-4 rounded border-primary">
-      <div className="grid grid-cols-2 gap-5 min-h-[30rem]">
+      <div className="grid grid-cols-2 gap-5 ">
         {sortedAssignments.map((assignment, index) => {
           return (
             <GuessThePlayerCard
@@ -36,6 +36,7 @@ export default function GuessThePlayerGrid({}: GuessThePlayerGridProps) {
               player={assignment.player}
               user={assignment.entry?.user || null}
               isMe={assignment.is_me}
+              assignmentId={assignment.id}
             />
           );
         })}

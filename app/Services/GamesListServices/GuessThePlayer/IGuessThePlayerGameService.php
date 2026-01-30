@@ -15,6 +15,8 @@ interface IGuessThePlayerGameService
     public function join(User $user) : GuessThePlayerRescource;
     public function getByInstanceId(User $user,$instanceId) : GuessThePlayerRescource;
     public function getById(User $user,$id) : GuessThePlayerRescource;
+    public function submitAnswer(User $user,$assignmentId,$answerId) : bool;
+    // public function askPlayer(User $user,$assignmentId) : GuessThePlayerRescource;
 
 
 }

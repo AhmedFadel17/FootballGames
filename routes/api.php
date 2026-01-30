@@ -78,6 +78,9 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
                 Route::post('create', [GuessThePlayerController::class, 'create']);
                 Route::post('join', [GuessThePlayerController::class, 'join']);
                 Route::post('join-with-code', [GuessThePlayerController::class, 'joinWithCode']);
+                Route::post('assignments/{assignment_id}/submit', [GuessThePlayerController::class, 'submitAnswer']);
+                Route::post('assignments/{assignment_id}/ask', [GuessThePlayerController::class, 'askPlayer']);
+
             });
         });
     });

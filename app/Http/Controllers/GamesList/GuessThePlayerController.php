@@ -69,4 +69,11 @@ class GuessThePlayerController extends Controller
         $bingoGame = $this->_service->joinWithCode($user, $dto);
         return response()->json($bingoGame, 201);
     }
+
+    public function submitAnswer(Request $request,$assignmentId): JsonResponse
+    {
+        $user = $request->user();
+        $answer = $this->_service->submitAnswer($user,$assignmentId,(int)$request->answer_id);
+        return response()->json($answer, 201);
+    }
 }

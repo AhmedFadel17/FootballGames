@@ -28,6 +28,26 @@ const guessThePlayerSlice = createSlice({
       state.game = action.payload;
       state.isActive = true;
     },
+    solveAssignment: (state, action: PayloadAction<GuessThePlayerGameAssignment>) => {
+      if (state.game && state.game.assignments) {
+        const index = state.game.assignments.findIndex(
+          (a) => a.id === action.payload.id
+        );
+
+        if (index !== -1) {
+          state.game.assignments[index] = {
+            ...state.game.assignments[index],
+            ...action.payload,
+            is_solved: true,
+          };
+        }
+      }
+
+      const allSolved = state.game?.assignments.every(a => a.is_solved);
+      if (allSolved) {
+        state.isFinished = true;
+      }
+    },
     resetGame: (state) => {
       state.game = null;
       state.isActive = false;
@@ -44,6 +64,7 @@ export const {
   setGameDetails,
   startGame,
   resetGame,
+  solveAssignment,
   finishGame
 } = guessThePlayerSlice.actions;
 
