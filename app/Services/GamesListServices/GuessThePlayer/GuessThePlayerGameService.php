@@ -52,13 +52,11 @@ class GuessThePlayerGameService implements IGuessThePlayerGameService
 
     public function join(User $user): GuessThePlayerRescource
     {
-        $availableInstance = GameInstance::whereHas('game', function ($q) {
-            $q->where('slug', self::SLUG);
-        })
+        $availableInstance = GameInstance::whereHas('game', fn($q) => $q->where('slug', self::SLUG))
             ->where('status', GameStatus::PENDING)
+            ->where('created_at', '>=', now()->subMinutes(10)) 
             ->whereNotNull('room_code')
-            ->withCount('entries')
-            ->havingRaw('entries_count < max_players')
+            ->whereHas('entries', function ($q) {}, '<', DB::raw('max_players'))
             ->first();
         if (!$availableInstance) {
             throw new Exception("No available rooms found. Try creating one!");
@@ -142,7 +140,7 @@ class GuessThePlayerGameService implements IGuessThePlayerGameService
             ));
             return true;
         } else {
-        broadcast(new GameStartedEvent($assignment->game->game_instance_id));
+            broadcast(new GameStartedEvent($assignment->game->game_instance_id));
 
             abort(400, "wrong answer");
         }

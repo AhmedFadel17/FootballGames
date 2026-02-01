@@ -66,7 +66,18 @@ export default function GuessThePlayerMaker() {
                 success: "Game joined successfully!",
             }
         ).then((newGame) => {
-            dispatch(startGame(newGame));
+            if (newGame?.game_instance) {
+                dispatch(setGameDetails(newGame));
+                
+                dispatch(setRoom({
+                    instance: newGame.game_instance,
+                    game: guessThePlayerConfig
+                }));
+                
+                navigate(`/lobby`);
+            } else {
+                toast.error("No available rooms now...");
+            }
         });
     }
 
