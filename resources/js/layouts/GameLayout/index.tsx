@@ -1,20 +1,24 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { connectEcho } from "@/lib/echo";
 import { useAppSelector, useAppDispatch } from "@/store";
 import { setOnlineUsers, userJoined, userLeft, startGame } from "@/store/slices/roomSlice";
 import { useLazyGetDataQuery } from "@/services/api";
-
+import { useWebRTC } from "@/hooks/useWebRTC";
 export default function GameLayout() {
-    const { token } = useAppSelector((state) => state.auth);
+    const { token, user } = useAppSelector((state) => state.auth);
     const { currentInstance, game } = useAppSelector((state) => state.room);
     const dispatch = useAppDispatch();
 
     const [channel, setChannel] = useState<any>(null);
     const [isStarting, setIsStarting] = useState(false);
-
+    const { startAudio, toggleMic } = useWebRTC(channel, user?.id);
     const [triggerFetchGame] = useLazyGetDataQuery();
-
+    useEffect(() => {
+        if (channel && user?.id) {
+            startAudio();
+        }
+    }, [channel, user?.id, startAudio]);
     const initiateGameStart = useCallback(async () => {
         if (!currentInstance || isStarting) return;
 
@@ -41,47 +45,49 @@ export default function GameLayout() {
             initiateGameStart();
         }
     }, [currentInstance?.status, initiateGameStart, isStarting]);
-useEffect(() => {
-    if (!token || !currentInstance?.id) return;
+    useEffect(() => {
+        if (!token || !currentInstance?.id) return;
 
-    const echo = connectEcho(token);
-    const channelName = `room.${currentInstance.id}`;
-    
-    const presenceChannel = echo.join(channelName)
-        .here((users: any[]) => dispatch(setOnlineUsers(users)))
-        .joining((u: any) => dispatch(userJoined(u)))
-        .leaving((u: any) => dispatch(userLeft(u.id)));
+        const echo = connectEcho(token);
+        const channelName = `room.${currentInstance.id}`;
 
-    presenceChannel.listen('.game.started', () => {
-        initiateGameStart();
-    });
+        const presenceChannel = echo.join(channelName)
+            .here((users: any[]) => dispatch(setOnlineUsers(users)))
+            .joining((u: any) => dispatch(userJoined(u)))
+            .leaving((u: any) => dispatch(userLeft(u.id)));
 
-    presenceChannel.listen('.game.action', (data: any) => {
-        const { action, payload } = data;
-        // استخدم ref أو تحقق من الحالة داخل الـ dispatch بدلاً من وضع game في الـ dependency
-        dispatch((dispatch, getState) => {
-            const state = getState();
-            const sliceName = state.room.game?.sliceName;
-            if (action === 'assignment.solved' && sliceName) {
-                dispatch({
-                    type: `${sliceName}/solveAssignment`,
-                    payload: payload.assignment
-                });
-            }
+        presenceChannel.listen('.game.started', () => {
+            initiateGameStart();
         });
-    });
 
-    setChannel(presenceChannel);
+        presenceChannel.listen('.game.action', (data: any) => {
+            const { action, payload } = data;
+            // استخدم ref أو تحقق من الحالة داخل الـ dispatch بدلاً من وضع game في الـ dependency
+            dispatch((dispatch, getState) => {
+                const state = getState();
+                const sliceName = state.room.game?.sliceName;
+                if (action === 'assignment.solved' && sliceName) {
+                    dispatch({
+                        type: `${sliceName}/solveAssignment`,
+                        payload: payload.assignment
+                    });
+                }
+            });
+        });
 
-    return () => { 
-        console.log("Cleanup: Leaving channel", channelName);
-        echo.leave(channelName); 
-    };
-}, [currentInstance?.id, token]);
+        setChannel(presenceChannel);
+
+        return () => {
+            console.log("Cleanup: Leaving channel", channelName);
+            echo.leave(channelName);
+        };
+    }, [currentInstance?.id, token]);
+
+
 
     return (
         <div className="game-container">
-            <Outlet context={{ channel, isStarting }} />
+            <Outlet context={{ channel, isStarting, toggleMic }} />
         </div>
     );
 }

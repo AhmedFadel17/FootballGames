@@ -1,8 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
+interface UserExtended extends User {
+    isSpeaking?: boolean;
+    isMuted?: boolean;
+}
 interface RoomState {
     currentInstance: GameInstance | null;
-    onlineUsers: User[];
+    onlineUsers: UserExtended[];
     isLoading: boolean;
     game: GameConfig | null;
 }
@@ -23,11 +26,11 @@ const roomSlice = createSlice({
             state.game = action.payload.game;
         },
         setOnlineUsers: (state, action: PayloadAction<User[]>) => {
-            state.onlineUsers = action.payload;
+            state.onlineUsers = action.payload.map(u => ({ ...u, isSpeaking: false,isMuted:false }));
         },
         userJoined: (state, action: PayloadAction<User>) => {
             if (!state.onlineUsers.find(u => u.id === action.payload.id)) {
-                state.onlineUsers.push(action.payload);
+                state.onlineUsers.push({ ...action.payload, isSpeaking: false,isMuted:false });
             }
         },
         userLeft: (state, action: PayloadAction<number>) => {
@@ -36,6 +39,18 @@ const roomSlice = createSlice({
         startGame: (state, action: PayloadAction<any>) => {
             if (state.currentInstance == null) return
             state.currentInstance.status = 'active';
+        },
+        setUserSpeaking: (state, action: PayloadAction<{ userId: number | string, isSpeaking: boolean }>) => {
+            const user = state.onlineUsers.find(u => u.id === action.payload.userId);
+            if (user) {
+                user.isSpeaking = action.payload.isSpeaking;
+            }
+        },
+        setUserMuted: (state, action: PayloadAction<{ userId: number | string, isMuted: boolean }>) => {
+            const user = state.onlineUsers.find(u => u.id === action.payload.userId);
+            if (user) {
+                user.isMuted = action.payload.isMuted;
+            }
         },
         resetRoom: () => initialState,
     },
@@ -47,7 +62,9 @@ export const {
     userJoined,
     userLeft,
     startGame,
-    resetRoom
+    resetRoom,
+    setUserSpeaking,
+    setUserMuted
 } = roomSlice.actions;
 
 export default roomSlice.reducer;
