@@ -6,8 +6,11 @@ use App\DTOs\Game\GameInstance\GameInstanceDTO;
 use App\DTOs\Game\GameInstance\GameInstanceResponseDTO;
 use App\DTOs\Pagination\PaginationDTO;
 use App\DTOs\Pagination\PaginationResponseDTO;
+use App\Models\Game\GameEntry;
 use App\Models\Game\GameInstance;
+use App\Models\User;
 use App\Services\Pagination\IPaginationService;
+use App\Shared\Enums\GameStatus;
 
 class GameInstanceService implements IGameInstanceService
 {
@@ -25,7 +28,7 @@ class GameInstanceService implements IGameInstanceService
         $allowedFilters = ['game_id', 'status'];
         $searchableFields = [];
 
-        return $this->_paginationService->paginate($query, $paginationDTO,GameInstanceResponseDTO::class, $allowedFilters, $searchableFields);
+        return $this->_paginationService->paginate($query, $paginationDTO, GameInstanceResponseDTO::class, $allowedFilters, $searchableFields);
     }
 
     public function getById(int $id): GameInstanceResponseDTO
@@ -52,4 +55,40 @@ class GameInstanceService implements IGameInstanceService
         $gameInstance = GameInstance::findOrFail($id);
         $gameInstance->delete();
     }
-} 
+
+    public function leaveRoom(User $user, int $roomId): void
+    {
+        $userId = $user->id;
+        $this->removeMember($roomId, $userId);
+    }
+
+    public function cancelRoom(int $roomId): void
+    {
+        $room = GameInstance::findOrFail($roomId);
+        if ($room->status != GameStatus::FINISHED) {
+            $room->update([
+                'status' => GameStatus::CANCELLED
+            ]);
+        }
+    }
+    public function removeMember(int $roomId, int $memberId): void
+    {
+        $room = GameInstance::findOrFail($roomId);
+        $status = $room->status;
+        $admin = $room->admin;
+        if ($status === GameStatus::PENDING) {
+            $entry = GameEntry::where('game_instance_id', $room->id)->where('user_id', $memberId)->firstOr();
+            if ($memberId === $admin->id) {
+                $newAdminEntry = GameEntry::where('game_instance_id', $room->id)->where('user_id', '!=', $memberId)->first();
+                if ($newAdminEntry) {
+                    $room->update([
+                        'creator_id' => $newAdminEntry->user_id
+                    ]);
+                } else {
+                    $this->cancelRoom($roomId);
+                }
+            }
+            $entry->delete();
+        }
+    }
+}

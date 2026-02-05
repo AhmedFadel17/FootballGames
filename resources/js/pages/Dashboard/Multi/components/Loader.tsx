@@ -28,7 +28,7 @@ const Loader = ({ count = 5, width = 200, height = 200 }: LoaderProps) => {
         className='flex items-center justify-center overflow-hidden p-[2px]'
       >
 
-        <div className="flex items-end justify-center gap-3 w-full h-full bg-gray-50 rounded-full pb-2">
+        <div className="flex items-end justify-center gap-3 w-full h-full pb-2">
 
           {Array(count)
             .fill(null)

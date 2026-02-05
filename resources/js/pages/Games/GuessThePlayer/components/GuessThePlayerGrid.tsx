@@ -7,15 +7,11 @@ interface GuessThePlayerGridProps {}
 export default function GuessThePlayerGrid({}: GuessThePlayerGridProps) {
   const { isActive, game } = useAppSelector((s) => s.guessThePlayer);
 
-  // استخدام useMemo لضمان عدم إعادة الترتيب إلا إذا تغيرت البيانات
   const sortedAssignments = useMemo(() => {
     if (!game?.assignments) return [];
     
-    // إنشاء نسخة جديدة من المصفوفة لترتيبها (لأن Redux state immutable)
     return [...game.assignments].sort((a, b) => {
-      // إذا كان a هو أنا (true) يوضع في البداية (يرجع -1)
       if (a.is_me && !b.is_me) return -1;
-      // إذا كان b هو أنا يوضع a بعده (يرجع 1)
       if (!a.is_me && b.is_me) return 1;
       return 0;
     });
@@ -31,7 +27,7 @@ export default function GuessThePlayerGrid({}: GuessThePlayerGridProps) {
         {sortedAssignments.map((assignment, index) => {
           return (
             <GuessThePlayerCard
-              key={assignment.id || index} // يفضل استخدام id الـ assignment كـ key
+              key={assignment.id || index}
               index={index}
               player={assignment.player}
               user={assignment.entry?.user || null}

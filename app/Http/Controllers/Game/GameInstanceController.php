@@ -10,6 +10,7 @@ use App\Http\Requests\Game\GameInstance\GameInstanceFilterRequest;
 use App\Http\Requests\Game\GameInstance\UpdateGameInstanceRequest;
 use App\Services\GameServices\GameInstance\IGameInstanceService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class GameInstanceController extends Controller
 {
@@ -51,5 +52,12 @@ class GameInstanceController extends Controller
     {
         $this->_service->delete($id);
         return response()->json(null, 204);
+    }
+
+    public function leaveRoom(Request $request,$id): JsonResponse
+    {
+        $user = $request->user();
+        $this->_service->leaveRoom($user,$id);
+        return response()->json(null, 200);
     }
 } 

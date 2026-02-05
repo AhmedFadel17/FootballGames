@@ -5,6 +5,7 @@ import UserProfilePic from "./UserProfilePic";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { resetRoom } from "@/store/slices/roomSlice";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { useLazyGetDataQuery } from "@/services/api";
 
 export default function RoomInitializer() {
     const dispatch = useAppDispatch();
@@ -13,8 +14,18 @@ export default function RoomInitializer() {
 
     const { game, currentInstance, onlineUsers } = useAppSelector(state => state.room);
     const { user } = useAppSelector(state => state.auth);
+    const [triggerFetchGame] = useLazyGetDataQuery();
 
     const [countdown, setCountdown] = useState<number | null>(null);
+    const maxPlayers = currentInstance?.max_players || 0;
+    const emptySlotsCount = Math.max(0, maxPlayers - onlineUsers.length);
+    const emptySlots = Array.from({ length: emptySlotsCount });
+    const sortedOnlineUsers = [...onlineUsers].sort((a, b) => {
+        if (a.id === user?.id) return -1;
+        if (b.id === user?.id) return 1;
+        return 0;
+    });
+
 
     useEffect(() => {
         console.log("Current Status check:", currentInstance?.status);
@@ -25,7 +36,6 @@ export default function RoomInitializer() {
         }
     }, [currentInstance?.status, countdown]);
 
-    // منطق العداد التنازلي
     useEffect(() => {
         if (countdown === null) return;
         if (countdown > 0) {
@@ -36,12 +46,25 @@ export default function RoomInitializer() {
         }
     }, [countdown, navigate, game?.route]);
 
-    if (!currentInstance) return <div className="text-center p-10 font-bold">Lobby Not Active</div>;
 
-    const handleOnCancel = () => dispatch(resetRoom());
+    const handleOnCancel = async function () {
+        let gameRoute=game?.route;
+        try {
+            const result = await triggerFetchGame({
+                url: `/api/v1/u/rooms/${currentInstance.id}/leave`,
+            }).unwrap();
+            dispatch(resetRoom());
+            navigate(gameRoute || "/");
+        } catch (error) {
+            console.error("Sync error:", error);
+        }
+    }
+
+    if (!currentInstance) return <div className="text-center p-10 font-bold">Lobby Not Active</div>;
 
     return (
         <div className="items-center justify-center text-primary w-full min-h-[20rem] rounded text-center border-2 border-primary overflow-hidden bg-white shadow-xl">
+            
             <div className="text-2xl font-bold mb-5 py-4 bg-primary text-secondary">
                 <p>Lobby</p>
                 <p className="text-sm opacity-80">Code: {currentInstance.room_code}</p>
@@ -49,9 +72,20 @@ export default function RoomInitializer() {
 
             <div className="p-4 text-center flex items-center justify-center gap-6 flex-wrap">
                 <AnimatePresence>
-                    {onlineUsers.map((u: any) => (
+                    {sortedOnlineUsers.map((u: any) => (
                         <motion.div key={u.id} initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0, opacity: 0 }}>
                             <UserProfilePic user={u} isMe={u.id === user?.id} />
+                        </motion.div>
+                    ))}
+                    {emptySlots.map((_, index) => (
+                        <motion.div
+                            key={`empty-${index}`}
+                            layout
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="relative"
+                        >
+                            <UserProfilePic user={null} />
                         </motion.div>
                     ))}
                 </AnimatePresence>
@@ -74,14 +108,24 @@ export default function RoomInitializer() {
                     <div className="flex flex-col items-center">
                         <Loader height={80} width={80} />
                         <p className="text-sm animate-pulse">Synchronizing Data...</p>
+                        <p className="bolder text-4xl py-4 text-black">
+                            <span className="text-gray-400 pr-2">{onlineUsers.length}</span>
+                            /{currentInstance.max_players}
+                        </p>
                     </div>
                 ) : (
                     <div className="relative">
                         <Loader height={120} width={120} />
+                        <p className="bolder text-4xl py-2 text-black">
+                            <span className="text-gray-400 pr-2">{onlineUsers.length}</span>
+                            /{currentInstance.max_players}
+                        </p>
+
                         {onlineUsers.length >= currentInstance.max_players && (
                             <p className="text-sm text-gray-500 animate-bounce mt-2">
                                 Waiting for server...
                             </p>
+
                         )}
                     </div>
                 )}

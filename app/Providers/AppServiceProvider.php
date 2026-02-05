@@ -60,8 +60,11 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Support\Facades\Gate;
-
+use App\Listeners\Reverb\CleanupEmptyRoom;
+use App\Listeners\Reverb\ReverbRoomLestiner;
+use Illuminate\Support\Facades\Event;
+use Laravel\Reverb\Events\ChannelRemoved;
+use Laravel\Reverb\Events\MessageReceived;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -96,9 +99,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(IGuessThePlayerGameService::class, GuessThePlayerGameService::class);
 
         $this->app->singleton(
-        ExceptionHandler::class,
-        Handler::class
-    );
+            ExceptionHandler::class,
+            Handler::class
+        );
     }
 
     /**
@@ -112,5 +115,14 @@ class AppServiceProvider extends ServiceProvider
                 optional($request->user())->id ?: $request->ip()
             );
         });
+        Event::listen(
+            ChannelRemoved::class,
+            CleanupEmptyRoom::class,
+        );
+
+        Event::listen(
+            MessageReceived::class,
+            ReverbRoomLestiner::class,
+        );
     }
 }

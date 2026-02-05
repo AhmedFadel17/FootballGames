@@ -41,7 +41,7 @@ const UserProfilePic = ({
     <div className="flex flex-col items-center gap-2">
       <div
         style={{ width: size * 4, height: size * 4 }}
-        className={`rounded-full border ${borderStyle} flex items-center justify-center overflow-hidden p-[2px] relative bg-gray-50`}
+        className={`rounded-full border-2 ${borderStyle} flex items-center justify-center overflow-hidden p-[2px] relative bg-gray-50`}
       >
         {user ? (
           <img
@@ -63,7 +63,7 @@ const UserProfilePic = ({
         )}
       </div>
       {hasName &&
-        <p className="font-bold capitalize text-sm">{user ? user.username : "...."}</p>
+        <p className="font-bold capitalize text-sm bg-gray-50 px-2 w-full rounded">{user ? user.username : "...."}</p>
       }
     </div>
   );

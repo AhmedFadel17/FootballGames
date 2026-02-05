@@ -15,6 +15,7 @@ use App\Http\Controllers\Core\SeasonController;
 use App\Http\Controllers\Core\TeamController;
 use App\Http\Controllers\Core\TransferController;
 use App\Http\Controllers\Game\GameController;
+use App\Http\Controllers\Game\GameInstanceController;
 use App\Http\Controllers\GamesList\Bingo\BingoConditionController;
 use App\Http\Controllers\GamesList\Bingo\BingoGameController;
 use App\Http\Controllers\GamesList\Bingo\BingoMatchController;
@@ -56,7 +57,10 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
         Route::get('players', [PlayerController::class, 'index']);
         Route::get('countries', [CountryController::class, 'index']);
         Route::get('teams', [TeamController::class, 'index']);
-
+        Route::prefix('rooms')->group(function () {
+            Route::get('{id}/leave', [GameInstanceController::class, 'leaveRoom']);
+            // Route::post('{id}/rejoin', [BingoGameController::class, 'store']);
+        });
         Route::prefix('games-list')->group(function () {
             Route::get('bingo/{id}/conditions', [BingoConditionController::class, 'getByGameId']);
             Route::post('bingo', [BingoGameController::class, 'store']);
@@ -80,7 +84,6 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
                 Route::post('join-with-code', [GuessThePlayerController::class, 'joinWithCode']);
                 Route::post('assignments/{assignment_id}/submit', [GuessThePlayerController::class, 'submitAnswer']);
                 Route::post('assignments/{assignment_id}/ask', [GuessThePlayerController::class, 'askPlayer']);
-
             });
         });
     });
