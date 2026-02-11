@@ -16,6 +16,7 @@ use App\Http\Controllers\Core\TeamController;
 use App\Http\Controllers\Core\TransferController;
 use App\Http\Controllers\Game\GameController;
 use App\Http\Controllers\Game\GameInstanceController;
+use App\Http\Controllers\Game\GameResultController;
 use App\Http\Controllers\GamesList\Bingo\BingoConditionController;
 use App\Http\Controllers\GamesList\Bingo\BingoGameController;
 use App\Http\Controllers\GamesList\Bingo\BingoMatchController;
@@ -59,6 +60,8 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
         Route::get('teams', [TeamController::class, 'index']);
         Route::prefix('rooms')->group(function () {
             Route::get('{id}/leave', [GameInstanceController::class, 'leaveRoom']);
+            Route::get('{id}/result', [GameResultController::class, 'getByGameInstanceId']);
+
             // Route::post('{id}/rejoin', [BingoGameController::class, 'store']);
         });
         Route::prefix('games-list')->group(function () {

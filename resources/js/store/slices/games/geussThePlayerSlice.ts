@@ -9,12 +9,14 @@ interface GuessThePlayerState {
   game: GuessThePlayerGame | null;
   isActive: boolean;
   isFinished: boolean;
+  result: GameResult | null;
 }
 
 const initialState: GuessThePlayerState = {
   game: null,
   isActive: false,
   isFinished: false,
+  result: null
 };
 
 const guessThePlayerSlice = createSlice({
@@ -53,7 +55,8 @@ const guessThePlayerSlice = createSlice({
       state.isActive = false;
       state.isFinished = false;
     },
-    finishGame: (state) => {
+    finishGame: (state, action: PayloadAction<GameResult>) => {
+      state.result = action.payload;
       state.isFinished = true;
     },
   },

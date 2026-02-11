@@ -39,6 +39,23 @@ export default function GameLayout() {
         }
     }, [currentInstance, game, dispatch, triggerFetchGame, isStarting]);
 
+    const setGameFinished = async () => {
+        if (!currentInstance || isStarting) return;
+        setIsStarting(true);
+        try {
+            const result = await triggerFetchGame({
+                url: `/api/v1/u/rooms/${currentInstance.id}/result`,
+            }).unwrap();
+
+            if (game?.sliceName) {
+                dispatch({ type: `${game.sliceName}/finishGame`, payload: result });
+            }
+
+        } catch (error) {
+            console.error("Sync error:", error);
+            setIsStarting(false);
+        }
+    }
     useEffect(() => {
         if (currentInstance?.status === 'active' && !isStarting) {
             console.log("Game already active, triggering sync...");
@@ -60,9 +77,12 @@ export default function GameLayout() {
             initiateGameStart();
         });
 
+        presenceChannel.listen('.game.finished', () => {
+            setGameFinished();
+        });
+
         presenceChannel.listen('.game.action', (data: any) => {
             const { action, payload } = data;
-            // استخدم ref أو تحقق من الحالة داخل الـ dispatch بدلاً من وضع game في الـ dependency
             dispatch((dispatch, getState) => {
                 const state = getState();
                 const sliceName = state.room.game?.sliceName;

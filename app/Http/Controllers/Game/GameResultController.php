@@ -10,11 +10,12 @@ use App\Http\Requests\Game\GameResult\GameResultFilterRequest;
 use App\Http\Requests\Game\GameResult\UpdateGameResultRequest;
 use App\Services\GameServices\GameResult\IGameResultService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class GameResultController extends Controller
 {
     private readonly IGameResultService $_service;
-    
+
     public function __construct(IGameResultService $service)
     {
         $this->_service = $service;
@@ -34,6 +35,12 @@ class GameResultController extends Controller
         return response()->json($gameResult, 201);
     }
 
+    public function getByGameInstanceId(Request $request, $id): JsonResponse
+    {
+        $user = $request->user();
+        $gameResult = $this->_service->getByGameInstanceId($user, $id);
+        return response()->json($gameResult);
+    }
     public function show($id): JsonResponse
     {
         $gameResult = $this->_service->getById($id);
@@ -52,4 +59,4 @@ class GameResultController extends Controller
         $this->_service->delete($id);
         return response()->json(null, 204);
     }
-} 
+}

@@ -15,9 +15,9 @@ class GameResult extends Model
     protected $casts = [
         'status' => GameResultStatus::class,
     ];
-    public function instance(): BelongsTo
+    public function entry(): BelongsTo
     {
-        return $this->belongsTo(GameInstance::class);
+        return $this->belongsTo(GameEntry::class,'game_entry_id');
     }
 
     public function user(): BelongsTo

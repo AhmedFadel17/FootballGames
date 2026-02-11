@@ -12,10 +12,11 @@ interface GuessThePlayerCardProps {
   assignmentId: number,
   isSpeaking?: boolean,
   isMuted?: boolean,
-  onToggleMic: any
+  onToggleMic: any,
+  isFinished: boolean
 }
 
-export default function GuessThePlayerCard({ assignmentId, index, player, user, isMe = true, isSpeaking = false, isMuted = false, onToggleMic }: GuessThePlayerCardProps) {
+export default function GuessThePlayerCard({ assignmentId, index, player, user, isMe = true, isFinished = false, isSpeaking = false, isMuted = false, onToggleMic }: GuessThePlayerCardProps) {
   let borderStyle = isMe ? "border-blue-500" : "border-gray-300";
   const alignDir = index % 2 === 0 ? "justify-start" : "justify-end";
   const img = (player) ? player.img_src : unknownPlayerImgSrc;
@@ -55,8 +56,12 @@ export default function GuessThePlayerCard({ assignmentId, index, player, user, 
         {isMe || player ?
           <p className="text-2xl text-center p-3 font-bold">{player?.name || ""}</p>
           :
-          <GuessThePlayerSearch assignmentId={assignmentId} />
+          isFinished ?
+            <p className="text-2xl text-center p-3 font-bold">???</p>
+            :
+            <GuessThePlayerSearch assignmentId={assignmentId} />
         }
+
       </div>
     </div>
   );
