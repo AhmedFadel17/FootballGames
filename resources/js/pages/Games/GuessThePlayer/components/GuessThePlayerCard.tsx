@@ -33,7 +33,7 @@ export default function GuessThePlayerCard({ assignmentId, index, player, user, 
           <UserProfilePic size={10} user={user} isMe={isMe} hasName={false} />
           {/* نقطة خضراء تومض عند التحدث */}
           {isSpeaking && !isMuted && (
-            <span className="absolute top-0 right-0 block h-3 w-3 rounded-full bg-green-500 ring-2 ring-white animate-ping" />
+            <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-green-500 ring-2 ring-white animate-ping" />
           )}
         </div>
         <button

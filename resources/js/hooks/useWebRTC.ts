@@ -8,30 +8,6 @@ export const useWebRTC = (channel: any, userId: number | string | undefined) => 
     const timeoutRefs = useRef<{ [key: string]: ReturnType<typeof setTimeout> }>({});
     const iceServers = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
     const dispatch = useAppDispatch();
-
-    const startAudio = useCallback(async () => {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            setLocalStream(stream);
-            channel?.whisper('user-audio-ready', { userId });
-            return stream;
-        } catch (err) {
-            console.error("Mic access denied", err);
-        }
-    }, [channel, userId]);
-
-    const toggleMic = useCallback(() => {
-        if (localStream) {
-            const audioTrack = localStream.getAudioTracks()[0];
-            const newMutedState = audioTrack.enabled;
-            audioTrack.enabled = !newMutedState;
-
-            channel.whisper('user-mute-toggled', { userId, isMuted: newMutedState });
-            dispatch(setUserMuted({ userId: userId!, isMuted: newMutedState }));
-            return newMutedState;
-        }
-    }, [localStream, channel, userId, dispatch]);
-
     const monitorVolume = useCallback((stream: MediaStream) => {
         const audioContext = new AudioContext();
         const source = audioContext.createMediaStreamSource(stream);
@@ -43,9 +19,8 @@ export const useWebRTC = (channel: any, userId: number | string | undefined) => 
 
         const checkVolume = () => {
             analyser.getByteFrequencyData(dataArray);
-            const volume = dataArray.reduce((a, b) => a + b) / dataArray.length;
-
-            if (volume > 30) {
+            const maxVal = Math.max(...Array.from(dataArray));
+            if (maxVal > 50) {
                 channel?.whisper('user-speaking', { userId, isSpeaking: true });
                 dispatch(setUserSpeaking({ userId: userId!, isSpeaking: true }));
 
@@ -62,6 +37,31 @@ export const useWebRTC = (channel: any, userId: number | string | undefined) => 
         };
         checkVolume();
     }, [channel, userId, dispatch]);
+    const startAudio = useCallback(async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            setLocalStream(stream);
+            monitorVolume(stream);
+            channel?.whisper('user-audio-ready', { userId });
+            return stream;
+        } catch (err) {
+            console.error("Mic access denied", err);
+        }
+    }, [channel, userId, monitorVolume]);
+
+    const toggleMic = useCallback(() => {
+        if (localStream) {
+            const audioTrack = localStream.getAudioTracks()[0];
+            const newMutedState = audioTrack.enabled;
+            audioTrack.enabled = !newMutedState;
+
+            channel.whisper('user-mute-toggled', { userId, isMuted: newMutedState });
+            dispatch(setUserMuted({ userId: userId!, isMuted: newMutedState }));
+            return newMutedState;
+        }
+    }, [localStream, channel, userId, dispatch]);
+
+
 
     const createPeer = useCallback((remoteUserId: string, stream: MediaStream) => {
         const pc = new RTCPeerConnection(iceServers);
