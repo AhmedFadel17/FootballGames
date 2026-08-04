@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PlayerTeamPeriod extends Model
 {
-    protected $fillable = ['player_id', 'team_id', 'start_date', 'end_date'];
+    protected $fillable = ['player_id', 'team_id', 'start_date', 'end_date', 'is_loan', 'is_current'];
 
     public function player(): BelongsTo
     {

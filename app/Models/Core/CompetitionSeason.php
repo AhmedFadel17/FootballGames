@@ -5,15 +5,14 @@ namespace App\Models\Core;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CompetitionParticipant extends Model
+class CompetitionSeason extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'competition_id',
         'season_id',
-        'team_id',
-        'is_winner',
+        'winner_team_id',
     ];
 
     public function competition()
@@ -26,8 +25,9 @@ class CompetitionParticipant extends Model
         return $this->belongsTo(Season::class);
     }
 
-    public function team()
+    public function standings()
     {
-        return $this->belongsTo(Team::class);
+        return $this->hasMany(Standing::class)->orderBy('position');
     }
+
 }

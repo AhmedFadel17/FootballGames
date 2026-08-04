@@ -10,6 +10,7 @@ class ContinentSeeder extends Seeder
 {
     public function run(): void
     {
+        Continent::truncate();
         $json = Storage::disk('public')->get('data/continents.json');
         $continents = json_decode($json, true);
         foreach ($continents as $row) {

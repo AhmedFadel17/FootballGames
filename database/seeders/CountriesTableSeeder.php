@@ -16,6 +16,7 @@ class CountriesTableSeeder extends Seeder
      */
     public function run(): void
     {
+        Country::truncate();
         $json = Storage::disk('public')->get('data/countries.json');
         $countries = json_decode($json, true);
 

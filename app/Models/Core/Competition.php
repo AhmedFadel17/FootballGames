@@ -2,6 +2,7 @@
 
 namespace App\Models\Core;
 
+use App\Enums\Core\CompetitionType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +11,7 @@ class Competition extends Model
 {
     protected $fillable = [
         'name',
-        'short_name',
+        'abbr',
         'country_id',
         'type',
         'founded_year',
@@ -18,6 +19,13 @@ class Competition extends Model
         'img_src',
         'popularity',
         'is_active',
+        'slug',
+        'api_id'
+    ];
+
+    protected $casts = [
+        'type' => CompetitionType::class,
+        'is_active' => 'boolean',
     ];
 
     public function country(): BelongsTo
@@ -25,18 +33,9 @@ class Competition extends Model
         return $this->belongsTo(Country::class);
     }
 
-    public function participants()
+    public function competitionSeasons()
     {
-        return $this->hasMany(CompetitionParticipant::class);
+        return $this->hasMany(CompetitionSeason::class);
     }
 
-    public function teamStats()
-    {
-        return $this->hasMany(CompetitionTeamFullStat::class);
-    }
-
-    public function playerStats()
-    {
-        return $this->hasMany(CompetitionPlayerFullStat::class);
-    }
 }

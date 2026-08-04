@@ -23,20 +23,9 @@ class Team extends Model
         return $this->belongsTo(Country::class);
     }
 
-    public function competitionParticipants()
+    public function competitionSeasons()
     {
-        return $this->hasMany(CompetitionParticipant::class);
-    }
-
-    public function competitionTeamFullStats()
-    {
-        return $this->hasMany(CompetitionTeamFullStat::class);
-    }
-
-    // A team can have many players
-    public function players()
-    {
-        return $this->hasMany(Player::class);
+        return $this->hasMany(CompetitionSeason::class);
     }
 
 }

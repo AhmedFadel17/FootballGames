@@ -17,16 +17,21 @@ class Player extends Model
         'popularity',
         'api_id',
         'country_id',
+        'height_cm',
+        'weight_kg',
+        'preferred_foot',
+        'slug',
+        'rating',
+        'market_value',
+    ];
+    protected $casts = [
+        'date_of_birth' => 'date',
+        'position' => PlayerPosition::class,
     ];
 
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
-    }
-
-    public function competitionPlayerFullStats()
-    {
-        return $this->hasMany(CompetitionPlayerFullStat::class);
     }
 
     public function teamPeriods(): HasMany
@@ -37,5 +42,13 @@ class Player extends Model
     public function transfers(): HasMany
     {
         return $this->hasMany(Transfer::class);
+    }
+    public function careerSeasonStats(): HasMany
+    {
+        return $this->hasMany(PlayerSeasonStat::class);
+    }
+    public function careerSummaries(): HasMany
+    {
+        return $this->hasMany(PlayerCareerSummary::class);
     }
 }
