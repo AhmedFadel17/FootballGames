@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Core\PlayerPosition;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use App\Models\Core\Player;
@@ -31,7 +32,7 @@ class PlayersSeeder extends Seeder
                 [
                     'name' => $playerData['name'],
                     'fullname' => $playerData['name'],
-                    'position' => (int) $playerData['position_id'],
+                    'position' => PlayerPosition::tryFrom((int) $playerData['position_id']) ?? 2,
                     'date_of_birth' => (!empty($playerData['date_of_birth']) && strtolower($playerData['date_of_birth']) !== 'unknown')
                         ? $playerData['date_of_birth']
                         : null,

@@ -32,7 +32,8 @@ class StandingsSeeder extends Seeder
             }
 
             $teams = $standingData["standings"] ?? [];
-            $winnerTeam = count($teams) > 1 ? $teams[0] : null;
+            $winnerTeamData = count($teams) > 1 ? $teams[0] : null;
+            $winnerTeam = $winnerTeamData ? Team::where('api_id', $winnerTeamData['id'])->orWhere('slug', $winnerTeamData['slug'])->first() : null;
 
             $competitionSeason = CompetitionSeason::updateOrCreate(
                 [
@@ -40,26 +41,32 @@ class StandingsSeeder extends Seeder
                     'season_id' => $season->id,
                 ],
                 [
-                    'winner_team_id' => $winnerTeam['id'] ?? null,
+                    'winner_team_id' => $winnerTeam?->id,
                 ]
             );
 
             foreach ($teams as $teamData) {
+                $team = Team::where('api_id', $teamData['id'])->orWhere('slug', $teamData['slug'])->first();
+                if (!$team) {
+                    $this->command->warn("Team not found for standing data: " . $teamData['name']);
+                    continue;
+                }
+
                 Standing::updateOrCreate(
                     [
                         'competition_season_id' => $competitionSeason->id,
-                        'team_id' => $teamData['id'] ?? null
+                        'team_id' => $team->id
                     ],
                     [
                         'position' => $teamData['position'],
-                        'points' => $teamData['points'],
-                        'played' => $teamData['played'],
-                        'wins' => $teamData['won'],
-                        'draws' => $teamData['drawn'],
-                        'losses' => $teamData['lost'],
-                        'goals_scored' => $teamData['goals_for'],
-                        'goals_conceded' => $teamData['goals_against'],
-                        'goal_difference' => $teamData['goal_difference'],
+                        'points' => $teamData['points'] ?? 0,
+                        'played' => $teamData['played'] ?? 0,
+                        'won' => $teamData['won'] ?? 0,
+                        'drawn' => $teamData['drawn'] ?? 0,
+                        'lost' => $teamData['lost'] ?? 0,
+                        'goals_for' => $teamData['goals_for'] ?? 0,
+                        'goals_against' => $teamData['goals_against'] ?? 0,
+                        'goal_difference' => $teamData['goal_difference'] ?? 0,
                     ]
                 );
             }
