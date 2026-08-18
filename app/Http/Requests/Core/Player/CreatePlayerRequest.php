@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\Core\Player;
 
+use App\Enums\Core\PlayerPosition;
+use App\Enums\Core\PlayerPreferredFoot;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CreatePlayerRequest extends FormRequest
 {
@@ -22,14 +25,20 @@ class CreatePlayerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'       => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
             'fullname' => ['required', 'string', 'max:455'],
-            'position'   => ['required', 'string', 'max:50'],
-            'date_of_birth' => ['nullable', 'date'],
-            'country_id' => ['nullable', 'exists:countries,id'],
-            'popularity' => ['nullable', 'integer', 'min:0', 'max:100'],
+            'position' => ['required', Rule::enum(PlayerPosition::class)],
+            'date_of_birth' => ['required', 'date'],
+            'country_id' => ['required', 'exists:countries,id'],
+            'popularity' => ['required', 'integer', 'min:0', 'max:100'],
             'api_id' => ['nullable', 'integer'],
-            'img_src' => ['nullable', 'string', 'max:500'],
+            'slug' => ['required', 'string', 'max:255'],
+            'img_src' => ['required', 'string', 'max:500'],
+            'height_cm' => ['required', 'integer', 'min:0', 'max:300'],
+            'weight_kg' => ['required', 'integer', 'min:0', 'max:300'],
+            'rating' => ['required', 'integer', 'min:0', 'max:100'],
+            'market_value' => ['required', 'integer', 'min:0', 'max:1000000000'],
+            'preferred_foot' => ['required', Rule::enum(PlayerPreferredFoot::class)],
         ];
     }
 }

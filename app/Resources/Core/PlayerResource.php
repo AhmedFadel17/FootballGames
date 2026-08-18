@@ -5,7 +5,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class PlayerResource extends JsonResource
 {
-public function toArray($request): array
+    public function toArray($request): array
     {
         return [
             'id' => $this->id,
@@ -17,6 +17,12 @@ public function toArray($request): array
             'popularity' => $this->popularity,
             'api_id' => $this->api_id,
             'country_id' => $this->country_id,
+            'height_cm' => $this->height_cm,
+            'weight_kg' => $this->weight_kg,
+            'preferred_foot' => $this->preferred_foot,
+            'slug' => $this->slug,
+            'rating' => $this->rating,
+            'market_value' => $this->market_value,
             'country' => new CountryResource($this->whenLoaded('country')),
         ];
     }

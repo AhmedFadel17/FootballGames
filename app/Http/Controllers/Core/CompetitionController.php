@@ -2,19 +2,23 @@
 
 namespace App\Http\Controllers\Core;
 
-use App\DTOs\Core\Competition\CompetitionDTO;
+use App\DTOs\Core\CompetitionDTO;
 use App\DTOs\Pagination\PaginationDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Core\Competition\CreateCompetitionRequest;
 use App\Http\Requests\Core\Competition\CompetitionFilterRequest;
 use App\Http\Requests\Core\Competition\UpdateCompetitionRequest;
-use App\Services\Competition\ICompetitionService;
+use App\Resources\Core\CompetitionResource;
+use App\Services\Core\Competitions\ICompetitionService;
+use App\Traits\ApiResponses;
 use Illuminate\Http\JsonResponse;
 
 class CompetitionController extends Controller
 {
+    use ApiResponses;
+
     private readonly ICompetitionService $_service;
-    
+
     public function __construct(ICompetitionService $service)
     {
         $this->_service = $service;
@@ -22,34 +26,34 @@ class CompetitionController extends Controller
 
     public function index(CompetitionFilterRequest $request): JsonResponse
     {
-        $dto = new PaginationDTO($request->validated());
+        $dto = PaginationDTO::fromRequest($request);
         $competitions = $this->_service->getAll($dto);
-        return response()->json($competitions->toArray());
+        return $this->paginatedResponse($competitions, CompetitionResource::class, 'Competitions retrieved successfully');
     }
 
     public function store(CreateCompetitionRequest $request): JsonResponse
     {
-        $dto = new CompetitionDTO($request->validated());
+        $dto = CompetitionDTO::fromRequest($request);
         $competition = $this->_service->create($dto);
-        return response()->json($competition, 201);
+        return $this->successResponse(new CompetitionResource($competition), 'Competition created successfully', 201);
     }
 
     public function show($id): JsonResponse
     {
         $competition = $this->_service->getById($id);
-        return response()->json($competition);
+        return $this->successResponse(new CompetitionResource($competition), 'Competition retrieved successfully');
     }
 
     public function update(UpdateCompetitionRequest $request, $id): JsonResponse
     {
-        $dto = new CompetitionDTO($request->validated());
+        $dto = CompetitionDTO::fromRequest($request);
         $competition = $this->_service->update($id, $dto);
-        return response()->json($competition);
+        return $this->successResponse(new CompetitionResource($competition), 'Competition updated successfully');
     }
 
     public function destroy($id): JsonResponse
     {
         $this->_service->delete($id);
-        return response()->json(null, 204);
+        return $this->successResponse(null, 'Competition deleted successfully');
     }
 }

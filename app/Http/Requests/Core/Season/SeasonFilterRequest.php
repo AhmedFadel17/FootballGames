@@ -2,36 +2,22 @@
 
 namespace App\Http\Requests\Core\Season;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Shared\BaseFilterRequest;
 
-class SeasonFilterRequest extends FormRequest
+class SeasonFilterRequest extends BaseFilterRequest
 {
-    public function rules(): array
+    protected function allowedSortFields(): array
+    {
+        return ['id', 'name', 'start_year', 'end_year', 'created_at'];
+    }
+
+    protected function filterRules(): array
     {
         return [
-            'page' => 'nullable|integer|min:1',
-            'per_page' => 'nullable|integer|min:1|max:100',
-            'search' => 'nullable|string|max:255',
             'id' => 'nullable|integer',
             'name' => 'nullable|string|max:255',
             'start_year' => 'nullable|integer',
             'end_year' => 'nullable|integer',
-            'sort_by' => 'nullable|string|in:id,name,start_year,end_year',
-            'sort_order' => 'nullable|string|in:asc,desc',
         ];
     }
-
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    protected function prepareForValidation()
-    {
-        $this->merge([
-            'page' => $this->input('page', 1),
-            'per_page' => $this->input('per_page', 10),
-            'sort_order' => $this->input('sort_order', 'asc'),
-        ]);
-    }
-} 
+}

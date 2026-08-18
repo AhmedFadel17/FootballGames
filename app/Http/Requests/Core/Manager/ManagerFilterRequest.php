@@ -2,35 +2,22 @@
 
 namespace App\Http\Requests\Core\Manager;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Shared\BaseFilterRequest;
 
-class ManagerFilterRequest extends FormRequest
+class ManagerFilterRequest extends BaseFilterRequest
 {
-    public function rules(): array
+
+    protected function allowedSortFields(): array
+    {
+        return ['id', 'name', 'popularity', 'created_at'];
+    }
+
+    protected function filterRules(): array
     {
         return [
-            'page' => 'nullable|integer|min:1',
-            'per_page' => 'nullable|integer|min:1|max:100',
-            'search' => 'nullable|string|max:255',
-            'id' => 'nullable|integer',
-            'name' => 'nullable|string|max:255',
-            'nationality' => 'nullable|string|max:100',
-            'sort_by' => 'nullable|string|in:id,name,nationality',
-            'sort_order' => 'nullable|string|in:asc,desc',
+            'name' => ['nullable', 'string', 'max:255'],
+            'popularity' => ['nullable', 'integer', 'min:0', 'max:100'],
+            'country_id' => ['nullable', 'exists:countries,id'],
         ];
     }
-
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    protected function prepareForValidation()
-    {
-        $this->merge([
-            'page' => $this->input('page', 1),
-            'per_page' => $this->input('per_page', 10),
-            'sort_order' => $this->input('sort_order', 'asc'),
-        ]);
-    }
-} 
+}

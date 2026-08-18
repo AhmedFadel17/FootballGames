@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Core\Competition;
 
+use App\Enums\Core\CompetitionType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateCompetitionRequest extends FormRequest
 {
@@ -23,14 +25,16 @@ class UpdateCompetitionRequest extends FormRequest
     {
         return [
             'name' => ['sometimes', 'string', 'max:255'],
-            'short_name' => ['nullable', 'string', 'max:100'],
-            'country_id' => ['nullable', 'exists:countries,id'],
-            'type' => ['nullable', 'string', 'max:50'],
-            'founded_year' => ['nullable', 'integer', 'min:1800', 'max:2100'],
-            'tier' => ['nullable', 'integer', 'min:1', 'max:10'],
-            'popularity' => ['nullable', 'integer', 'min:0', 'max:100'],
-            'img_src' => ['nullable', 'string', 'max:500'],
-            'is_active' => ['boolean'],
+            'abbr' => ['sometimes', 'string', 'max:100'],
+            'country_id' => ['sometimes', 'exists:countries,id'],
+            'type' => ['sometimes', Rule::enum(CompetitionType::class)],
+            'founded_year' => ['sometimes', 'integer', 'min:1800', 'max:2100'],
+            'tier' => ['sometimes', 'integer', 'min:1', 'max:10'],
+            'popularity' => ['sometimes', 'integer', 'min:0', 'max:100'],
+            'img_src' => ['sometimes', 'string', 'max:500'],
+            'api_id' => ['sometimes', 'integer', 'min:0', 'max:2000000'],
+            'slug' => ['sometimes', 'string', 'max:255'],
+            'is_active' => ['sometimes', 'boolean'],
         ];
     }
-} 
+}

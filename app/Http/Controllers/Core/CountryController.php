@@ -2,19 +2,23 @@
 
 namespace App\Http\Controllers\Core;
 
-use App\DTOs\Core\Country\CountryDTO;
+use App\DTOs\Core\CountryDTO;
 use App\DTOs\Pagination\PaginationDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Core\Country\CreateCountryRequest;
 use App\Http\Requests\Core\Country\CountryFilterRequest;
 use App\Http\Requests\Core\Country\UpdateCountryRequest;
-use App\Services\Country\ICountryService;
+use App\Resources\Core\CountryResource;
+use App\Resources\Shared\LookupResource;
+use App\Services\Core\Countries\ICountryService;
+use App\Traits\ApiResponses;
 use Illuminate\Http\JsonResponse;
 
 class CountryController extends Controller
 {
+    use ApiResponses;
     private readonly ICountryService $_service;
-    
+
     public function __construct(ICountryService $service)
     {
         $this->_service = $service;
@@ -22,40 +26,48 @@ class CountryController extends Controller
 
     public function index(CountryFilterRequest $request): JsonResponse
     {
-        $dto = new PaginationDTO($request->validated());
+        $dto = PaginationDTO::fromRequest($request);
         $countries = $this->_service->getAll($dto);
-        return response()->json($countries->toArray());
+        return $this->paginatedResponse($countries, CountryResource::class, 'Countries retrieved successfully');
     }
 
     public function getAllOptions(): JsonResponse
     {
+
         $countries = $this->_service->getAllOptions();
-        return response()->json($countries);
+        return $this->successResponse(
+            data: LookupResource::collectionWith(
+                resource: $countries,
+                valueKey: 'id',
+                labelKey: 'name'
+            ),
+            message: 'Countries retrieved successfully'
+        );
     }
 
     public function store(CreateCountryRequest $request): JsonResponse
     {
-        $dto = new CountryDTO($request->validated());
+        $dto = CountryDTO::fromRequest($request);
         $country = $this->_service->create($dto);
-        return response()->json($country, 201);
+        return $this->successResponse(new CountryResource($country), 'Country created successfully', 201);
     }
 
     public function show($id): JsonResponse
     {
         $country = $this->_service->getById($id);
-        return response()->json($country);
+        return $this->successResponse(new CountryResource($country), 'Country retrieved successfully');
     }
 
     public function update(UpdateCountryRequest $request, $id): JsonResponse
     {
-        $dto = new CountryDTO($request->validated());
+        $dto = CountryDTO::fromRequest($request);
         $country = $this->_service->update($id, $dto);
-        return response()->json($country);
+        return $this->successResponse(new CountryResource($country), 'Country updated successfully', 201);
     }
 
     public function destroy($id): JsonResponse
     {
         $this->_service->delete($id);
-        return response()->json(null, 204);
+        return $this->successResponse(null, 'Country deleted successfully');
     }
 }

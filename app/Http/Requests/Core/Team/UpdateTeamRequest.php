@@ -23,12 +23,12 @@ class UpdateTeamRequest extends FormRequest
     {
         return [
             'name' => ['sometimes', 'string', 'max:255'],
-            'short_name' => ['nullable', 'string', 'max:100'],
-            'abbr' => ['nullable', 'string', 'max:10'],
-            'img_src' => ['nullable', 'string', 'max:500'],
-            'api_id' => ['nullable', 'integer'],
-            'country_id' => ['nullable', 'exists:countries,id'],
-            'popularity' => ['nullable', 'integer', 'min:0', 'max:100'],
+            'abbr' => ['sometimes', 'string', 'max:10'],
+            'img_src' => ['sometimes', 'string', 'max:500'],
+            'api_id' => ['sometimes', 'integer'],
+            'slug' => ['sometimes', 'string', 'max:255'],
+            'country_id' => ['sometimes', 'exists:countries,id'],
+            'popularity' => ['sometimes', 'integer', 'min:0', 'max:100'],
         ];
     }
-} 
+}

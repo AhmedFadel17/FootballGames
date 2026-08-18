@@ -3,18 +3,33 @@
 namespace App\Services\Pagination;
 
 use App\DTOs\Pagination\PaginationDTO;
-use App\DTOs\Pagination\PaginationResponseDTO;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 
 interface IPaginationService
 {
+    /**
+     * Initialize the pagination instance with a target query and DTO.
+     */
+    public function for(Builder $query, PaginationDTO $dto): static;
 
-    public function paginate(
-        Builder $query,
-        PaginationDTO $dto,
-        string $responseDTOClass,
-        array $allowedFilters = [],
-        array $searchableFields = [],
-        ?int $cacheSeconds = null
-    ): PaginationResponseDTO;
+    /**
+     * Specify allowed exact-match filter columns.
+     */
+    public function allowFilters(array $filters): static;
+
+    /**
+     * Specify allowed sortable columns.
+     */
+    public function allowSorts(array $sorts): static;
+
+    /**
+     * Specify searchable columns (supports relation fields like 'user.name').
+     */
+    public function searchable(array $fields): static;
+
+    /**
+     * Apply all conditions and execute the pagination query.
+     */
+    public function paginate(): LengthAwarePaginator;
 }

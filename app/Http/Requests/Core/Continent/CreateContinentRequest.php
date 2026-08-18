@@ -26,4 +26,4 @@ class CreateContinentRequest extends FormRequest
             'code' => ['required', 'string', 'max:3'],
         ];
     }
-} 
+}

@@ -23,7 +23,11 @@ class UpdateManagerRequest extends FormRequest
     {
         return [
             'name' => ['sometimes', 'string', 'max:255'],
-            'nationality' => ['nullable', 'string', 'max:100'],
+            'slug' => ['sometimes', 'string', 'max:255'],
+            'api_id' => ['sometimes', 'integer'],
+            'img_src' => ['nullable', 'string', 'max:255'],
+            'country_id' => ['sometimes', 'exists:countries,id'],
+            'popularity' => ['sometimes', 'integer'],
         ];
     }
-} 
+}

@@ -2,34 +2,24 @@
 
 namespace App\Http\Requests\Core\Country;
 
+use App\Http\Requests\Shared\BaseFilterRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CountryFilterRequest extends FormRequest
+class CountryFilterRequest extends BaseFilterRequest
 {
-    public function rules(): array
+
+    protected function allowedSortFields(): array
+    {
+        return ['id', 'name', 'code', 'popularity', 'continent_id', 'created_at'];
+    }
+
+    protected function filterRules(): array
     {
         return [
-            'page' => 'nullable|integer|min:1',
-            'per_page' => 'nullable|integer|min:1|max:100',
-            'search' => 'nullable|string|max:255',
-            'popularity' => 'nullable|integer',
-            'continent_id' => 'nullable|integer',
-            'sort_by' => 'nullable|string|in:id,name,code,popularity',
-            'sort_order' => 'nullable|string|in:asc,desc',
+            'name' => ['nullable', 'string', 'max:255'],
+            'code' => ['nullable', 'string', 'max:10'],
+            'popularity' => ['nullable', 'integer', 'min:0', 'max:100'],
+            'continent_id' => ['nullable', 'exists:continents,id'],
         ];
     }
-
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    protected function prepareForValidation()
-    {
-        $this->merge([
-            'page' => $this->input('page', 1),
-            'per_page' => $this->input('per_page', 10),
-            'sort_order' => $this->input('sort_order', 'asc'),
-        ]);
-    }
-} 
+}

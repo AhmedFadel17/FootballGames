@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers\Core;
 
-use App\DTOs\Core\Continent\ContinentDTO;
+use App\DTOs\Core\ContinentDTO;
 use App\DTOs\Pagination\PaginationDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Core\Continent\CreateContinentRequest;
 use App\Http\Requests\Core\Continent\ContinentFilterRequest;
 use App\Http\Requests\Core\Continent\UpdateContinentRequest;
-use App\Services\Continent\IContinentService;
+use App\Resources\Core\ContinentResource;
+use App\Services\Core\Continents\IContinentService;
+use App\Traits\ApiResponses;
 use Illuminate\Http\JsonResponse;
 
 class ContinentController extends Controller
 {
+    use ApiResponses;
     private readonly IContinentService $_service;
-    
+
     public function __construct(IContinentService $service)
     {
         $this->_service = $service;
@@ -22,34 +25,34 @@ class ContinentController extends Controller
 
     public function index(ContinentFilterRequest $request): JsonResponse
     {
-        $dto = new PaginationDTO($request->validated());
+        $dto = PaginationDTO::fromRequest($request);
         $continents = $this->_service->getAll($dto);
-        return response()->json($continents->toArray());
+        return $this->paginatedResponse($continents, ContinentResource::class, 'Continents retrieved successfully');
     }
 
     public function store(CreateContinentRequest $request): JsonResponse
     {
-        $dto = new ContinentDTO($request->validated());
+        $dto = ContinentDTO::fromRequest($request);
         $continent = $this->_service->create($dto);
-        return response()->json($continent, 201);
+        return $this->successResponse(new ContinentResource($continent), 'Continent created successfully', 201);
     }
 
     public function show($id): JsonResponse
     {
         $continent = $this->_service->getById($id);
-        return response()->json($continent);
+        return $this->successResponse(new ContinentResource($continent), 'Continent retrieved successfully');
     }
 
     public function update(UpdateContinentRequest $request, $id): JsonResponse
     {
-        $dto = new ContinentDTO($request->validated());
+        $dto = ContinentDTO::fromRequest($request);
         $continent = $this->_service->update($id, $dto);
-        return response()->json($continent);
+        return $this->successResponse(new ContinentResource($continent), 'Continent updated successfully');
     }
 
     public function destroy($id): JsonResponse
     {
         $this->_service->delete($id);
-        return response()->json(null, 204);
+        return $this->successResponse(null, 'Continent deleted successfully');
     }
 }

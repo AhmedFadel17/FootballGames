@@ -23,12 +23,12 @@ class CreateTeamRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'short_name' => ['nullable', 'string', 'max:100'],
-            'abbr' => ['nullable', 'string', 'max:10'],
-            'img_src' => ['nullable', 'string', 'max:500'],
+            'abbr' => ['required', 'string', 'max:10'],
+            'img_src' => ['required', 'string', 'max:500'],
             'api_id' => ['nullable', 'integer'],
-            'popularity' => ['nullable', 'integer', 'min:0', 'max:100'],
+            'slug' => ['required', 'string', 'max:255'],
+            'popularity' => ['required', 'integer', 'min:0', 'max:100'],
             'country_id' => ['nullable', 'exists:countries,id'],
         ];
     }
-} 
+}

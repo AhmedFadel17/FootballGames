@@ -23,7 +23,11 @@ class CreateManagerRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'nationality' => ['nullable', 'string', 'max:100'],
+            'slug' => ['required', 'string', 'max:255'],
+            'api_id' => ['nullable', 'integer', 'min:0', 'max:2000000'],
+            'img_src' => ['nullable', 'string', 'max:255'],
+            'country_id' => ['required', 'exists:countries,id'],
+            'popularity' => ['required', 'integer', 'min:0', 'max:100'],
         ];
     }
-} 
+}

@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers\Core;
 
-use App\DTOs\Core\Team\TeamDTO;
+use App\DTOs\Core\TeamDTO;
 use App\DTOs\Pagination\PaginationDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Core\Team\CreateTeamRequest;
 use App\Http\Requests\Core\Team\TeamFilterRequest;
 use App\Http\Requests\Core\Team\UpdateTeamRequest;
-use App\Services\Team\ITeamService;
+use App\Resources\Core\TeamResource;
+use App\Services\Core\Teams\ITeamService;
+use App\Traits\ApiResponses;
 use Illuminate\Http\JsonResponse;
 
 class TeamController extends Controller
 {
+    use ApiResponses;
     private readonly ITeamService $_service;
-    
+
     public function __construct(ITeamService $service)
     {
         $this->_service = $service;
@@ -22,34 +25,34 @@ class TeamController extends Controller
 
     public function index(TeamFilterRequest $request): JsonResponse
     {
-        $dto = new PaginationDTO($request->validated());
+        $dto = PaginationDTO::fromRequest($request);
         $teams = $this->_service->getAll($dto);
-        return response()->json($teams->toArray());
+        return $this->paginatedResponse($teams, TeamResource::class, 'Teams retrieved successfully');
     }
 
     public function store(CreateTeamRequest $request): JsonResponse
     {
-        $dto = new TeamDTO($request->validated());
+        $dto = TeamDTO::fromRequest($request);
         $team = $this->_service->create($dto);
-        return response()->json($team, 201);
+        return $this->successResponse(new TeamResource($team), 'Team created successfully', 201);
     }
 
     public function show($id): JsonResponse
     {
         $team = $this->_service->getById($id);
-        return response()->json($team);
+        return $this->successResponse(new TeamResource($team), 'Team retrieved successfully');
     }
 
     public function update(UpdateTeamRequest $request, $id): JsonResponse
     {
-        $dto = new TeamDTO($request->validated());
+        $dto = TeamDTO::fromRequest($request);
         $team = $this->_service->update($id, $dto);
-        return response()->json($team);
+        return $this->successResponse(new TeamResource($team), 'Team updated successfully');
     }
 
     public function destroy($id): JsonResponse
     {
         $this->_service->delete($id);
-        return response()->json(null, 204);
+        return $this->successResponse(null, 'Team deleted successfully');
     }
 }

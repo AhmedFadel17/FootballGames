@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { resetRoom } from "@/store/slices/roomSlice";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { useLazyGetDataQuery } from "@/services/api";
+import { useAuth } from "react-oidc-context";
 
 export default function RoomInitializer() {
     const dispatch = useAppDispatch();
@@ -13,7 +14,9 @@ export default function RoomInitializer() {
     const { isStarting } = useOutletContext<{ isStarting: boolean }>();
 
     const { game, currentInstance, onlineUsers } = useAppSelector(state => state.room);
-    const { user } = useAppSelector(state => state.auth);
+    const auth = useAuth();
+    // User ID from OIDC profile (standard 'sub' claim)
+    const userId = auth.user?.profile?.sub;
     const [triggerFetchGame] = useLazyGetDataQuery();
 
     const [countdown, setCountdown] = useState<number | null>(null);
@@ -21,8 +24,8 @@ export default function RoomInitializer() {
     const emptySlotsCount = Math.max(0, maxPlayers - onlineUsers.length);
     const emptySlots = Array.from({ length: emptySlotsCount });
     const sortedOnlineUsers = [...onlineUsers].sort((a, b) => {
-        if (a.id === user?.id) return -1;
-        if (b.id === user?.id) return 1;
+        if (a.id === userId) return -1;
+        if (b.id === userId) return 1;
         return 0;
     });
 
