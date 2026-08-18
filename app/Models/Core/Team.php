@@ -10,7 +10,7 @@ class Team extends Model
 {
     protected $fillable = [
         'name',
-        'short_name',
+        'slug',
         'abbr',
         'img_src',
         'popularity',

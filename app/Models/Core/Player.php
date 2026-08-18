@@ -3,6 +3,7 @@
 namespace App\Models\Core;
 
 use App\Enums\Core\PlayerPosition;
+use App\Enums\Core\PlayerPreferredFoot;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,6 +29,7 @@ class Player extends Model
     protected $casts = [
         'date_of_birth' => 'date',
         'position' => PlayerPosition::class,
+        'preferred_foot' => PlayerPreferredFoot::class,
     ];
 
     public function country(): BelongsTo
