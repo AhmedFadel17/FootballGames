@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\Core\Player;
 
+use App\Enums\Core\PlayerPosition;
+use App\Enums\Core\PlayerPreferredFoot;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdatePlayerRequest extends FormRequest
 {
@@ -24,12 +27,18 @@ class UpdatePlayerRequest extends FormRequest
         return [
             'name' => ['sometimes', 'string', 'max:255'],
             'fullname' => ['sometimes', 'string', 'max:455'],
-            'position' => ['sometimes', 'string', 'max:50'],
-            'date_of_birth' => ['nullable', 'date'],
-            'country_id' => ['nullable', 'exists:countries,id'],
-            'popularity' => ['nullable', 'integer', 'min:0', 'max:100'],
-            'img_src' => ['nullable', 'string', 'max:500'],
-            'api_id' => ['nullable', 'integer'],
+            'position' => ['sometimes', Rule::enum(PlayerPosition::class)],
+            'date_of_birth' => ['sometimes', 'date'],
+            'country_id' => ['sometimes', 'exists:countries,id'],
+            'popularity' => ['sometimes', 'integer', 'min:0', 'max:100'],
+            'img_src' => ['sometimes', 'string', 'max:500'],
+            'api_id' => ['sometimes', 'integer'],
+            'slug' => ['sometimes', 'string', 'max:255'],
+            'height_cm' => ['sometimes', 'integer', 'min:0', 'max:300'],
+            'weight_kg' => ['sometimes', 'integer', 'min:0', 'max:300'],
+            'rating' => ['sometimes', 'integer', 'min:0', 'max:100'],
+            'market_value' => ['sometimes', 'integer', 'min:0', 'max:1000000000'],
+            'preferred_foot' => ['sometimes', Rule::enum(PlayerPreferredFoot::class)],
         ];
     }
 }

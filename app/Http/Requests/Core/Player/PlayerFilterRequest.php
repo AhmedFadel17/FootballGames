@@ -2,37 +2,26 @@
 
 namespace App\Http\Requests\Core\Player;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Shared\BaseFilterRequest;
 
-class PlayerFilterRequest extends FormRequest
+class PlayerFilterRequest extends BaseFilterRequest
 {
-    public function rules(): array
+    protected function allowedSortFields(): array
+    {
+        return ['id', 'name', 'position', 'date_of_birth', 'fullname', 'height_cm', 'weight_kg', 'country_id', 'popularity', 'created_at'];
+    }
+
+    protected function filterRules(): array
     {
         return [
-            'page'         => 'nullable|integer|min:1',
-            'per_page'     => 'nullable|integer|min:1|max:100',
-            'search'       => 'nullable|string|max:255',
-            'id'           => 'nullable|integer',
-            'name'         => 'nullable|string|max:255',
-            'position'     => 'nullable|string|max:50',
-            'country_id'   => 'nullable|integer',
-            'date_of_birth'=> 'nullable|date',
-            'sort_by'      => 'nullable|string|in:id,name,position,fullname,date_of_birth,country_id,popularity',
-            'sort_order'   => 'nullable|string|in:asc,desc',
+            'name' => ['nullable', 'string', 'max:255'],
+            'fullname' => ['nullable', 'string', 'max:255'],
+            'position' => ['nullable', 'string', 'max:50'],
+            'country_id' => ['nullable', 'exists:countries,id'],
+            'date_of_birth' => ['nullable', 'date'],
+            'height_cm' => ['nullable', 'integer', 'min:0', 'max:250'],
+            'weight_kg' => ['nullable', 'integer', 'min:0', 'max:250'],
+            'popularity' => ['nullable', 'integer', 'min:0', 'max:100'],
         ];
-    }
-
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    protected function prepareForValidation()
-    {
-        $this->merge([
-            'page' => $this->input('page', 1),
-            'per_page' => $this->input('per_page', 10),
-            'sort_order' => $this->input('sort_order', 'asc'),
-        ]);
     }
 }
