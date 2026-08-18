@@ -1,33 +1,16 @@
-import { SidebarProvider, useSidebar } from "@/context/SidebarContext";
-import { Navigate, Outlet, useNavigate } from "react-router";
-import MainHeader from "./MainHeader";
-import AppFooter from "../Shared/AppFooter";
+import { Outlet } from 'react-router-dom'
+import TopNavBar from './TopNavBar'
+import Footer from './Footer'
 
 
-const LayoutContent: React.FC = () => {
-  const { isExpanded, isHovered, isMobileOpen } = useSidebar();
-
+export default function MainLayout() {
   return (
-    <div className="min-h-screen xl:flex">
-      <div
-        className={`flex-1 transition-all duration-300 ease-in-out ${isMobileOpen ? "ml-0" : ""}`}
-      >
-        <MainHeader />
-        <div className=" mx-auto max-w-(--breakpoint-2xl) ">
-          <Outlet />
-        </div>
-        <AppFooter/>
-      </div>
+    <div className="bg-background text-on-surface font-body selection:bg-primary/30">
+      <TopNavBar />
+      <main>
+        <Outlet />
+      </main>
+      <Footer />
     </div>
-  );
-};
-
-const MainLayout: React.FC = () => {
-  return (
-    <SidebarProvider>
-      <LayoutContent />
-    </SidebarProvider>
-  );
-};
-
-export default MainLayout;
+  )
+}

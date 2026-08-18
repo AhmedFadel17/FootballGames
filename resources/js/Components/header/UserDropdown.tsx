@@ -2,18 +2,14 @@ import { useState } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { Link, useNavigate } from "react-router";
-import { useSelector } from "react-redux";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { useLoginMutation } from "@/services/identityApi";
-import { useCreateDataMutation } from "@/services/api";
-import toast from "react-hot-toast";
-import { logout } from "@/store/slices/authSlice";
+import { useAuth } from "react-oidc-context";
 
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const auth = useAuth();
+
   function toggleDropdown() {
     setIsOpen(!isOpen);
   }
@@ -21,32 +17,24 @@ export default function UserDropdown() {
   function closeDropdown() {
     setIsOpen(false);
   }
-  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
 
-  if (!isAuthenticated || !user) {
+  if (!auth.isAuthenticated || !auth.user) {
     return null;
   }
-  const { username, role, email, avatar } = user;
-  const [createData] = useCreateDataMutation();
-  const handleLogout = async () => {
-    await toast.promise(
-      createData({
-        url: "/api/auth/logout",
-        body: {}
-      }).unwrap(),
-      {
-        loading: "Logout...",
-        success: "Logout successfully!",
-      }
-    ).then(() => {
-      dispatch(logout())
-      navigate('/login')
-    })
-      .catch(() => {
-        dispatch(logout())
-        navigate('/login')
-      });
-  }
+
+  const profile = auth.user.profile;
+  const username = profile["username"] as string | undefined;
+  const role = profile["role"] as string | undefined;
+  const email = profile.email;
+  const avatar = profile["picture"] as string | undefined;
+
+  const handleLogout = () => {
+    // Clear guest token if present
+    localStorage.removeItem("guest_access_token");
+    // Full OIDC signout — revokes Passport token + clears local session
+    auth.signoutRedirect();
+  };
+
   return (
     <div className="relative">
       <button

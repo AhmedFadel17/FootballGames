@@ -5,21 +5,24 @@ import { useWebRTC } from "@/hooks/useWebRTC";
 import { useOutletContext } from "react-router-dom";
 import { resetGame } from "@/store/slices/games/geussThePlayerSlice";
 import { motion } from "framer-motion";
+import { useAuth } from "react-oidc-context";
 
 interface GuessThePlayerGridProps { }
 
 export default function GuessThePlayerGrid({ }: GuessThePlayerGridProps) {
   const { isActive, game, isFinished, result } = useAppSelector((s) => s.guessThePlayer);
   const { onlineUsers } = useAppSelector(state => state.room);
-  const { user } = useAppSelector(state => state.auth);
+  const auth = useAuth();
+  // User ID from OIDC profile (standard 'sub' claim)
+  const userId = auth.user?.profile?.sub;
   const { channel } = useOutletContext<{ channel: any }>();
-  const { startAudio, toggleMic } = useWebRTC(channel, user?.id);
+  const { startAudio, toggleMic } = useWebRTC(channel, userId);
   const dispatch = useAppDispatch();
   useEffect(() => {
-    if (channel && user?.id) {
+    if (channel && userId) {
       startAudio();
     }
-  }, [channel, user?.id]);
+  }, [channel, userId]);
   const sortedAssignments = useMemo(() => {
     if (!game?.assignments) return [];
 

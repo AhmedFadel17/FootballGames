@@ -4,11 +4,12 @@ import { ChevronDownIcon, HorizontaLDots } from "@/icons";
 import { useSidebar } from "@/context/SidebarContext";
 import SidebarWidget from "@/layouts/SidebarWidget";
 import { SidebarAdminRoutes, SidebarUserRoutes } from "@/routes/sidebar";
-import { useAppSelector } from "@/store";
+import { useAuth } from "react-oidc-context";
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
-  const role = useAppSelector((state) => state.auth.user?.role);
+  const auth = useAuth();
+  const role = auth.user?.profile?.["role"] as string | undefined;
   const AppRoutes = role === "admin" ? SidebarAdminRoutes : SidebarUserRoutes;
   const location = useLocation();
 

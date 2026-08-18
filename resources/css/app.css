@@ -1,8 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 
 
 
@@ -27,7 +28,7 @@
 }
 
 @theme {
-        --text-theme-sm: 14px;
+    --text-theme-sm: 14px;
     --text-theme-sm--line-height: 20px;
     --font-*: initial;
     --font-outfit: Outfit, sans-serif;
@@ -223,9 +224,10 @@
 
 @layer utilities {
     .text-theme-sm {
-    font-size: var(--text-theme-sm);
-    line-height: var(--text-theme-sm--line-height);
-  }
+        font-size: var(--text-theme-sm);
+        line-height: var(--text-theme-sm--line-height);
+    }
+
     /* For Remove Date Icon */
     input[type="date"]::-webkit-inner-spin-button,
     input[type="time"]::-webkit-inner-spin-button,
@@ -350,7 +352,7 @@
 
 .stocks-slider-outer .swiper-button-next,
 .stocks-slider-outer .swiper-button-prev {
-    @apply static  mt-0 h-8 w-9 rounded-full border border-gray-200 !text-gray-700 transition hover:bg-gray-100;
+    @apply static mt-0 h-8 w-9 rounded-full border border-gray-200 !text-gray-700 transition hover:bg-gray-100;
 }
 
 .stocks-slider-outer .swiper-button-next.swiper-button-disabled,
@@ -410,6 +412,3 @@
     cursor: grabbing;
     /* Changes the cursor to indicate dragging */
 }
-
-
-

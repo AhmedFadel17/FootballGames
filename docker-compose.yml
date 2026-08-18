@@ -21,7 +21,7 @@ services:
             - '.:/var/www/html'
         networks:
             - sail
-        command: sh -c "php artisan migrate --force --seed && exec php artisan serve --host=0.0.0.0 --port=80"
+        command: sh -c "php artisan migrate --force --seed && exec npx concurrently --names 'laravel,vite' -c 'blue,green' 'php artisan serve --host=0.0.0.0 --port=80' 'npm run dev -- --host=0.0.0.0'"
         depends_on:
             pgsql:
                 condition: service_healthy

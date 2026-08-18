@@ -49,5 +49,12 @@ export const footerData = {
     { title: 'Instagram', path: 'https://instagram.com/footabllgames', icon: FaInstagram },
     { title: 'Twitter', path: 'https://twitter.com/footabllgames', icon: FaTwitter },
     { title: 'YouTube', path: 'https://youtube.com/footabllgames', icon: FaYoutube },
+  ],
+  copyright: `© ${new Date().getFullYear()} FootballGames. All rights reserved.`,
+
+  legal: [
+    { title: 'Privacy Policy', path: '/privacy' },
+    { title: 'Terms of Service', path: '/terms' },
+    { title: 'Cookie Policy', path: '/cookie' },
   ]
 };

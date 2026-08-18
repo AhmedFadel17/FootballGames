@@ -1,60 +1,34 @@
-import { SidebarProvider, useSidebar } from "@/context/SidebarContext";
-import { Navigate, Outlet, useNavigate } from "react-router";
-import AppHeader from "@/layouts/DashboardLayout/DashboardHeader";
-import Backdrop from "@/layouts/Shared/Backdrop";
-import AppSidebar from "@/layouts/DashboardLayout/DashboardSidebar";
-import { useAppSelector } from "@/store";
-import { useEffect } from "react";
-import AppFooter from "../Shared/AppFooter";
+import { useState } from 'react'
+import { Outlet } from 'react-router-dom'
+import Sidebar from './Sidebar'
+import DashboardNavbar from './Navbar'
+import { useAuth } from 'react-oidc-context';
 
-
-const LayoutContent: React.FC = () => {
-    const { isExpanded, isHovered, isMobileOpen } = useSidebar();
-    const isAuth = useAppSelector((state) => state.auth.isAuthenticated);
-    const navigate = useNavigate();
-    useEffect(() => {
-        if (!isAuth) {
-            navigate('/login');
-            return;
-        }
-    }, [isAuth])
+export default function DashboardLayout() {
+    const auth = useAuth();
+    const user = auth.user;
+    const isAdmin = user?.profile.role === "admin";
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
     return (
-        <div className="min-h-screen xl:flex">
+        <div className="flex min-h-screen overflow-x-hidden bg-dashboard-bg text-white font-body selection:bg-accent-purple/30">
+            <Sidebar isCollapsed={isSidebarCollapsed} isAdmin={isAdmin} />
+            <div className={`flex-1 flex flex-col min-h-screen min-w-0 overflow-x-hidden transition-all duration-300 ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-72'} ml-0`}>
+                {/* Top Navbar */}
+                <DashboardNavbar
+                    isSidebarCollapsed={isSidebarCollapsed}
+                    setIsSidebarCollapsed={setIsSidebarCollapsed}
+                    isMobileMenuOpen={isMobileMenuOpen}
+                    setIsMobileMenuOpen={setIsMobileMenuOpen}
+                    isAdmin={isAdmin}
+                />
 
-            <div>
-                <AppSidebar />
-                <Backdrop />
+                {/* Page Content */}
+                <main className="flex-1 min-h-0 flex flex-col p-10 overflow-y-auto overflow-x-hidden">
+                    <Outlet />
+                </main>
             </div>
-            <div
-                className={`flex-1 transition-all duration-300 ease-in-out ${isExpanded || isHovered ? "lg:ml-[290px]" : "lg:ml-[90px]"
-                    } ${isMobileOpen ? "ml-0" : ""}`}
-            >
-                <div className="min-h-screen">
-                    <AppHeader />
-                    <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-10">
-                        <Outlet />
-                    </div>
-                </div>
-
-                <div className="mt-10">
-                    <AppFooter />
-
-                </div>
-
-            </div>
-
         </div>
-
-    );
-};
-
-const AppLayout: React.FC = () => {
-    return (
-        <SidebarProvider>
-            <LayoutContent />
-        </SidebarProvider>
-    );
-};
-
-export default AppLayout;
+    )
+}

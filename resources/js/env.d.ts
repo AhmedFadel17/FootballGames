@@ -8,6 +8,7 @@ interface ImportMetaEnv {
   readonly VITE_REVERB_HOST: string;
   readonly VITE_REVERB_PORT: string;
   readonly VITE_REVERB_SCHEME: string;
+  readonly VITE_PASSPORT_CLIENT_ID: string;
 }
 
 interface ImportMeta {
@@ -17,10 +18,10 @@ interface ImportMeta {
 
 
 declare global {
-    interface Window {
-        Echo: Echo;
-        Pusher: typeof Pusher;
-    }
+  interface Window {
+    Echo: Echo;
+    Pusher: typeof Pusher;
+  }
 }
 
-export {};
+export { };

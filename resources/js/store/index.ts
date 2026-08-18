@@ -1,50 +1,47 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import bingoReducer from "./slices/bingoSlice";
-import authReducer from "./slices/authSlice";
 import topListGameReducer from "./slices/topListGameSlice";
 import adminTopListReducer from "./slices/admin/adminTopListSlice";
 import guessThePlayerReducer from "./slices/games/geussThePlayerSlice";
-
 import roomReducer from "./slices/roomSlice";
-import storage from "redux-persist/lib/storage";
-import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
-import { identityApi } from '@/services/identityApi';
-import { api } from '@/services/api';
-import { combineReducers } from 'redux';
+import { api } from "@/services/api";
+import { combineReducers } from "redux";
 import { rtkQueryErrorLogger } from "@/middleware/rtkQueryErrorLogger";
+import { mainApi } from "./apis";
+import authReducer from "./slices/authSlice";
 
-const persistConfig = {
-  key: 'root',
-  storage,
-  whitelist: ['auth'], // persist only the auth slice
-};
+/**
+ * Redux store.
+ *
+ * Auth state is no longer stored here — it is managed entirely by
+ * react-oidc-context (oidc-client-ts) in localStorage.
+ *
+ * redux-persist is kept only if other slices need it in the future;
+ * the auth whitelist has been removed.
+ */
 const rootReducer = combineReducers({
-  auth: authReducer,
-  room: roomReducer,
-  bingo: bingoReducer,
-  guessThePlayer: guessThePlayerReducer,
-  toplist: topListGameReducer,
-  adminTopList: adminTopListReducer,
-  [api.reducerPath]: api.reducer,
-  [identityApi.reducerPath]: identityApi.reducer,
-
+    auth: authReducer,
+    // room: roomReducer,
+    // bingo: bingoReducer,
+    // guessThePlayer: guessThePlayerReducer,
+    // toplist: topListGameReducer,
+    // adminTopList: adminTopListReducer,
+    // [api.reducerPath]: api.reducer,
+    [mainApi.reducerPath]: mainApi.reducer,
 });
-const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    })
-      .concat(api.middleware)
-      .concat(identityApi.middleware)
-      .concat(rtkQueryErrorLogger)
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: {
+                ignoredActions: ['auth/setUser'],
+                ignoredPaths: ['auth.user'],
+            },
+        })
+            .concat(mainApi.middleware, rtkQueryErrorLogger),
 });
-
-export const persistor = persistStore(store);
-
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

@@ -5,20 +5,25 @@ import { useAppSelector, useAppDispatch } from "@/store";
 import { setOnlineUsers, userJoined, userLeft, startGame } from "@/store/slices/roomSlice";
 import { useLazyGetDataQuery } from "@/services/api";
 import { useWebRTC } from "@/hooks/useWebRTC";
+import { useAuth } from "react-oidc-context";
 export default function GameLayout() {
-    const { token, user } = useAppSelector((state) => state.auth);
+    const auth = useAuth();
+    // Access token for Echo/WebSocket authentication
+    const token = auth.user?.access_token ?? localStorage.getItem("guest_access_token") ?? null;
+    // User ID — OIDC standard claim 'sub'
+    const userId = auth.user?.profile?.sub;
     const { currentInstance, game } = useAppSelector((state) => state.room);
     const dispatch = useAppDispatch();
 
     const [channel, setChannel] = useState<any>(null);
     const [isStarting, setIsStarting] = useState(false);
-    const { startAudio, toggleMic } = useWebRTC(channel, user?.id);
+    const { startAudio, toggleMic } = useWebRTC(channel, userId);
     const [triggerFetchGame] = useLazyGetDataQuery();
     useEffect(() => {
-        if (channel && user?.id) {
+        if (channel && userId) {
             startAudio();
         }
-    }, [channel, user?.id, startAudio]);
+    }, [channel, userId, startAudio]);
     const initiateGameStart = useCallback(async () => {
         if (!currentInstance || isStarting) return;
 

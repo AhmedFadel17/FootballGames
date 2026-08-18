@@ -3,20 +3,19 @@ import { Navigate, Outlet, useNavigate } from "react-router";
 import AppHeader from "@/layouts/AppHeader";
 import Backdrop from "@/layouts/Shared/Backdrop";
 import AppSidebar from "@/layouts/AppSidebar";
-import { useAppSelector } from "@/store";
+import { useAuth } from "react-oidc-context";
 import { useEffect } from "react";
 
 
 const LayoutContent: React.FC = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
-  const isAuth = useAppSelector((state) => state.auth.isAuthenticated);
+  const auth = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!isAuth) {
+    if (!auth.isLoading && !auth.isAuthenticated) {
       navigate('/login');
-      return;
     }
-  }, [isAuth])
+  }, [auth.isLoading, auth.isAuthenticated]);
 
   return (
     <div className="min-h-screen xl:flex">
