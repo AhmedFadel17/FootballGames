@@ -22,34 +22,44 @@ use App\Http\Controllers\GamesList\Bingo\BingoGameController;
 use App\Http\Controllers\GamesList\Bingo\BingoMatchController;
 use App\Http\Controllers\GamesList\GuessThePlayerController;
 use App\Http\Controllers\GamesList\TopList\TopListGameController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-Broadcast::routes(['middleware' => ['auth:sanctum']]);
+// ─── WebSocket Broadcast Auth ─────────────────────────────────────────────────
+Route::get('/user', fn(\Illuminate\Http\Request $r) => $r->user())->middleware('auth:api');
+Broadcast::routes(['middleware' => ['auth:api']]);
+
+
+// ─── Public auth helpers (no token required) ─────────────────────────────────
+// Registration and guest login sit outside the OIDC flow:
+//   - Register creates the account; user then signs in via /oauth/authorize
+//   - Guest creates a temp user and returns a short-lived Passport token directly
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::post('/guest', [AuthController::class, 'guestLogin']);
 });
 
 
-Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
+// ─── Authenticated-only auth helpers ─────────────────────────────────────────
+// Login/register/token-refresh are handled by Passport's own OAuth endpoints:
+//   POST /oauth/token          — exchange code+verifier for access+refresh tokens
+//   GET  /oauth/authorize      — PKCE authorization endpoint
+//   POST /oauth/token/refresh  — refresh access token (done by oidc-client-ts automatically)
+//
+// We expose only session management + profile endpoints here.
+Route::middleware('auth:api')->prefix('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+
+    // OIDC-compatible UserInfo endpoint — used by react-oidc-context (loadUserInfo: true)
+    // Returns standard OIDC claims + app-specific claims (role, username, etc.)
+    Route::get('/userinfo', [AuthController::class, 'userinfo']);
 });
 
 
-Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
-
-    //----------------------------Shared----------------------------
-    //--------------------------------------------------------------
+// ─── Authenticated API routes ─────────────────────────────────────────────────
+Route::middleware('auth:api')->prefix('v1')->group(function () {
 
     //-----------------------------User-----------------------------
     //--------------------------------------------------------------
@@ -58,26 +68,26 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
         Route::get('players', [PlayerController::class, 'index']);
         Route::get('countries', [CountryController::class, 'index']);
         Route::get('teams', [TeamController::class, 'index']);
+
         Route::prefix('rooms')->group(function () {
             Route::get('{id}/leave', [GameInstanceController::class, 'leaveRoom']);
             Route::get('{id}/result', [GameResultController::class, 'getByGameInstanceId']);
-
-            // Route::post('{id}/rejoin', [BingoGameController::class, 'store']);
         });
+
         Route::prefix('games-list')->group(function () {
             Route::get('bingo/{id}/conditions', [BingoConditionController::class, 'getByGameId']);
             Route::post('bingo', [BingoGameController::class, 'store']);
             Route::get('bingo/{id}/next-match', [BingoGameController::class, 'nextMatch']);
             Route::post('bingo/{id}/skip', [BingoGameController::class, 'skip']);
-            Route::post('bingo/{id}/check/{pos}',  [BingoGameController::class, 'check']);
-            Route::get('bingo/{id}/results',  [BingoGameController::class, 'gameResults']);
-            Route::post('bingo/{id}/cancel',  [BingoGameController::class, 'cancelGame']);
+            Route::post('bingo/{id}/check/{pos}', [BingoGameController::class, 'check']);
+            Route::get('bingo/{id}/results', [BingoGameController::class, 'gameResults']);
+            Route::post('bingo/{id}/cancel', [BingoGameController::class, 'cancelGame']);
 
             Route::apiResource('top-list', TopListGameController::class)->only(['index', 'show']);
             Route::post('top-list/{id}/start', [TopListGameController::class, 'startGame']);
             Route::post('top-list/{id}/cancel', [TopListGameController::class, 'cancelGame']);
             Route::get('top-list/{id}/results', [TopListGameController::class, 'gameResults']);
-            Route::post('top-list/{id}/check/{objectId}',  [TopListGameController::class, 'check']);
+            Route::post('top-list/{id}/check/{objectId}', [TopListGameController::class, 'check']);
 
             Route::prefix('guess-the-player')->group(function () {
                 Route::get('instance/{room_id}', [GuessThePlayerController::class, 'getByInstanceId']);
@@ -100,14 +110,11 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
             Route::apiResource('top-list', TopListGameController::class);
         });
         Route::apiResource('competitions', CompetitionController::class);
-
         Route::apiResource('competition-participants', CompetitionParticipantController::class);
         Route::apiResource('competition-player-stats', CompetitionPlayerFullStatController::class);
         Route::apiResource('competition-team-stats', CompetitionTeamFullStatController::class);
         Route::apiResource('continents', ContinentController::class);
-
         Route::apiResource('countries', CountryController::class);
-
         Route::apiResource('managers', ManagerController::class);
         Route::apiResource('manager-team-periods', ManagerTeamPeriodController::class);
         Route::apiResource('players', PlayerController::class);
@@ -116,9 +123,9 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
         Route::apiResource('teams', TeamController::class);
         Route::apiResource('transfers', TransferController::class);
 
-        Route::get('options/countries', [CountryController::class, 'getAllOptions']);
-        Route::get('options/players', [CountryController::class, 'getAllOptions']);
-        Route::get('options/teams', [CountryController::class, 'getAllOptions']);
-        Route::get('options/competitions', [CountryController::class, 'getAllOptions']);
+        Route::get('lookups/countries', [CountryController::class, 'getAllOptions']);
+        Route::get('lookups/players', [PlayerController::class, 'getAllOptions']);
+        Route::get('lookups/teams', [TeamController::class, 'getAllOptions']);
+        Route::get('lookups/competitions', [CompetitionController::class, 'getAllOptions']);
     });
 });

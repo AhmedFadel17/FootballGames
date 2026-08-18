@@ -5,20 +5,20 @@ namespace App\Providers;
 use App\Exceptions\Handler;
 use App\Services\Pagination\IPaginationService;
 use App\Services\Pagination\PaginationService;
-use App\Services\Player\IPlayerService;
-use App\Services\Player\PlayerService;
-use App\Services\Team\ITeamService;
-use App\Services\Team\TeamService;
-use App\Services\Country\ICountryService;
-use App\Services\Country\CountryService;
-use App\Services\Continent\IContinentService;
-use App\Services\Continent\ContinentService;
-use App\Services\Competition\ICompetitionService;
-use App\Services\Competition\CompetitionService;
-use App\Services\Season\ISeasonService;
-use App\Services\Season\SeasonService;
-use App\Services\Manager\IManagerService;
-use App\Services\Manager\ManagerService;
+use App\Services\Core\Players\IPlayerService;
+use App\Services\Core\Players\PlayerService;
+use App\Services\Core\Teams\ITeamService;
+use App\Services\Core\Teams\TeamService;
+use App\Services\Core\Countries\ICountryService;
+use App\Services\Core\Countries\CountryService;
+use App\Services\Core\Continents\IContinentService;
+use App\Services\Core\Continents\ContinentService;
+use App\Services\Core\Competitions\ICompetitionService;
+use App\Services\Core\Competitions\CompetitionService;
+use App\Services\Core\Seasons\ISeasonService;
+use App\Services\Core\Seasons\SeasonService;
+use App\Services\Core\Managers\IManagerService;
+use App\Services\Core\Managers\ManagerService;
 use App\Services\Transfer\ITransferService;
 use App\Services\Transfer\TransferService;
 use App\Services\CompetitionParticipant\ICompetitionParticipantService;
@@ -65,6 +65,8 @@ use App\Listeners\Reverb\ReverbRoomLestiner;
 use Illuminate\Support\Facades\Event;
 use Laravel\Reverb\Events\ChannelRemoved;
 use Laravel\Reverb\Events\MessageReceived;
+use Laravel\Passport\Passport;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -110,6 +112,35 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Vite::prefetch(concurrency: 3);
+        Passport::tokensCan([
+            'openid' => 'Standard OpenID Connect identification',
+            'profile' => 'Access basic user profile',
+            'email' => 'Access user email address',
+        ]);
+
+        Passport::defaultScopes([
+            'openid',
+            'profile',
+            'email',
+        ]);
+        // Use custom client model to skip consent prompt for first-party clients
+        Passport::useClientModel(\App\Models\PassportClient::class);
+
+        // Register default authorization view required by Passport 13+
+        Passport::authorizationView(function ($request, $client, $scopes, $authRequest) {
+            return view('passport::authorize', [
+                'request' => $request,
+                'client' => $client,
+                'scopes' => $scopes,
+                'authRequest' => $authRequest,
+            ]);
+        });
+
+        // Passport OAuth 2.0 token lifetimes
+        Passport::tokensExpireIn(now()->addHour());
+        Passport::refreshTokensExpireIn(now()->addDays(30));
+        Passport::personalAccessTokensExpireIn(now()->addMonths(6));
+
         RateLimiter::for('api', function ($request) {
             return Limit::perMinute(60)->by(
                 optional($request->user())->id ?: $request->ip()

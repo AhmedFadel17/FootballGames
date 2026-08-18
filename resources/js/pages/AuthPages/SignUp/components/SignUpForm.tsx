@@ -4,18 +4,14 @@ import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import * as yup from "yup";
-import { useRegisterMutation } from "@/services/identityApi";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
-import { useAppDispatch } from "@/store";
-import { loginSuccess } from "@/store/slices/authSlice";
 import { GuestLogin } from "../../Shared/GuestLogin";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
   const schema = yup.object().shape({
     email: yup.string().email('Invalid email').required('Email is required'),
@@ -27,18 +23,28 @@ export default function SignUpForm() {
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
   });
-  const [registerUser] = useRegisterMutation();
 
   const onSubmit = async (data: any) => {
     await toast.promise(
-      registerUser(data).unwrap(),
+      fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      }).then(async (res) => {
+        if (!res.ok) {
+          const err = await res.json();
+          throw err;
+        }
+        return res.json();
+      }),
       {
-        loading: "signing up...",
-        success: "Registration successful",
+        loading: "Signing up...",
+        success: "Registration successful! Please sign in.",
+        error: "Registration failed",
       }
-    ).then((d: any) => {
-      dispatch(loginSuccess(d))
-      navigate('/')
+    ).then(() => {
+      // After registration redirect to login → user goes through OIDC flow
+      navigate('/login');
     });
   }
 
@@ -181,7 +187,7 @@ export default function SignUpForm() {
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
                 Already have an account? {""}
                 <Link
-                  to="/signin"
+                  to="/login"
                   className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
                 >
                   Sign In

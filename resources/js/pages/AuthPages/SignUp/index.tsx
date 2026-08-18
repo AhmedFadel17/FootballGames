@@ -1,17 +1,17 @@
 import PageMeta from "@/components/common/PageMeta";
 import AuthLayout from "./../AuthPageLayout";
 import SignUpForm from "./components/SignUpForm";
-import { useAppSelector } from "@/store";
+import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 export default function SignUp() {
     const navigate = useNavigate();
-    const isAuth = useAppSelector((state) => state.auth.isAuthenticated);
+    const auth = useAuth();
     useEffect(() => {
-      if (isAuth) {
+      if (auth.isAuthenticated) {
         navigate("/");
       }
-    }, [isAuth])
+    }, [auth.isAuthenticated])
   return (
     <>
       <PageMeta

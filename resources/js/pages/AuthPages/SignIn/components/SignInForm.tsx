@@ -1,45 +1,65 @@
 import { useState } from "react";
+import { useAuth } from "react-oidc-context";
+import { Link } from "react-router";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
+import { GuestLogin } from "../../Shared/GuestLogin";
 import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
-import Checkbox from "@/components/form/input/Checkbox";
-import { useLoginMutation } from "@/services/identityApi";
-import { Link, useNavigate } from "react-router";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
-import { useAppDispatch } from "@/store";
-import { loginSuccess } from "@/store/slices/authSlice";
-import { GuestLogin } from "../../Shared/GuestLogin";
+
+/**
+ * SignInForm
+ *
+ * Authentication is handled by a two-step PKCE flow:
+ * 1. POST to /auth/login (backend session authentication) which sets the session cookie.
+ * 2. On success, call auth.signinRedirect() to redirect to Passport's /oauth/authorize.
+ *    Since the session is now active, Passport completes the flow automatically and
+ *    redirects to /callback to exchange the authorization code for the tokens.
+ */
 export default function SignInForm() {
+  const auth = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+
   const schema = yup.object().shape({
-    email: yup.string().email('Invalid email').required('Email is required'),
-    password: yup.string().required('Password is required'),
+    email: yup.string().email("Invalid email").required("Email is required"),
+    password: yup.string().required("Password is required"),
   });
-  const { register, handleSubmit, formState: { errors } } = useForm({
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
     resolver: yupResolver(schema),
   });
-  const [loginUser] = useLoginMutation();
 
   const onSubmit = async (data: any) => {
     await toast.promise(
-      loginUser(data)
-        .unwrap(),
+      fetch("/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }).then(async (res) => {
+        if (!res.ok) {
+          const err = await res.json();
+          throw err;
+        }
+        return res.json();
+      }),
       {
-        loading: "logining in...",
-        success: "Login successful",
-        error:"Login failed"
+        loading: "Signing in...",
+        success: "Session authenticated! Redirecting to secure login...",
+        error: (err: any) => err?.message || "Invalid credentials",
       }
-    ).then((d: any) => {
-      dispatch(loginSuccess({...d,rememberMe:isChecked}))
-      navigate('/')
+    ).then(() => {
+      // Trigger Passport's authorize redirect (silent/auto-approved since we have a session cookie now)
+      auth.signinRedirect();
     });
-  }
+  };
+
   return (
     <div className="flex flex-col flex-1">
       <div className="w-full max-w-md pt-10 mx-auto">
@@ -58,13 +78,15 @@ export default function SignInForm() {
               Sign In
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Enter your email and password to sign in!
+              Sign in securely to your Football Games account.
             </p>
           </div>
           <div>
+            {/* Guest Login option */}
             <div className="grid grid-cols-1">
               <GuestLogin />
             </div>
+
             <div className="relative py-3 sm:py-5">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
@@ -75,8 +97,9 @@ export default function SignInForm() {
                 </span>
               </div>
             </div>
+
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="space-y-6">
+              <div className="space-y-5">
                 {/* <!-- Email --> */}
                 <div>
                   <Label>
@@ -102,7 +125,6 @@ export default function SignInForm() {
                       type={showPassword ? "text" : "password"}
                       {...register("password")}
                       id="password"
-
                       error={errors.password ? true : false}
                       hint={errors.password && errors.password.message}
                     />
@@ -119,25 +141,14 @@ export default function SignInForm() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Checkbox checked={isChecked} onChange={setIsChecked} className="my-auto" />
-                    <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
-                      Keep me logged in
-                    </span>
-                  </div>
-                  <Link
-                    to="/reset-password"
-                    className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
+                {/* <!-- Button --> */}
                 <div>
                   <button
                     type="submit"
-                    className="flex items-center justify-center w-full px-4 py-3 border text-sm font-medium text-secondary transition rounded-lg bg-primary uppercase shadow-theme-xs hover:bg-gray-100 hover:text-primary hover:border-primary">
-                    Login
+                    disabled={isSubmitting || auth.isLoading}
+                    className="flex items-center justify-center w-full px-4 py-3 border text-sm font-medium text-secondary transition rounded-lg bg-primary uppercase shadow-theme-xs hover:bg-gray-100 hover:text-primary hover:border-primary disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting || auth.isLoading ? "Signing In..." : "Sign In"}
                   </button>
                 </div>
               </div>
@@ -145,7 +156,7 @@ export default function SignInForm() {
 
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                Don&apos;t have an account? {""}
+                Don&apos;t have an account?{" "}
                 <Link
                   to="/signup"
                   className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
