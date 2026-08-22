@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Modal from '@/components/Modal';
+import Modal from '@/components/ui/Modals';
 import { Button } from '@/components/ui/Button';
 import { useGetTeamsQuery, useUpdateCompetitionSeasonMutation } from '@/store/apis';
 import { CompetitionSeason, Team } from '@/types';
@@ -76,8 +76,8 @@ export default function EditWinnerModal({ isOpen, onClose, competitionSeason, co
                 <div
                     onClick={() => setSelectedTeamId(undefined)}
                     className={`p-3 rounded-xl border cursor-pointer flex items-center justify-between transition-all ${selectedTeamId === undefined || selectedTeamId === null
-                            ? 'bg-accent-cyan/10 border-accent-cyan/40 text-accent-cyan'
-                            : 'bg-white/5 border-white/5 text-white/60 hover:bg-white/10'
+                        ? 'bg-accent-cyan/10 border-accent-cyan/40 text-accent-cyan'
+                        : 'bg-white/5 border-white/5 text-white/60 hover:bg-white/10'
                         }`}
                 >
                     <span className="text-xs font-semibold">No Winner Assigned</span>
@@ -100,8 +100,8 @@ export default function EditWinnerModal({ isOpen, onClose, competitionSeason, co
                                     key={team.id}
                                     onClick={() => setSelectedTeamId(team.id)}
                                     className={`p-3 rounded-xl border cursor-pointer flex items-center justify-between transition-all ${isSelected
-                                            ? 'bg-accent-cyan/15 border-accent-cyan/50 text-white'
-                                            : 'bg-white/5 border-white/5 text-white/80 hover:bg-white/10 hover:border-white/10'
+                                        ? 'bg-accent-cyan/15 border-accent-cyan/50 text-white'
+                                        : 'bg-white/5 border-white/5 text-white/80 hover:bg-white/10 hover:border-white/10'
                                         }`}
                                 >
                                     <div className="flex items-center gap-3">
