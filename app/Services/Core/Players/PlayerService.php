@@ -26,7 +26,16 @@ class PlayerService implements IPlayerService
 
     public function getById($id): Player
     {
-        $player = Player::with('country')->findOrFail($id);
+        $player = Player::with([
+            'country',
+            'teamPeriods.team',
+            'transfers.fromTeam',
+            'transfers.toTeam',
+            'careerSeasonStats.competition',
+            'careerSeasonStats.season',
+            'careerSeasonStats.team',
+            'careerSummaries.team',
+        ])->findOrFail($id);
         return $player;
     }
 

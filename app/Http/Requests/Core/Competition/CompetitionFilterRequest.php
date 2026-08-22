@@ -8,7 +8,7 @@ class CompetitionFilterRequest extends BaseFilterRequest
 {
     protected function allowedSortFields(): array
     {
-        return ['id', 'name', 'short_name', 'country_id', 'type', 'tier', 'is_active', 'popularity', 'created_at'];
+        return ['id', 'name', 'abbr', 'country_id', 'popularity', 'api_id', 'type', 'tier', 'is_active', 'created_at'];
     }
 
     protected function filterRules(): array

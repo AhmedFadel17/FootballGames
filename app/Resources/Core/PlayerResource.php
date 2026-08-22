@@ -24,6 +24,10 @@ class PlayerResource extends JsonResource
             'rating' => $this->rating,
             'market_value' => $this->market_value,
             'country' => new CountryResource($this->whenLoaded('country')),
+            'team_periods' => $this->whenLoaded('teamPeriods'),
+            'transfers' => $this->whenLoaded('transfers'),
+            'career_season_stats' => $this->whenLoaded('careerSeasonStats'),
+            'career_summaries' => $this->whenLoaded('careerSummaries'),
         ];
     }
 }

@@ -26,7 +26,7 @@ class ManagerService implements IManagerService
 
     public function getById($id): Manager
     {
-        $manager = Manager::findOrFail($id);
+        $manager = Manager::with(['country', 'teamPeriods.team'])->findOrFail($id);
         return $manager;
     }
 

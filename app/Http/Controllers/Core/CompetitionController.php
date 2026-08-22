@@ -8,10 +8,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Core\Competition\CreateCompetitionRequest;
 use App\Http\Requests\Core\Competition\CompetitionFilterRequest;
 use App\Http\Requests\Core\Competition\UpdateCompetitionRequest;
+use App\Http\Requests\Core\Team\TeamFilterRequest;
+use App\Http\Requests\Shared\BaseFilterRequest;
 use App\Resources\Core\CompetitionResource;
+use App\Resources\Core\TeamResource;
 use App\Services\Core\Competitions\ICompetitionService;
 use App\Traits\ApiResponses;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class CompetitionController extends Controller
 {
@@ -42,6 +46,13 @@ class CompetitionController extends Controller
     {
         $competition = $this->_service->getById($id);
         return $this->successResponse(new CompetitionResource($competition), 'Competition retrieved successfully');
+    }
+
+    public function getTeams(TeamFilterRequest $request, $id): JsonResponse
+    {
+        $dto = PaginationDTO::fromRequest($request);
+        $teams = $this->_service->getTeamsByCompetitionId($id, $dto);
+        return $this->paginatedResponse($teams, TeamResource::class, 'Competition teams retrieved successfully');
     }
 
     public function update(UpdateCompetitionRequest $request, $id): JsonResponse

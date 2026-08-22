@@ -10,6 +10,7 @@ export * from './admin/core/competitions.api';
 export * from './admin/core/managers.api';
 export * from './admin/core/players.api';
 export * from './admin/core/teams.api';
+export * from './admin/core/competitionSeasons.api';
 
 
 // ─── Infra ────────────────────────────────────────────────────────────────────

@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Core\CompetitionController;
 use App\Http\Controllers\Core\CompetitionParticipantController;
 use App\Http\Controllers\Core\CompetitionPlayerFullStatController;
+use App\Http\Controllers\Core\CompetitionSeasonController;
 use App\Http\Controllers\Core\CompetitionTeamFullStatController;
 use App\Http\Controllers\Core\ContinentController;
 use App\Http\Controllers\Core\CountryController;
@@ -109,7 +110,10 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::prefix('games-list')->group(function () {
             Route::apiResource('top-list', TopListGameController::class);
         });
+        Route::get('competitions/{id}/teams', [CompetitionController::class, 'getTeams']);
         Route::apiResource('competitions', CompetitionController::class);
+        Route::get('competition-seasons/{id}/standings', [CompetitionSeasonController::class, 'getStandings']);
+        Route::apiResource('competition-seasons', CompetitionSeasonController::class);
         Route::apiResource('competition-participants', CompetitionParticipantController::class);
         Route::apiResource('competition-player-stats', CompetitionPlayerFullStatController::class);
         Route::apiResource('competition-team-stats', CompetitionTeamFullStatController::class);

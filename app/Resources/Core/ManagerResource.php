@@ -17,6 +17,7 @@ class ManagerResource extends JsonResource
             'popularity' => $this->popularity,
             'img_src' => $this->img_src,
             'country' => new CountryResource($this->whenLoaded('country')),
+            'team_periods' => $this->whenLoaded('teamPeriods'),
         ];
     }
 }

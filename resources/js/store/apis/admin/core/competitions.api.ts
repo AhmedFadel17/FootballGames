@@ -1,6 +1,6 @@
 import { mainApi } from './../../mainApi';
 import { ApiResponse, PaginationResponse, PaginationFilter } from '@/types';
-import { Competition } from '@/types';
+import { Competition, Team } from '@/types';
 
 export interface CreateCompetitionRequest {
     name: string;
@@ -19,6 +19,7 @@ export interface CreateCompetitionRequest {
 export interface UpdateCompetitionRequest extends Partial<CreateCompetitionRequest> { }
 
 export interface CompetitionFilter extends PaginationFilter {
+    country_id?: number;
     searchQuery?: string;
 }
 
@@ -53,6 +54,23 @@ export const competitionsApi = mainApi.injectEndpoints({
             providesTags: (_result, _err, id) => [{ type: 'Competition', id }],
         }),
 
+        getCompetitionTeams: builder.query<ApiResponse<PaginationResponse<Team>>, { id: number } & PaginationFilter>({
+            query: ({ id, ...filter }) => {
+                const params = new URLSearchParams();
+                Object.entries(filter).forEach(([key, value]) => {
+                    if (value !== undefined && value !== null && value !== '') {
+                        params.append(key, value.toString());
+                    }
+                });
+
+                return {
+                    url: `/api/v1/admin/competitions/${id}/teams`,
+                    params,
+                };
+            },
+            providesTags: (_result, _err, { id }) => [{ type: 'Competition', id: `TEAMS_${id}` }],
+        }),
+
         createCompetition: builder.mutation<ApiResponse<Competition>, CreateCompetitionRequest>({
             query: (body) => ({ url: '/api/v1/admin/competitions', method: 'POST', body }),
             invalidatesTags: [{ type: 'Competition', id: 'LIST' }],
@@ -80,6 +98,7 @@ export const competitionsApi = mainApi.injectEndpoints({
 export const {
     useGetCompetitionsQuery,
     useGetCompetitionByIdQuery,
+    useGetCompetitionTeamsQuery,
     useCreateCompetitionMutation,
     useUpdateCompetitionMutation,
     useDeleteCompetitionMutation,

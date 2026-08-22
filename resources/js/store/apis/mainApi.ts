@@ -27,6 +27,7 @@ export const mainApi = createApi({
     'Team',
     'Player',
     'Manager',
+    'CompetitionSeason',
 
   ],
   endpoints: () => ({}),

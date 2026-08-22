@@ -92,8 +92,15 @@ export const getManagerTableColumns = (): TableColumn<Manager>[] => [
 ];
 
 export const getManagerTableActions = (
+    onView: (manager: Manager) => void,
     onDelete: (manager: Manager) => void
 ): TableAction<Manager>[] => [
+        {
+            label: "View",
+            icon: "visibility",
+            onClick: onView,
+            className: "text-accent-cyan",
+        },
         {
             label: "Edit",
             icon: "edit",

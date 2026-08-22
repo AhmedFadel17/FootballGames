@@ -32,6 +32,11 @@ class Country extends Model
         return $this->hasMany(Player::class);
     }
 
+    public function managers(): HasMany
+    {
+        return $this->hasMany(Manager::class);
+    }
+
      public function getImgSrcAttribute(): string
     {
         $code = strtolower($this->code);

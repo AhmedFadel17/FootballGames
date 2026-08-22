@@ -13,7 +13,10 @@ import { showToast } from "@/utils/toast";
 import AddCountryModal from "./components/AddCountryModal";
 import { getCountryTableColumns, getCountryTableActions } from "./components/CountriesTableConfig";
 
+import { useNavigate } from "react-router-dom";
+
 export default function CountriesPage() {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(8);
   const [searchTerm, setSearchTerm] = useState('');
@@ -108,10 +111,13 @@ export default function CountriesPage() {
         <GenericTable<Country>
           items={countries}
           columns={getCountryTableColumns()}
-          actions={getCountryTableActions((country) => {
-            setSelectedId(country.id);
-            setIsDeleteDialogOpen(true);
-          })}
+          actions={getCountryTableActions(
+            (country) => navigate(`/admin/countries/${country.id}`),
+            (country) => {
+              setSelectedId(country.id);
+              setIsDeleteDialogOpen(true);
+            }
+          )}
           searchOption={{
             placeholder: "Search by name...",
             value: searchTerm,

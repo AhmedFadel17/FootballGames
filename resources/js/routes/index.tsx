@@ -11,7 +11,6 @@ import Teams from "@/pages/Admin/Core/Teams";
 import Players from "@/pages/Admin/Core/Players";
 import Managers from "@/pages/Admin/Core/Managers";
 import Seasons from "@/pages/Admin/Core/Seasons";
-import Transfers from "@/pages/Admin/Core/Transfers";
 
 import PlayerStats from "@/pages/Admin/Statistics/PlayersStats";
 import TeamStats from "@/pages/Admin/Statistics/TeamsStats";
@@ -23,6 +22,11 @@ import TopListPage from "@/pages/Admin/Games/TopListGame";
 import Home from "@/pages/Main/Home";
 import Multi from "@/pages/Dashboard/Multi";
 import GuessThePlayerPage from "@/pages/Games/GuessThePlayer";
+import CompetitionDetails from "@/pages/Admin/Core/Competitions/CompetitionDetails";
+import CompetitionSeasonDetails from "@/pages/Admin/Core/Competitions/CompetitionSeasonDetails";
+import PlayerDetails from "@/pages/Admin/Core/Players/PlayerDetails";
+import ManagerDetails from "@/pages/Admin/Core/Managers/ManagerDetails";
+import CountryDetails from "@/pages/Admin/Areas/Countries/CountryDetails";
 
 // =============================
 // 🚀 MAIN ROUTES
@@ -78,7 +82,7 @@ export const GamesRoutes: AppRoute[] = [
     label: "Top List",
     element: <TopListGame />,
   },
-    {
+  {
     path: "/games/guess-the-player",
     label: "Guess The Player",
     element: <GuessThePlayerPage />,
@@ -109,6 +113,11 @@ export const AppAdminRoutes: AppRoute[] = [
     element: <Countries />,
   },
   {
+    path: "/admin/countries/:id",
+    label: "Country Details",
+    element: <CountryDetails />,
+  },
+  {
     path: "/admin/games",
     label: "Games List",
     element: <GamesListPage />,
@@ -124,6 +133,16 @@ export const AppAdminRoutes: AppRoute[] = [
     element: <Competitions />,
   },
   {
+    path: "/admin/competitions/:id",
+    label: "Competition Details",
+    element: <CompetitionDetails />,
+  },
+  {
+    path: "/admin/competition-seasons/:id",
+    label: "Competition Season Details",
+    element: <CompetitionSeasonDetails />,
+  },
+  {
     path: "/admin/teams",
     label: "Teams",
     element: <Teams />,
@@ -134,19 +153,24 @@ export const AppAdminRoutes: AppRoute[] = [
     element: <Players />,
   },
   {
+    path: "/admin/players/:id",
+    label: "Player Details",
+    element: <PlayerDetails />,
+  },
+  {
     path: "/admin/managers",
     label: "Managers",
     element: <Managers />,
   },
   {
+    path: "/admin/managers/:id",
+    label: "Manager Details",
+    element: <ManagerDetails />,
+  },
+  {
     path: "/admin/seasons",
     label: "Seasons",
     element: <Seasons />,
-  },
-  {
-    path: "/admin/transfers",
-    label: "Transfers",
-    element: <Transfers />,
   },
   {
     path: "/admin/statistics/teams-stats",

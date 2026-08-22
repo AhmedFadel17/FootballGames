@@ -109,8 +109,8 @@ export default function Sidebar({ isCollapsed, isAdmin }: SidebarProps) {
                         type="button"
                         onClick={() => handleSubmenuToggle(key)}
                         className={`flex items-center rounded-xl transition-all duration-300 group w-full ${!isExpanded
-                                ? 'justify-center px-0 py-3 gap-0'
-                                : 'px-4 py-2.5 gap-3.5'
+                            ? 'justify-center px-0 py-3 gap-0'
+                            : 'px-4 py-2.5 gap-3.5'
                             } ${isParentActive
                                 ? 'bg-accent-purple/15 text-white border border-accent-purple/30 shadow-[0_0_15px_rgba(138,43,226,0.15)]'
                                 : 'text-white/60 hover:bg-white/5 hover:text-white'
@@ -118,8 +118,8 @@ export default function Sidebar({ isCollapsed, isAdmin }: SidebarProps) {
                     >
                         <span
                             className={`flex-shrink-0 flex items-center justify-center transition-colors ${isParentActive
-                                    ? 'text-accent-purple'
-                                    : 'group-hover:text-white'
+                                ? 'text-accent-purple'
+                                : 'group-hover:text-white'
                                 }`}
                         >
                             {renderIcon(nav.icon)}
@@ -144,8 +144,8 @@ export default function Sidebar({ isCollapsed, isAdmin }: SidebarProps) {
                         <Link
                             to={nav.path}
                             className={`flex items-center rounded-xl transition-all duration-300 group ${!isExpanded
-                                    ? 'justify-center px-0 py-3 gap-0'
-                                    : 'px-4 py-2.5 gap-3.5'
+                                ? 'justify-center px-0 py-3 gap-0'
+                                : 'px-4 py-2.5 gap-3.5'
                                 } ${isParentActive
                                     ? 'bg-accent-purple/15 text-white border border-accent-purple/30 shadow-[0_0_15px_rgba(138,43,226,0.15)]'
                                     : 'text-white/60 hover:bg-white/5 hover:text-white'
@@ -153,8 +153,8 @@ export default function Sidebar({ isCollapsed, isAdmin }: SidebarProps) {
                         >
                             <span
                                 className={`flex-shrink-0 flex items-center justify-center transition-colors ${isParentActive
-                                        ? 'text-accent-purple'
-                                        : 'group-hover:text-white'
+                                    ? 'text-accent-purple'
+                                    : 'group-hover:text-white'
                                     }`}
                             >
                                 {renderIcon(nav.icon)}
@@ -162,8 +162,8 @@ export default function Sidebar({ isCollapsed, isAdmin }: SidebarProps) {
 
                             <span
                                 className={`font-semibold text-[13px] tracking-wide transition-all duration-300 overflow-hidden whitespace-nowrap ${!isExpanded
-                                        ? 'w-0 opacity-0 hidden'
-                                        : 'w-auto opacity-100 flex-1'
+                                    ? 'w-0 opacity-0 hidden'
+                                    : 'w-auto opacity-100 flex-1'
                                     }`}
                             >
                                 {nav.label}
@@ -195,8 +195,8 @@ export default function Sidebar({ isCollapsed, isAdmin }: SidebarProps) {
                                         <Link
                                             to={subItem.path}
                                             className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all ${isSubActive
-                                                    ? 'text-accent-purple bg-accent-purple/10 font-semibold'
-                                                    : 'text-white/50 hover:text-white hover:bg-white/5'
+                                                ? 'text-accent-purple bg-accent-purple/10 font-semibold'
+                                                : 'text-white/50 hover:text-white hover:bg-white/5'
                                                 }`}
                                         >
                                             {subItem.icon && (
@@ -242,13 +242,13 @@ export default function Sidebar({ isCollapsed, isAdmin }: SidebarProps) {
                         className="w-9 h-9 flex-shrink-0 object-contain"
                     />
                     <div
-                        className={`flex font-headline font-bold text-xl transition-all duration-300 overflow-hidden ${!isExpanded ? 'w-0 opacity-0 hidden' : 'w-auto opacity-100'
+                        className={`flex font-headline gap-x-2 font-bold text-xl transition-all duration-300 overflow-hidden ${!isExpanded ? 'w-0 opacity-0 hidden' : 'w-auto opacity-100'
                             }`}
                     >
                         <span className="text-primary-light whitespace-nowrap">
-                            VidiMetrics
+                            Football
                         </span>
-                        <span className="text-primary whitespace-nowrap">.Ai</span>
+                        <span className="text-primary whitespace-nowrap"> Arena</span>
                     </div>
                 </div>
             </div>

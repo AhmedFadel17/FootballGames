@@ -14,6 +14,7 @@ export interface CreateManagerRequest {
 export interface UpdateManagerRequest extends Partial<CreateManagerRequest> { }
 
 export interface ManagerFilter extends PaginationFilter {
+    country_id?: number;
     searchQuery?: string;
 }
 

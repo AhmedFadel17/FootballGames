@@ -15,6 +15,8 @@ export interface CreateTeamRequest {
 export interface UpdateTeamRequest extends Partial<CreateTeamRequest> { }
 
 export interface TeamFilter extends PaginationFilter {
+    country_id?: number;
+    competition_id?: number;
     searchQuery?: string;
 }
 

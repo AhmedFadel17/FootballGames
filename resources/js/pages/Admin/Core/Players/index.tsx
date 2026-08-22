@@ -12,7 +12,10 @@ import { showToast } from "@/utils/toast";
 import AddPlayerModal from "./components/AddPlayerModal";
 import { getPlayerTableColumns, getPlayerTableActions } from "./components/PlayersTableConfig";
 
+import { useNavigate } from "react-router-dom";
+
 export default function PlayersPage() {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(8);
   const [searchTerm, setSearchTerm] = useState('');
@@ -120,10 +123,13 @@ export default function PlayersPage() {
         <GenericTable<Player>
           items={players}
           columns={getPlayerTableColumns()}
-          actions={getPlayerTableActions((player) => {
-            setSelectedId(player.id);
-            setIsDeleteDialogOpen(true);
-          })}
+          actions={getPlayerTableActions(
+            (player) => navigate(`/admin/players/${player.id}`),
+            (player) => {
+              setSelectedId(player.id);
+              setIsDeleteDialogOpen(true);
+            }
+          )}
           searchOption={{
             placeholder: "Search by name...",
             value: searchTerm,

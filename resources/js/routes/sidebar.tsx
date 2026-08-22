@@ -5,21 +5,15 @@ import {
   FaShieldAlt,
   FaUserCog,
   FaCalendarAlt,
-  FaExchangeAlt,
-  FaChartBar,
-  FaGamepad,
   FaListOl,
   FaMagic,
   FaFlag,
   FaGlobeAfrica,
-  FaThList,
-  FaRegChartBar,
   FaHome
 } from "react-icons/fa";
-import { BiStats, BiWorld } from "react-icons/bi";
+import { BiWorld } from "react-icons/bi";
 import { SiSecurityscorecard } from "react-icons/si";
-import { IoBarChart, IoGameController } from "react-icons/io5";
-import { VscTypeHierarchy } from "react-icons/vsc";
+import { IoGameController } from "react-icons/io5";
 import { VscActivateBreakpoints } from "react-icons/vsc";
 
 // =============================
@@ -102,11 +96,6 @@ export const SidebarAdminRoutes: SidebarRoute[] = [
         label: "Managers",
         icon: <FaUserCog size={18} />,
       },
-      {
-        path: "/admin/transfers",
-        label: "Transfers",
-        icon: <FaExchangeAlt size={18} />,
-      },
     ]
   },
   {
@@ -126,21 +115,5 @@ export const SidebarAdminRoutes: SidebarRoute[] = [
       }
     ]
   },
-  {
-    path: "#",
-    label: "Statistics",
-    icon: <FaChartBar size={18} />,
-    subItems: [
-      {
-        path: "/admin/statistics/teams-stats",
-        label: "Teams Stats",
-        icon: <IoBarChart size={18} />,
-      },
-      {
-        path: "/admin/statistics/players-stats",
-        label: "Players Stats",
-        icon: <FaRegChartBar size={18} />,
-      }
-    ]
-  },
+
 ];

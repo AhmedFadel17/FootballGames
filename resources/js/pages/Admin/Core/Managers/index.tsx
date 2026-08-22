@@ -13,7 +13,10 @@ import { showToast } from "@/utils/toast";
 import AddManagerModal from "./components/AddManagerModal";
 import { getManagerTableColumns, getManagerTableActions } from "./components/ManagersTableConfig";
 
+import { useNavigate } from "react-router-dom";
+
 export default function ManagersPage() {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(8);
   const [searchTerm, setSearchTerm] = useState('');
@@ -121,10 +124,13 @@ export default function ManagersPage() {
         <GenericTable<Manager>
           items={managers}
           columns={getManagerTableColumns()}
-          actions={getManagerTableActions((manager) => {
-            setSelectedId(manager.id);
-            setIsDeleteDialogOpen(true);
-          })}
+          actions={getManagerTableActions(
+            (manager) => navigate(`/admin/managers/${manager.id}`),
+            (manager) => {
+              setSelectedId(manager.id);
+              setIsDeleteDialogOpen(true);
+            }
+          )}
           searchOption={{
             placeholder: "Search by name...",
             value: searchTerm,

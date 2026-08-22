@@ -41,6 +41,41 @@ export interface Competition {
     country?: Country;
 }
 
+export interface Standing {
+    id: number;
+    competition_season_id: number;
+    team_id: number;
+    position: number;
+    played: number;
+    won: number;
+    drawn: number;
+    lost: number;
+    goals_for: number;
+    goals_against: number;
+    goal_difference: number;
+    points: number;
+    team?: Team;
+}
+
+export interface CompetitionSeason {
+    id: number;
+    competition_id: number;
+    season_id: number;
+    winner_team_id?: number;
+    competition?: Competition;
+    season?: Season;
+    winner_team?: Team;
+    standings?: Standing[];
+}
+
+export interface ManagerTeamPeriod {
+    id: number;
+    manager_id: number;
+    team_id: number;
+    start_date?: string;
+    end_date?: string;
+    team?: Team;
+}
 
 export interface Manager {
     id: number;
@@ -51,6 +86,7 @@ export interface Manager {
     api_id?: number;
     country_id?: number;
     country?: Country;
+    team_periods?: ManagerTeamPeriod[];
 }
 
 export interface Team {
@@ -62,7 +98,63 @@ export interface Team {
     slug?: string;
     img_src: string;
     country_id?: number;
+    titles_won?: number;
     country?: Country;
+}
+
+export interface PlayerTeamPeriod {
+    id: number;
+    player_id: number;
+    team_id: number;
+    start_date?: string;
+    end_date?: string;
+    is_loan?: boolean;
+    is_current?: boolean;
+    team?: Team;
+}
+
+export interface Transfer {
+    id: number;
+    player_id: number;
+    from_team_id?: number;
+    to_team_id?: number;
+    transfer_date: string;
+    transfer_type?: string | number;
+    fee_eur?: number;
+    from_team?: Team;
+    to_team?: Team;
+}
+
+export interface PlayerSeasonStat {
+    id: number;
+    player_id: number;
+    team_id?: number;
+    competition_id?: number;
+    season_id?: number;
+    appearances?: number;
+    goals?: number;
+    assists?: number;
+    yellow_cards?: number;
+    red_cards?: number;
+    minutes?: number;
+    rating?: number;
+    team?: Team;
+    is_detail: boolean;
+    competition?: Competition;
+    season?: Season;
+}
+
+export interface PlayerCareerSummary {
+    id: number;
+    player_id: number;
+    team_id?: number;
+    appearances?: number;
+    goals?: number;
+    assists?: number;
+    yellow_cards?: number;
+    red_cards?: number;
+    minutes?: number;
+    team?: Team;
 }
 
 export interface Player {
@@ -82,5 +174,9 @@ export interface Player {
     img_src: string;
     country_id?: number;
     country?: Country;
+    team_periods?: PlayerTeamPeriod[];
+    transfers?: Transfer[];
+    career_season_stats?: PlayerSeasonStat[];
+    career_summaries?: PlayerCareerSummary[];
 }
 

@@ -11,6 +11,7 @@ interface ICompetitionService
 {
     public function getAll(PaginationDTO $dto): LengthAwarePaginator;
     public function getById(int $id): Competition;
+    public function getTeamsByCompetitionId(int $id, PaginationDTO $dto): LengthAwarePaginator;
     public function create(CompetitionDTO $data): Competition;
     public function update(int $id, CompetitionDTO $data): Competition;
     public function delete(int $id): bool;

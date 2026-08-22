@@ -236,8 +236,15 @@ export const getPlayerTableColumns = (): TableColumn<Player>[] => [
 ];
 
 export const getPlayerTableActions = (
+    onView: (player: Player) => void,
     onDelete: (player: Player) => void
 ): TableAction<Player>[] => [
+        {
+            label: "View",
+            icon: "visibility",
+            onClick: onView,
+            className: "text-accent-cyan",
+        },
         {
             label: "Edit",
             icon: "edit",

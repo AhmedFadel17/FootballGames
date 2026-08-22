@@ -14,12 +14,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            // ContinentSeeder::class,
-            // CountriesTableSeeder::class,
-            // CompetitionsSeeder::class,
-            // SeasonSeeder::class,
-            // TeamSeeder::class,
-            // StandingsSeeder::class,
+                // ContinentSeeder::class,
+                // CountriesTableSeeder::class,
+                // CompetitionsSeeder::class,
+                // SeasonSeeder::class,
+                // TeamSeeder::class,
+                // StandingsSeeder::class,
+            UpdateTeamsSeeder::class,
             // PlayersSeeder::class,
             // ManagersSeeder::class,
             // TransfersSeeder::class,

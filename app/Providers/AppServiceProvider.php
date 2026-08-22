@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Exceptions\Handler;
+use App\Services\Core\CompetitionSeasons\CompetitionSeasonService;
+use App\Services\Core\CompetitionSeasons\ICompetitionSeasonService;
 use App\Services\Pagination\IPaginationService;
 use App\Services\Pagination\PaginationService;
 use App\Services\Core\Players\IPlayerService;
@@ -80,6 +82,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ICountryService::class, CountryService::class);
         $this->app->bind(IContinentService::class, ContinentService::class);
         $this->app->bind(ICompetitionService::class, CompetitionService::class);
+        $this->app->scoped(ICompetitionSeasonService::class, CompetitionSeasonService::class);
+
         $this->app->bind(ISeasonService::class, SeasonService::class);
         $this->app->bind(IManagerService::class, ManagerService::class);
         $this->app->bind(ITransferService::class, TransferService::class);

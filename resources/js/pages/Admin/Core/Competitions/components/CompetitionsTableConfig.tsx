@@ -1,5 +1,6 @@
 import { TableColumn, TableAction } from "@/components/ui/Tables/GenericTable";
 import { Competition, CompetitionType } from "@/types";
+import { Link } from "react-router-dom";
 
 
 export const getCompetitionTableColumns = (): TableColumn<Competition>[] => [
@@ -8,7 +9,7 @@ export const getCompetitionTableColumns = (): TableColumn<Competition>[] => [
         header: "Name",
         align: "left",
         sortable: true,
-        render: (competition) => <span className="font-medium text-white/80">{competition.name}</span>,
+        render: (competition) => <Link to={`/admin/competitions/${competition.id}`} className="font-medium text-white/80">{competition.name}</Link>,
         editRender: (competition, onChange) => (
             <input
                 type="text"

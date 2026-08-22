@@ -61,8 +61,15 @@ export const getCountryTableColumns = (): TableColumn<Country>[] => [
 ];
 
 export const getCountryTableActions = (
+    onView: (country: Country) => void,
     onDelete: (country: Country) => void
 ): TableAction<Country>[] => [
+        {
+            label: "View",
+            icon: "visibility",
+            onClick: onView,
+            className: "text-accent-cyan",
+        },
         {
             label: "Edit",
             icon: "edit",

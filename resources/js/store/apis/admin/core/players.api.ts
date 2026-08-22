@@ -22,6 +22,7 @@ export interface CreatePlayerRequest {
 export interface UpdatePlayerRequest extends Partial<CreatePlayerRequest> { }
 
 export interface PlayerFilter extends PaginationFilter {
+    country_id?: number;
     searchQuery?: string;
 }
 
