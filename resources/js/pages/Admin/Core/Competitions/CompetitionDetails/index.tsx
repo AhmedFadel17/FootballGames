@@ -115,9 +115,9 @@ export default function CompetitionDetails() {
         <div className="space-y-8 pb-20 antialiased text-[#dae2fd]">
             {/* Breadcrumbs */}
             <Breadcrumbs items={[
-                { label: 'Home', path: '/dashboard' },
-                { label: 'Competitions', path: '/admin/competitions' },
-                { label: competition.name, path: `/admin/competitions/${competition.id}` },
+                { label: 'Home', path: '/dashboard/admin' },
+                { label: 'Competitions', path: '/dashboard/admin/competitions' },
+                { label: competition.name, path: `/dashboard/admin/competitions/${competition.id}` },
             ]} />
 
             {/* Page Header */}

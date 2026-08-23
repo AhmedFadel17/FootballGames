@@ -39,9 +39,9 @@ export default function PlayerDetails() {
         <div className="space-y-8 pb-20 antialiased text-[#dae2fd]">
             {/* Breadcrumbs */}
             <Breadcrumbs items={[
-                { label: 'Home', path: '/dashboard' },
-                { label: 'Players', path: '/admin/players' },
-                { label: player.name, path: `/admin/players/${player.id}` },
+                { label: 'Home', path: '/dashboard/admin' },
+                { label: 'Players', path: '/dashboard/admin/players' },
+                { label: player.name, path: `/dashboard/admin/players/${player.id}` },
             ]} />
 
             {/* Page Header */}

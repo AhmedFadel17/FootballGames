@@ -125,7 +125,7 @@ export default function ManagersPage() {
           items={managers}
           columns={getManagerTableColumns()}
           actions={getManagerTableActions(
-            (manager) => navigate(`/admin/managers/${manager.id}`),
+            (manager) => navigate(`/dashboard/admin/managers/${manager.id}`),
             (manager) => {
               setSelectedId(manager.id);
               setIsDeleteDialogOpen(true);

@@ -29,9 +29,9 @@ export default function CompetitionSeasonDetails() {
         <div className="space-y-10 pb-20 antialiased text-[#dae2fd]">
             {/* Breadcrumbs */}
             <Breadcrumbs items={[
-                { label: 'Home', path: '/dashboard' },
-                { label: 'Competitions', path: '/admin/competitions' },
-                { label: competition?.name || 'Competition', path: `/admin/competitions/${competition?.id}` },
+                { label: 'Home', path: '/dashboard/admin' },
+                { label: 'Competitions', path: '/dashboard/admin/competitions' },
+                { label: competition?.name || 'Competition', path: `/dashboard/admin/competitions/${competition?.id}` },
                 { label: season?.name || `Season #${seasonId}` }
             ]} />
 
@@ -45,7 +45,7 @@ export default function CompetitionSeasonDetails() {
                 />
                 <Button
                     variant="outline"
-                    onClick={() => navigate(`/admin/competitions/${competition?.id}`)}
+                    onClick={() => navigate(`/dashboard/admin/competitions/${competition?.id}`)}
                     className="shrink-0 flex items-center gap-2"
                 >
                     <span className="material-symbols-outlined text-sm">arrow_back</span>
@@ -104,19 +104,17 @@ export default function CompetitionSeasonDetails() {
 
             {/* Winner Team Spotlight Card */}
             <div className="relative">
-                <div className={`glass-card rounded-3xl p-8 border relative overflow-hidden transition-all duration-500 ${
-                    winner_team 
-                        ? 'border-amber-400/30 bg-gradient-to-r from-amber-500/10 via-white/5 to-amber-500/5' 
+                <div className={`glass-card rounded-3xl p-8 border relative overflow-hidden transition-all duration-500 ${winner_team
+                        ? 'border-amber-400/30 bg-gradient-to-r from-amber-500/10 via-white/5 to-amber-500/5'
                         : 'border-white/10 bg-white/5'
-                }`}>
+                    }`}>
                     <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
                         <div className="flex items-center gap-6">
                             {/* Trophy / Winner Badge */}
-                            <div className={`w-20 h-20 rounded-2xl flex items-center justify-center p-3 border shadow-xl ${
-                                winner_team 
-                                    ? 'bg-amber-400/10 border-amber-400/30 text-amber-400' 
+                            <div className={`w-20 h-20 rounded-2xl flex items-center justify-center p-3 border shadow-xl ${winner_team
+                                    ? 'bg-amber-400/10 border-amber-400/30 text-amber-400'
                                     : 'bg-white/5 border-white/10 text-white/30'
-                            }`}>
+                                }`}>
                                 {winner_team?.img_src ? (
                                     <img src={winner_team.img_src} alt={winner_team.name} className="w-full h-full object-contain filter drop-shadow" />
                                 ) : (
@@ -188,19 +186,17 @@ export default function CompetitionSeasonDetails() {
                                         return (
                                             <tr
                                                 key={row.id}
-                                                className={`hover:bg-white/5 transition-colors ${
-                                                    isWinner ? 'bg-amber-400/5' : ''
-                                                }`}
+                                                className={`hover:bg-white/5 transition-colors ${isWinner ? 'bg-amber-400/5' : ''
+                                                    }`}
                                             >
                                                 {/* Rank Position */}
                                                 <td className="py-4 px-4 text-center">
-                                                    <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold ${
-                                                        isWinner
+                                                    <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold ${isWinner
                                                             ? 'bg-amber-400 text-slate-950 font-black shadow-md shadow-amber-400/20'
                                                             : isTop4
-                                                            ? 'bg-accent-cyan/20 text-accent-cyan border border-accent-cyan/30'
-                                                            : 'bg-white/5 text-white/60'
-                                                    }`}>
+                                                                ? 'bg-accent-cyan/20 text-accent-cyan border border-accent-cyan/30'
+                                                                : 'bg-white/5 text-white/60'
+                                                        }`}>
                                                         {row.position}
                                                     </span>
                                                 </td>

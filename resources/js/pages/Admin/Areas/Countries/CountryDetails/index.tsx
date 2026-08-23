@@ -56,7 +56,7 @@ export default function CountryDetails() {
         { skip: !country }
     );
 
-    if (isCountryLoading) return <LoadingScreen message="Accessing Country Overview..." accentColor="emerald" />;
+    if (isCountryLoading) return <LoadingScreen message="Accessing Country Overview..." accentColor="cyan" />;
     if (isError || !country) return <ErrorScreen title="Country Not Found" message="Unable to retrieve country information." />;
 
     const compsData = compsResponse?.data;
@@ -75,9 +75,9 @@ export default function CountryDetails() {
         <div className="space-y-8 pb-20 antialiased text-[#dae2fd]">
             {/* Breadcrumbs */}
             <Breadcrumbs items={[
-                { label: 'Home', path: '/dashboard' },
-                { label: 'Countries', path: '/admin/countries' },
-                { label: country.name, path: `/admin/countries/${country.id}` },
+                { label: 'Home', path: '/dashboard/admin' },
+                { label: 'Countries', path: '/dashboard/admin/countries' },
+                { label: country.name, path: `/dashboard/admin/countries/${country.id}` },
             ]} />
 
             {/* Page Header */}
@@ -90,7 +90,7 @@ export default function CountryDetails() {
                 />
                 <Button
                     variant="outline"
-                    onClick={() => navigate('/admin/countries')}
+                    onClick={() => navigate('/dashboard/admin/countries')}
                     className="shrink-0 flex items-center gap-2"
                 >
                     <span className="material-symbols-outlined text-sm">arrow_back</span>
@@ -200,7 +200,7 @@ export default function CountryDetails() {
                         <CompetitionCard
                             key={comp.id}
                             competition={comp}
-                            onViewDetails={(id) => navigate(`/admin/competitions/${id}`)}
+                            onViewDetails={(id) => navigate(`/dashboard/admin/competitions/${id}`)}
                             onEdit={() => { }}
                             onDelete={() => { }}
                         />

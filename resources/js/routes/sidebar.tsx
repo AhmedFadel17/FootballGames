@@ -57,13 +57,13 @@ export const SidebarUserRoutes: SidebarRoute[] = [
 // =============================
 export const SidebarAdminRoutes: SidebarRoute[] = [
   {
-    path: "/dashboard",
+    path: "/dashboard/admin",
     label: "Home",
     icon: <FaHome size={18} />,
   },
   {
     label: "Games",
-    path: "/admin/games",
+    path: "dashboard/admin/games",
     icon: <IoGameController size={18} />,
   },
   {
@@ -72,27 +72,27 @@ export const SidebarAdminRoutes: SidebarRoute[] = [
     icon: <SiSecurityscorecard size={18} />,
     subItems: [
       {
-        path: "/admin/seasons",
+        path: "dashboard/admin/seasons",
         label: "Seasons",
         icon: <FaCalendarAlt size={18} />,
       },
       {
-        path: "/admin/competitions",
+        path: "dashboard/admin/competitions",
         label: "Competitions",
         icon: <FaTrophy size={18} />,
       },
       {
-        path: "/admin/teams",
+        path: "dashboard/admin/teams",
         label: "Teams",
         icon: <FaShieldAlt size={18} />,
       },
       {
-        path: "/admin/players",
+        path: "dashboard/admin/players",
         label: "Players",
         icon: <FaUsers size={18} />,
       },
       {
-        path: "/admin/managers",
+        path: "dashboard/admin/managers",
         label: "Managers",
         icon: <FaUserCog size={18} />,
       },
@@ -104,12 +104,12 @@ export const SidebarAdminRoutes: SidebarRoute[] = [
     icon: <BiWorld size={18} />,
     subItems: [
       {
-        path: "/admin/continents",
+        path: "dashboard/admin/continents",
         label: "Continents",
         icon: <FaGlobeAfrica size={18} />,
       },
       {
-        path: "/admin/countries",
+        path: "dashboard/admin/countries",
         label: "Countries",
         icon: <FaFlag size={18} />,
       }

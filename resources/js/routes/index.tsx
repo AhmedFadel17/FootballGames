@@ -98,88 +98,79 @@ export const GamesRoutes: AppRoute[] = [
 // =============================
 export const AppAdminRoutes: AppRoute[] = [
   {
-    path: "/dashboard",
+    path: "/dashboard/admin",
     label: "Dashboard",
     element: <AdminHome />,
   },
   {
-    path: "/admin/continents",
+    path: "/dashboard/admin/continents",
     label: "Continents",
     element: <Continents />,
   },
   {
-    path: "/admin/countries",
+    path: "/dashboard/admin/countries",
     label: "Countries",
     element: <Countries />,
   },
   {
-    path: "/admin/countries/:id",
+    path: "/dashboard/admin/countries/:id",
     label: "Country Details",
     element: <CountryDetails />,
   },
   {
-    path: "/admin/games",
+    path: "/dashboard/admin/games",
     label: "Games List",
     element: <GamesListPage />,
   },
   {
-    path: "/admin/games/types/top-list",
+    path: "/dashboard/admin/games/types/top-list",
     label: "Top List",
     element: <TopListPage />,
   },
   {
-    path: "/admin/competitions",
+    path: "/dashboard/admin/competitions",
     label: "Competitions",
     element: <Competitions />,
   },
   {
-    path: "/admin/competitions/:id",
+    path: "/dashboard/admin/competitions/:id",
     label: "Competition Details",
     element: <CompetitionDetails />,
   },
   {
-    path: "/admin/competition-seasons/:id",
+    path: "/dashboard/admin/competition-seasons/:id",
     label: "Competition Season Details",
     element: <CompetitionSeasonDetails />,
   },
   {
-    path: "/admin/teams",
+    path: "/dashboard/admin/teams",
     label: "Teams",
     element: <Teams />,
   },
   {
-    path: "/admin/players",
+    path: "/dashboard/admin/players",
     label: "Players",
     element: <Players />,
   },
   {
-    path: "/admin/players/:id",
+    path: "/dashboard/admin/players/:id",
     label: "Player Details",
     element: <PlayerDetails />,
   },
   {
-    path: "/admin/managers",
+    path: "/dashboard/admin/managers",
     label: "Managers",
     element: <Managers />,
   },
   {
-    path: "/admin/managers/:id",
+    path: "/dashboard/admin/managers/:id",
     label: "Manager Details",
     element: <ManagerDetails />,
   },
   {
-    path: "/admin/seasons",
+    path: "/dashboard/admin/seasons",
     label: "Seasons",
     element: <Seasons />,
   },
-  {
-    path: "/admin/statistics/teams-stats",
-    label: "Teams Stats",
-    element: <TeamStats />,
-  },
-  {
-    path: "/admin/statistics/players-stats",
-    label: "Players Stats",
-    element: <PlayerStats />,
-  },
+
 ];

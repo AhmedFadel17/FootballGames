@@ -9,17 +9,12 @@ export default function TopNavBar() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleDashboard = () => {
+    const role = auth.user?.profile?.role as string | undefined;
+    role === "admin" ? navigate("/dashboard/admin", { replace: true }) : navigate("/dashboard", { replace: true });
+  }
   const handleLogin = async () => {
     try {
-      console.log("OIDC Auth State before redirect:", {
-        authority: auth.settings.authority,
-        clientId: auth.settings.client_id,
-        redirectUri: auth.settings.redirect_uri,
-        isLoading: auth.isLoading,
-        error: auth.error,
-      });
-
-      // Initiate redirect
       await auth.signinRedirect();
     } catch (error) {
       console.error("Redirect execution error:", error);
@@ -83,7 +78,7 @@ export default function TopNavBar() {
         <div className="hidden lg:flex items-center gap-6">
           {auth.isAuthenticated ? (
             <>
-              <Button variant="primary" onClick={() => navigate('/dashboard')}>
+              <Button variant="primary" onClick={handleDashboard}>
                 Dashboard
               </Button>
               <Button variant="outline" onClick={handleLogout}>
@@ -143,7 +138,7 @@ export default function TopNavBar() {
           <div className="flex flex-col gap-3">
             {auth.isAuthenticated ? (
               <>
-                <Button variant="primary" className="w-full" onClick={() => { navigate('/dashboard'); setIsOpen(false); }}>
+                <Button variant="primary" className="w-full" onClick={() => { handleDashboard(); setIsOpen(false); }}>
                   Dashboard
                 </Button>
                 <Button variant="outline" className="w-full" onClick={() => { handleLogout(); setIsOpen(false); }}>

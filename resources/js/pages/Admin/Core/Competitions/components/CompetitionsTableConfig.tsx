@@ -9,7 +9,7 @@ export const getCompetitionTableColumns = (): TableColumn<Competition>[] => [
         header: "Name",
         align: "left",
         sortable: true,
-        render: (competition) => <Link to={`/admin/competitions/${competition.id}`} className="font-medium text-white/80">{competition.name}</Link>,
+        render: (competition) => <Link to={`/dashboard/admin/competitions/${competition.id}`} className="font-medium text-white/80">{competition.name}</Link>,
         editRender: (competition, onChange) => (
             <input
                 type="text"

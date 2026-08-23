@@ -15,9 +15,8 @@ export default function CallbackPage() {
                 // Redirect to login or home with an error state
                 navigate("/", { replace: true });
             } else if (auth.isAuthenticated) {
-                console.log("User is authenticated:", auth.user);
-                // Tokens are received and stored automatically by react-oidc-context
-                navigate("/dashboard", { replace: true }); // Redirect user to their dashboard
+                const role = auth.user?.profile?.role as string | undefined;
+                role === "admin" ? navigate("/dashboard/admin", { replace: true }) : navigate("/dashboard", { replace: true });
             }
         }
     }, [auth.isLoading, auth.isAuthenticated, auth.error, navigate]);

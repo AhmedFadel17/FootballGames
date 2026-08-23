@@ -25,8 +25,8 @@ Route::get('/oauth/jwks', function () {
 
     $jwk = [
         'kty' => 'RSA',
-        'n'   => rtrim(strtr(base64_encode($n), '+/', '-_'), '='),
-        'e'   => rtrim(strtr(base64_encode($e), '+/', '-_'), '='),
+        'n' => rtrim(strtr(base64_encode($n), '+/', '-_'), '='),
+        'e' => rtrim(strtr(base64_encode($e), '+/', '-_'), '='),
         'alg' => 'RS256',
         'use' => 'sig',
         'kid' => 'passport-key',

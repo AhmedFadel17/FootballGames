@@ -23,9 +23,9 @@ export default function ManagerDetails() {
         <div className="space-y-8 pb-20 antialiased text-[#dae2fd]">
             {/* Breadcrumbs */}
             <Breadcrumbs items={[
-                { label: 'Home', path: '/dashboard' },
-                { label: 'Managers', path: '/admin/managers' },
-                { label: manager.name, path: `/admin/managers/${manager.id}` },
+                { label: 'Home', path: '/dashboard/admin' },
+                { label: 'Managers', path: '/dashboard/admin/managers' },
+                { label: manager.name, path: `/dashboard/admin/managers/${manager.id}` },
             ]} />
 
             {/* Page Header */}

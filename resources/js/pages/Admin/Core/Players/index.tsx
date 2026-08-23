@@ -124,7 +124,7 @@ export default function PlayersPage() {
           items={players}
           columns={getPlayerTableColumns()}
           actions={getPlayerTableActions(
-            (player) => navigate(`/admin/players/${player.id}`),
+            (player) => navigate(`/dashboard/admin/players/${player.id}`),
             (player) => {
               setSelectedId(player.id);
               setIsDeleteDialogOpen(true);
