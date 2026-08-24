@@ -15,6 +15,7 @@ class BingoConditionResource extends JsonResource
             'object' => $this->whenLoaded('objectable'),
             'is_marked' => $this->is_marked,
             'pos' => $this->pos,
+            'connection_type' => $this->connection_type,
             'match' => new BingoMatchResource($this->whenLoaded('match')),
         ];
     }

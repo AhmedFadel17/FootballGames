@@ -4,7 +4,9 @@ namespace App\Services\GamesListServices\Bingo\BingoCondition;
 
 use App\Enums\GameEngine\GameDifficulty;
 use App\Enums\GamesList\BingoConnectionType;
+use App\Models\Core\Continent;
 use App\Models\Core\Country;
+use App\Models\Core\Manager;
 use App\Models\Core\Player;
 use App\Models\Core\PlayerTeamPeriod;
 use App\Models\Core\Team;
@@ -55,11 +57,15 @@ class BingoConditionService implements IBingoConditionService
         $players = Player::inRandomOrder()->where('popularity', '>=', $minPlayersPop)->limit($size * 3)->get();
         $teams = Team::inRandomOrder()->where('popularity', '>=', $minTeamsPop)->limit($size * 3)->get();
         $countries = Country::inRandomOrder()->where('popularity', '>=', $minCountriesPop)->limit($size * 3)->get();
+        $managers = Manager::where('popularity', '>=', $minTeamsPop)->inRandomOrder()->limit($size * 3)->get();
+        $continents = Continent::inRandomOrder()->limit($size)->get();
 
         $items = collect()
             ->merge($players->map(fn($p) => ['type' => Player::class, 'con' => BingoConnectionType::PLAYED_WITH, 'id' => $p->id]))
             ->merge($teams->map(fn($t) => ['type' => Team::class, 'con' => BingoConnectionType::PLAYED_FOR, 'id' => $t->id]))
             ->merge($countries->map(fn($c) => ['type' => Country::class, 'con' => BingoConnectionType::FROM, 'id' => $c->id]))
+            ->merge($managers->map(fn($m) => ['type' => Manager::class, 'con' => BingoConnectionType::COACHED_BY, 'id' => $m->id]))
+            ->merge($continents->map(fn($c) => ['type' => Continent::class, 'con' => BingoConnectionType::FROM, 'id' => $c->id]))
             ->shuffle()
             ->take($size * $size);
 
@@ -102,6 +108,19 @@ class BingoConditionService implements IBingoConditionService
                 ->exists(),
 
             Country::class => $player->country_id === $object->id,
+
+            Manager::class => DB::table('player_team_periods as pt')
+                ->join('manager_team_periods as mt', function ($join) use ($object, $player) {
+                        $join->on('pt.team_id', '=', 'mt.team_id')
+                        ->where('pt.player_id', $player->id)
+                        ->where('mt.manager_id', $object->id);
+
+                        $join->whereRaw('pt.start_date <= COALESCE(mt.end_date, "9999-12-31")')
+                        ->whereRaw('mt.start_date <= COALESCE(pt.end_date, "9999-12-31")');
+                    })
+                ->exists(),
+
+            Continent::class => $player->country?->continent_id === $object->id,
 
             default => false,
         };
