@@ -24,8 +24,7 @@ export default function DashboardNavbar({
 
     const navigate = useNavigate();
     const { pathname } = useLocation();
-    const { data: profileData } = useGetUserProfileQuery();
-    const profile = profileData?.data;
+    const { data: profile } = useGetUserProfileQuery();
 
 
 
@@ -101,7 +100,7 @@ export default function DashboardNavbar({
                             <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-white/10 p-[2px] group-hover:border-primary/50 transition-all duration-300">
                                 <img
                                     src={
-                                        profile?.profilePictureUrl ||
+                                        profile?.avatar ||
                                         "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
                                     }
                                     alt="Operator"
@@ -122,7 +121,7 @@ export default function DashboardNavbar({
                                 <div className="p-3 border-b border-white/5">
                                     <div className="flex flex-col">
                                         <span className="text-base capitalize text-white truncate">
-                                            {profile?.fullName}
+                                            {profile?.username}
                                         </span>
                                         <span className="text-sm text-white/40 truncate">
                                             {profile?.email}

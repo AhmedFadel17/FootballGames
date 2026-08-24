@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+export const API_URL = '/api/v1';
 export const mainApi = createApi({
   reducerPath: 'mainApi',
   baseQuery: fetchBaseQuery({
@@ -28,6 +29,16 @@ export const mainApi = createApi({
     'Player',
     'Manager',
     'CompetitionSeason',
+    // GameEngine
+    'Game',
+    'GameInstance',
+    'GamePrize',
+    'GameEntry',
+    'GameResult',
+    // Games List
+    'GuessThePlayer',
+    'BingoGame',
+    'Top10',
 
   ],
   endpoints: () => ({}),

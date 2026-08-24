@@ -35,3 +35,10 @@ export interface LookupOption<TValue = number | string> {
     label: string;
     [key: string]: any;
 }
+
+export interface BaseEntity {
+    id: number;
+    created_at: string;
+    updated_at: string;
+    deleted_at?: string | null;
+}

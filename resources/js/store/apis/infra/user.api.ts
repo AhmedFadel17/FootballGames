@@ -1,14 +1,12 @@
-import { SubscriptionStatus, UserRole } from '@/types';
 import { mainApi } from '../mainApi';
 import { ApiResponse, Lookup, PaginationFilter, PaginationResponse } from '@/types/api';
-import { UserProfile } from '@/types/models/infra';
+import { User, UserRole } from '@/types';
 export interface UserProfilesFilter extends PaginationFilter {
     role?: UserRole;
-    subscriptionStatus?: SubscriptionStatus;
 }
 export const userProfilesApi = mainApi.injectEndpoints({
     endpoints: (builder) => ({
-        getUsersProfiles: builder.query<ApiResponse<PaginationResponse<UserProfile>>, UserProfilesFilter>({
+        getUsersProfiles: builder.query<ApiResponse<PaginationResponse<User>>, UserProfilesFilter>({
             query: (filter) => {
                 const params = new URLSearchParams();
 
@@ -19,24 +17,24 @@ export const userProfilesApi = mainApi.injectEndpoints({
                 });
 
                 return {
-                    url: '/api/user/profiles',
+                    url: '/api/users',
                     params: params,
                 };
             },
             providesTags: (result) =>
                 result?.data?.items
                     ? [
-                        ...result.data.items.map(({ userId }) => ({ type: 'User' as const, id: userId })),
+                        ...result.data.items.map(({ id }) => ({ type: 'User' as const, id })),
                         { type: 'User', id: 'LIST' },
                     ]
                     : [{ type: 'User', id: 'LIST' }],
         }),
 
-        getUserProfile: builder.query<ApiResponse<UserProfile>, void>({
-            query: () => `/api/user/profiles/me`,
+        getUserProfile: builder.query<ApiResponse<User>, void>({
+            query: () => `/api/auth/me`,
             providesTags: ['User'],
         }),
-        updateUserProfile: builder.mutation<ApiResponse<UserProfile>, Partial<UserProfile>>({
+        updateUserProfile: builder.mutation<ApiResponse<User>, Partial<User>>({
             query: (data) => ({
                 url: `/api/user/profiles/me`,
                 method: 'PUT',
@@ -44,7 +42,7 @@ export const userProfilesApi = mainApi.injectEndpoints({
             }),
             invalidatesTags: ['User'],
         }),
-        updateUserProfilePicture: builder.mutation<ApiResponse<UserProfile>, FormData>({
+        updateUserProfilePicture: builder.mutation<ApiResponse<User>, FormData>({
             query: (data) => ({
                 url: `/api/user/profiles/me/avatar`,
                 method: 'PUT',
@@ -52,11 +50,11 @@ export const userProfilesApi = mainApi.injectEndpoints({
             }),
             invalidatesTags: ['User'],
         }),
-        getProfile: builder.query<ApiResponse<UserProfile>, string>({
+        getProfile: builder.query<ApiResponse<User>, string>({
             query: (userId) => `/api/user/profiles/${userId}`,
             providesTags: ['User'],
         }),
-        updateProfile: builder.mutation<ApiResponse<UserProfile>, { userId: string; data: Partial<UserProfile> }>({
+        updateProfile: builder.mutation<ApiResponse<User>, { userId: string; data: Partial<User> }>({
             query: ({ userId, data }) => ({
                 url: `/api/user/profiles/${userId}`,
                 method: 'PUT',

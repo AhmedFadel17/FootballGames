@@ -2,23 +2,20 @@
 
 namespace App\Services\GamesListServices\Bingo\BingoCondition;
 
-use App\DTOs\GamesList\Bingo\BingoCondition\BingoConditionDTO;
-use App\DTOs\GamesList\Bingo\BingoCondition\BingoConditionResponseDTO;
-use App\DTOs\Pagination\PaginationDTO;
 use App\Models\GamesList\Bingo\BingoCondition;
 use App\Models\GamesList\Bingo\BingoGame;
 use App\Models\User;
-use App\Services\Pagination\IPaginationService;
-use App\Shared\Enums\GameStatus;
-use Illuminate\Support\Facades\Log;
+use App\Resources\GamesList\Bingo\BingoConditionResource;
+use App\Enums\GameEngine\GameStatus;
 
 class BingoConditionService implements IBingoConditionService
 {
 
-    public function getByBingoGameId(User $user,int $id): array
+    public function getByBingoGameId(User $user, int $id): array
     {
         $bingoGame = BingoGame::query()->findOrFail($id);
-        if ($bingoGame->instance->status !== GameStatus::ACTIVE) abort(400, "Game is not Active");
+        if ($bingoGame->instance->status !== GameStatus::ACTIVE)
+            abort(400, "Game is not Active");
 
         $conditions = BingoCondition::query()
             ->with(['objectable', 'match.player'])
@@ -26,7 +23,7 @@ class BingoConditionService implements IBingoConditionService
             ->get();
 
         return $conditions
-            ->map(fn($condition) => BingoConditionResponseDTO::fromModel($condition))
+            ->map(fn($condition) => new BingoConditionResource($condition))
             ->all();
     }
     public static function getByBingoGameIdAndPosition(int $gameId, int $pos): BingoCondition

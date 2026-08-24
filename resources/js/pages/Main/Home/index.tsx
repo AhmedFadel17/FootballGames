@@ -1,5 +1,5 @@
 import PageMeta from "@/components/common/PageMeta";
-import Button from "@/components/ui/button/Button";
+import Button from "@/components/ui/Buttons/Button";
 import { motion } from "framer-motion";
 import { FaFootballBall, FaUsers, FaTrophy, FaGamepad, FaFutbol } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -8,11 +8,11 @@ import { GiTrophyCup } from "react-icons/gi";
 
 export default function Home() {
   const features = [
-    
-    {
-      icon: <FaFutbol size={100}  />,
 
-      slug:"Play",
+    {
+      icon: <FaFutbol size={100} />,
+
+      slug: "Play",
       title: "Play Unique Football Games",
 
       description:
@@ -20,7 +20,7 @@ export default function Home() {
       buttonText: "Explore Games",
     },
     {
-      slug:"Compete",
+      slug: "Compete",
       icon: <FaGamepad size={100} />,
 
       title: "Test Your Football Knowledge",
@@ -29,8 +29,8 @@ export default function Home() {
       buttonText: "Start Playing",
     },
     {
-      icon: <FaTrophy size={100}  />,
-      slug:"Win",
+      icon: <FaTrophy size={100} />,
+      slug: "Win",
       title: "Compete and Win Rewards",
       description:
         "Climb the leaderboard, challenge your friends, and earn your place among the top players. Every correct move takes you closer to victory!",
@@ -89,7 +89,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-{/* [
+      {/* [
               { title: "Games", icon: <GiSoccerBall size={100} /> },
               { title: "Top List", icon: <GiTrophyCup size={100} /> },
               { title: "Quick Picks", icon: <FaUsers size={100} /> },
@@ -97,7 +97,7 @@ export default function Home() {
       {/* Featured Games Section */}
       <div className="py-20 bg-white">
         <div className="w-full md:w-8/12 mx-auto px-6">
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {features.map((feature, i) => (
               <motion.div
@@ -109,8 +109,8 @@ export default function Home() {
                 <h3 className="text-4xl font-bold mb-3 uppercase text-primary">{feature.slug}</h3>
                 {/* <p className="font-bold">{feature.title}</p> */}
                 <p className="text-gray-600 mb-6 leading-relaxed text-center">
-                {feature.description}
-              </p>
+                  {feature.description}
+                </p>
               </motion.div>
             ))}
           </div>

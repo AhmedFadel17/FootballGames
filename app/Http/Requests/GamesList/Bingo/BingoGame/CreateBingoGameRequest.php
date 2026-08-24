@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\GamesList\Bingo\BingoGame;
 
-use App\Shared\Enums\GameDifficulty;
+use App\Enums\GameEngine\GameDifficulty;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -19,9 +19,9 @@ class CreateBingoGameRequest extends FormRequest
             'size' => 'required|integer|min:3|max:5',
             'difficulty' => [
                 'required',
-                'string',
-                Rule::in(array_column(GameDifficulty::cases(), 'value')),
+                Rule::enum(GameDifficulty::class),
             ],
+            'competition_slug' => 'nullable|exists:competitions,slug',
         ];
     }
 }

@@ -1,8 +1,8 @@
+import { BaseEntity } from "../api";
 import { CompetitionType, PlayerPosition, PlayerPreferredFoot } from "../enums";
 
 // Area types
-export interface Country {
-    id: number;
+export interface Country extends BaseEntity {
     name: string;
     code: string;
     img_src: string;
@@ -11,22 +11,19 @@ export interface Country {
     continent?: Continent;
 }
 
-export interface Continent {
-    id: number;
+export interface Continent extends BaseEntity {
     name: string;
     code: string;
 }
 
 // Season types
-export interface Season {
-    id: number;
+export interface Season extends BaseEntity {
     name: string;
     start_year: number;
     end_year: number;
 }
 
-export interface Competition {
-    id: number;
+export interface Competition extends BaseEntity {
     name: string;
     abbr: string;
     country_id?: number;
@@ -41,8 +38,7 @@ export interface Competition {
     country?: Country;
 }
 
-export interface Standing {
-    id: number;
+export interface Standing extends BaseEntity {
     competition_season_id: number;
     team_id: number;
     position: number;
@@ -57,8 +53,7 @@ export interface Standing {
     team?: Team;
 }
 
-export interface CompetitionSeason {
-    id: number;
+export interface CompetitionSeason extends BaseEntity {
     competition_id: number;
     season_id: number;
     winner_team_id?: number;
@@ -68,8 +63,7 @@ export interface CompetitionSeason {
     standings?: Standing[];
 }
 
-export interface ManagerTeamPeriod {
-    id: number;
+export interface ManagerTeamPeriod extends BaseEntity {
     manager_id: number;
     team_id: number;
     start_date?: string;
@@ -77,8 +71,7 @@ export interface ManagerTeamPeriod {
     team?: Team;
 }
 
-export interface Manager {
-    id: number;
+export interface Manager extends BaseEntity {
     name: string;
     popularity: number;
     img_src: string;
@@ -89,8 +82,7 @@ export interface Manager {
     team_periods?: ManagerTeamPeriod[];
 }
 
-export interface Team {
-    id: number;
+export interface Team extends BaseEntity {
     name: string;
     abbr: string;
     popularity: number;
@@ -102,8 +94,7 @@ export interface Team {
     country?: Country;
 }
 
-export interface PlayerTeamPeriod {
-    id: number;
+export interface PlayerTeamPeriod extends BaseEntity {
     player_id: number;
     team_id: number;
     start_date?: string;
@@ -113,8 +104,7 @@ export interface PlayerTeamPeriod {
     team?: Team;
 }
 
-export interface Transfer {
-    id: number;
+export interface Transfer extends BaseEntity {
     player_id: number;
     from_team_id?: number;
     to_team_id?: number;
@@ -125,8 +115,7 @@ export interface Transfer {
     to_team?: Team;
 }
 
-export interface PlayerSeasonStat {
-    id: number;
+export interface PlayerSeasonStat extends BaseEntity {
     player_id: number;
     team_id?: number;
     competition_id?: number;
@@ -144,8 +133,7 @@ export interface PlayerSeasonStat {
     season?: Season;
 }
 
-export interface PlayerCareerSummary {
-    id: number;
+export interface PlayerCareerSummary extends BaseEntity {
     player_id: number;
     team_id?: number;
     appearances?: number;
@@ -157,8 +145,7 @@ export interface PlayerCareerSummary {
     team?: Team;
 }
 
-export interface Player {
-    id: number;
+export interface Player extends BaseEntity {
     name: string;
     fullname: string;
     position: PlayerPosition;

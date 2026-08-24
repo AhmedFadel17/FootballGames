@@ -1,10 +1,11 @@
+import { BingoCondition } from "@/types";
 import BingoCard from "./BingoCard";
 
 interface BingoGridProps {
   width: number;
   height: number;
   conditions: BingoCondition[];
-  onCellClick: (conditionId: number) => Promise<boolean| undefined>;
+  onCellClick: (conditionId: number) => Promise<boolean | undefined>;
 }
 
 export default function BingoGrid({ width, height, conditions, onCellClick }: BingoGridProps) {

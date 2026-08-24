@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import bingoReducer from "./slices/bingoSlice";
 import topListGameReducer from "./slices/topListGameSlice";
 import adminTopListReducer from "./slices/admin/adminTopListSlice";
@@ -22,10 +21,10 @@ import authReducer from "./slices/authSlice";
  */
 const rootReducer = combineReducers({
     auth: authReducer,
-    // room: roomReducer,
-    // bingo: bingoReducer,
-    // guessThePlayer: guessThePlayerReducer,
-    // toplist: topListGameReducer,
+    room: roomReducer,
+    bingo: bingoReducer,
+    guessThePlayer: guessThePlayerReducer,
+    toplist: topListGameReducer,
     // adminTopList: adminTopListReducer,
     // [api.reducerPath]: api.reducer,
     [mainApi.reducerPath]: mainApi.reducer,
@@ -46,5 +45,3 @@ export const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-export const useAppDispatch: () => AppDispatch = useDispatch;
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

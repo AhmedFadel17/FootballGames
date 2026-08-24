@@ -1,9 +1,9 @@
 import PageMeta from "@/components/common/PageMeta";
-import { useAppSelector } from "@/store";
+import { useAppSelector } from "@/store/hooks";
 import RoomInitializer from "./components/RoomInitializer";
 
 export default function Multi() {
-    const { currentInstance,isLoading } = useAppSelector((state) => state.room);
+    const { currentInstance, isLoading } = useAppSelector((state) => state.room);
     return (
         <>
             <PageMeta

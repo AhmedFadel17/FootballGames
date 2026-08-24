@@ -5,7 +5,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import Badge from "../ui/badge/Badge";
+import Badge from "../ui/Badges/Badge";
 
 // Define the TypeScript interface for the table rows
 interface Product {
@@ -191,8 +191,8 @@ export default function RecentOrders() {
                       product.status === "Delivered"
                         ? "success"
                         : product.status === "Pending"
-                        ? "warning"
-                        : "error"
+                          ? "warning"
+                          : "error"
                     }
                   >
                     {product.status}

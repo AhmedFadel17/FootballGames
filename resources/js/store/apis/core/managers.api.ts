@@ -1,0 +1,83 @@
+import { mainApi, API_URL } from './../mainApi';
+import { ApiResponse, PaginationResponse, PaginationFilter } from '@/types';
+import { Manager } from '@/types';
+
+const BASE_URL = `${API_URL}/managers`;
+export interface CreateManagerRequest {
+    name: string;
+    popularity: number;
+    img_src: string;
+    slug?: string;
+    api_id?: number;
+    country_id: number;
+}
+
+export interface UpdateManagerRequest extends Partial<CreateManagerRequest> { }
+
+export interface ManagerFilter extends PaginationFilter {
+    country_id?: number;
+    searchQuery?: string;
+}
+
+export const managersApi = mainApi.injectEndpoints({
+    endpoints: (builder) => ({
+        getManagers: builder.query<ApiResponse<PaginationResponse<Manager>>, ManagerFilter>({
+            query: (filter) => {
+                const params = new URLSearchParams();
+
+                Object.entries(filter).forEach(([key, value]) => {
+                    if (value !== undefined && value !== null && value !== '') {
+                        params.append(key, value.toString());
+                    }
+                });
+
+                return {
+                    url: BASE_URL,
+                    params: params,
+                };
+            },
+            providesTags: (result) =>
+                result?.data?.items
+                    ? [
+                        ...result.data.items.map(({ id }) => ({ type: 'Manager' as const, id })),
+                        { type: 'Manager', id: 'LIST' },
+                    ]
+                    : [{ type: 'Manager', id: 'LIST' }],
+        }),
+
+        getManagerById: builder.query<ApiResponse<Manager>, number>({
+            query: (id) => `${BASE_URL}/${id}`,
+            providesTags: (_result, _err, id) => [{ type: 'Manager', id }],
+        }),
+
+        createManager: builder.mutation<ApiResponse<Manager>, CreateManagerRequest>({
+            query: (body) => ({ url: BASE_URL, method: 'POST', body }),
+            invalidatesTags: [{ type: 'Manager', id: 'LIST' }],
+        }),
+
+        updateManager: builder.mutation<ApiResponse<Manager>, { id: number; body: UpdateManagerRequest }>({
+            query: ({ id, body }) => ({ url: `${BASE_URL}/${id}`, method: 'PUT', body }),
+            invalidatesTags: (_result, _err, { id }) => [
+                { type: 'Manager', id },
+                { type: 'Manager', id: 'LIST' },
+            ],
+        }),
+
+        deleteManager: builder.mutation<ApiResponse<null>, number>({
+            query: (id) => ({ url: `${BASE_URL}/${id}`, method: 'DELETE' }),
+            invalidatesTags: (_result, _err, id) => [
+                { type: 'Manager', id },
+                { type: 'Manager', id: 'LIST' },
+            ],
+        }),
+
+    }),
+});
+
+export const {
+    useGetManagersQuery,
+    useGetManagerByIdQuery,
+    useCreateManagerMutation,
+    useUpdateManagerMutation,
+    useDeleteManagerMutation,
+} = managersApi;

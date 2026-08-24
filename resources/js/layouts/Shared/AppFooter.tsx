@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { MainRoutes } from "@/routes";
-import Button from "@/components/ui/button/Button";
+import Button from "@/components/ui/Buttons/Button";
 import { footerData } from "@/routes/footer";
 const AppFooter: React.FC = () => {
     const appName = import.meta.env.VITE_APP_NAME ?? "FG";

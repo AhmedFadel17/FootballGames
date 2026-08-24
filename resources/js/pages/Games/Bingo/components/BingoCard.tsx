@@ -1,3 +1,4 @@
+import { BingoCondition } from "@/types";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
@@ -55,7 +56,7 @@ export default function BingoCard({ bingoCondition, onClick }: BingoCardProps) {
                         backgroundColor: originalBg,
                     }
             }
-            whileHover={!is_marked ? { scale: 1.1, backgroundColor: (isWrong) ? "#ba2121ff" : "#fff" } :{}}
+            whileHover={!is_marked ? { scale: 1.1, backgroundColor: (isWrong) ? "#ba2121ff" : "#fff" } : {}}
             transition={{
                 duration: 0.2,
                 ease: "easeInOut",

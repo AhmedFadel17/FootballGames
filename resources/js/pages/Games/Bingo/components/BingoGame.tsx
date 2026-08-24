@@ -3,10 +3,10 @@ import {
   useGetNextBingoMatchQuery,
   useCheckBingoConditionMutation,
   useBingoGameResultsMutation,
-} from "@/services/bingoApi";
+} from "@/store/apis";
 import BingoGrid from "./BingoGrid";
 import BingoSelector from "./BingoSelector";
-import { useAppDispatch, useAppSelector } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect } from "react";
 import {
   finishGame,
@@ -60,7 +60,7 @@ export default function BingoGame({ isActive }: BingoGameProps) {
   // Set matcher
   useEffect(() => {
     if (currentMatch) {
-      dispatch(setMatcher(currentMatch));
+      dispatch(setMatcher(currentMatch.data));
     }
   }, [currentMatch]);
 
@@ -105,9 +105,12 @@ export default function BingoGame({ isActive }: BingoGameProps) {
     );
   }
 
+  console.log('bingoIsActive66666666666', bingoGame.id)
+
+
   return (
     <>
-      <div className="px-20">
+      <div className="w-full px-20">
         <div className="mb-10">
           {isFinished ?
             <div className="results-container">

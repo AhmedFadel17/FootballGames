@@ -1,6 +1,6 @@
 import PageMeta from "@/components/common/PageMeta";
 import BingoMaker from "./components/TopListMaker";
-import { useAppSelector } from "@/store";
+import { useAppSelector } from "@/store/hooks";
 import TopListGame from "./components/TopListGame";
 
 export default function TopListPage() {
@@ -13,7 +13,7 @@ export default function TopListPage() {
         description="This is the football top list page"
       />
       <div className="grid grid-cols-12 gap-4 md:gap-6">
-        
+
 
         <div className="col-span-12">
 

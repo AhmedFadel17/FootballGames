@@ -8,39 +8,47 @@ import PageMeta from "@/components/common/PageMeta";
 import BingoGrid from "./components/BingoGrid";
 import BingoSelector from "./components/BingoSelector";
 import BingoMaker from "./components/BingoMaker";
-import { useAppSelector } from "@/store";
+import { useAppSelector } from "@/store/hooks";
 import { useEffect, useState } from "react";
 import BingoGame from "./components/BingoGame";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 export default function BingoPage() {
   const bingoIsActive = useAppSelector((state) => state.bingo.isActive);
-
   return (
     <>
       <PageMeta
         title="Bingo"
         description="This is the football bingo game"
       />
-      <div className="grid grid-cols-12 gap-4 md:gap-6">
-        
+      <div className="flex flex-col h-full overflow-hidden">
+        <div>
+          <Breadcrumbs items={[
+            { label: 'Home', path: '/dashboard' },
+            { label: 'Bingo' }
+          ]} />
 
-        <div className="col-span-12">
-          {bingoIsActive ?
-            <BingoGame isActive={bingoIsActive} />
-            :
-            <BingoMaker />
-          }
-        </div>
+          <div className="py-5 flex justify-between gap-6">
+            <PageHeader
+              chipText="Bingo"
+              titlePrefix="Bingo"
+              gradientText=" Game"
+              description="Play the bingo game and have fun."
+            />
 
-        <div className="col-span-12">
+          </div>
         </div>
+        {bingoIsActive ?
+          <BingoGame isActive={bingoIsActive} />
+          :
+          <BingoMaker />
+        }
 
-        <div className="col-span-12 xl:col-span-5">
-        </div>
 
-        <div className="col-span-12 xl:col-span-7">
-        </div>
+
       </div>
+
     </>
   );
 }

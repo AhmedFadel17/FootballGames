@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import Loader from "./Loader";
 import UserProfilePic from "./UserProfilePic";
-import { useAppDispatch, useAppSelector } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { resetRoom } from "@/store/slices/roomSlice";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { useLazyGetDataQuery } from "@/services/api";
@@ -51,7 +51,7 @@ export default function RoomInitializer() {
 
 
     const handleOnCancel = async function () {
-        let gameRoute=game?.route;
+        let gameRoute = game?.route;
         try {
             const result = await triggerFetchGame({
                 url: `/api/v1/u/rooms/${currentInstance.id}/leave`,
@@ -67,7 +67,7 @@ export default function RoomInitializer() {
 
     return (
         <div className="items-center justify-center text-primary w-full min-h-[20rem] rounded text-center border-2 border-primary overflow-hidden bg-white shadow-xl">
-            
+
             <div className="text-2xl font-bold mb-5 py-4 bg-primary text-secondary">
                 <p>Lobby</p>
                 <p className="text-sm opacity-80">Code: {currentInstance.room_code}</p>

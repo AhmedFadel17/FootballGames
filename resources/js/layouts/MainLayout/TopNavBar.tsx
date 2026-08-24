@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { NavbarRoutes } from '@/routes/navbar'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { Button } from '@/components/ui/Button'
+import Button from '@/components/ui/Buttons/Button'
 import { useAuth } from 'react-oidc-context'
 import { showToast } from "@/utils/toast"
 export default function TopNavBar() {

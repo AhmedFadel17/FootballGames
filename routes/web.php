@@ -10,6 +10,7 @@ use Inertia\Inertia;
 
 // ✅ Session Login endpoint for SPA (OIDC authorization PKCE helper)
 Route::post('/auth/login', [AuthController::class, 'login']);
+Route::get('/oauth/logout', [AuthController::class, 'logout']);
 
 // Override Passport token endpoint to return custom OIDC id_token
 Route::post('/oauth/token', [OAuthTokenController::class, 'issueToken']);

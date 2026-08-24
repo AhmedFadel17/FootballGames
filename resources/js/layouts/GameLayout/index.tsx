@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { connectEcho } from "@/lib/echo";
-import { useAppSelector, useAppDispatch } from "@/store";
+import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { setOnlineUsers, userJoined, userLeft, startGame } from "@/store/slices/roomSlice";
 import { useLazyGetDataQuery } from "@/services/api";
 import { useWebRTC } from "@/hooks/useWebRTC";

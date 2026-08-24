@@ -1,4 +1,4 @@
-import { useAppDispatch } from '@/store';
+import { useAppDispatch } from '@/store/hooks';
 import { setUserMuted, setUserSpeaking } from '@/store/slices/roomSlice';
 import { useEffect, useRef, useState, useCallback } from 'react';
 

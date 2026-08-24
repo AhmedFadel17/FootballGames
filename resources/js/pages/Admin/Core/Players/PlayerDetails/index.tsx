@@ -4,7 +4,7 @@ import { useGetPlayerByIdQuery } from '@/store/apis';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { ErrorScreen, LoadingScreen } from '@/components/ui/Feedback/StatusScreens';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { Button } from '@/components/ui/Button';
+import Button from '@/components/ui/Buttons/Button';
 import { PlayerPosition, PlayerPreferredFoot } from '@/types/enums';
 import PlayerStatsTable from './components/PlayerStatsTable';
 import PlayerCareerSummaryTable from './components/PlayerCareerSummaryTable';

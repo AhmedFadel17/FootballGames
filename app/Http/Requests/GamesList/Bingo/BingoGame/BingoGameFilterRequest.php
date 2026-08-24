@@ -32,4 +32,4 @@ class BingoGameFilterRequest extends FormRequest
             'sort_order' => $this->sort_order ?? 'asc',
         ]);
     }
-} 
+}

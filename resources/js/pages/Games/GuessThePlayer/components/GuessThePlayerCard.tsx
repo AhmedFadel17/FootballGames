@@ -1,6 +1,7 @@
 import UserProfilePic from "@/pages/Dashboard/Multi/components/UserProfilePic";
 import GuessThePlayerSearch from "./GuessThePlayerSearch";
 import { FaMicrophone as Mic, FaMicrophoneLinesSlash as MicOff } from "react-icons/fa6";
+import { Player } from "@/types";
 
 const unknownPlayerImgSrc = "https://icon-library.com/images/2018/2503231_sharks-player-profile-silhouette-hd-png-download.png";
 

@@ -2,12 +2,13 @@ import Input from "@/components/form/input/InputField"
 import Select from "@/components/form/Select";
 import { useCreateDataMutation, useGetDataQuery } from "@/services/api";
 import { startBingo } from "@/store/slices/bingoSlice";
-import { Game } from "@/types/game";
+import { Game, GameDifficulty } from "@/types";
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux";
 import toast from 'react-hot-toast';
 import Label from "@/components/form/Label";
 import { motion, AnimatePresence } from "framer-motion";
+import { useCreateBingoGameMutation } from "@/store/apis";
 interface BingoMakerProps {
 }
 export default function BingoMaker({ }: BingoMakerProps) {
@@ -15,23 +16,23 @@ export default function BingoMaker({ }: BingoMakerProps) {
     const [bingoSize, setBingoSize] = useState(3);
     const [bingoGames, setBingoGames] = useState([]);
     const [selectedBingoGame, setSelectedBingoGame] = useState<string | null>(null);
-    const [gameDifficulty, setgameDifficulty] = useState<string | null>("easy");
+    const [gameDifficulty, setgameDifficulty] = useState<GameDifficulty>(1);
 
-    const [createData] = useCreateDataMutation();
+    const [createData] = useCreateBingoGameMutation();
 
     const dispatch = useDispatch();
 
     const gameDiffOptions = [
         {
-            value: "easy",
+            value: 1,
             label: 'Easy'
         },
         {
-            value: "normal",
+            value: 2,
             label: 'Normal'
         },
         {
-            value: "hard",
+            value: 3,
             label: 'Hard'
         },
     ]
@@ -45,27 +46,24 @@ export default function BingoMaker({ }: BingoMakerProps) {
         setSelectedBingoGame(value)
     }
 
-    const handleGameDiffChange = (value: string) => {
+    const handleGameDiffChange = (value: number) => {
         setgameDifficulty(value)
     }
 
     const handleBingoSubmit = async () => {
         await toast.promise(
             createData({
-                url: "/api/v1/u/games-list/bingo",
-                body: {
-                    game_id: selectedBingoGame,
-                    size: bingoSize,
-                    difficulty: gameDifficulty
-                },
-            }).unwrap(),
+                game_id: Number(selectedBingoGame),
+                size: bingoSize,
+                difficulty: gameDifficulty
+            }),
             {
                 loading: "Starting bingo game...",
                 success: "Bingo game created successfully!",
                 // error: (err) => err?.error || "Failed to start bingo game",
             }
         ).then((newGame) => {
-            dispatch(startBingo(newGame));
+            dispatch(startBingo(newGame?.data?.data));
         });
     };
 
@@ -81,7 +79,7 @@ export default function BingoMaker({ }: BingoMakerProps) {
                             Game Difficulty
                         </span>
                     </Label>
-                    <Select options={gameDiffOptions} defaultValue="easy" onChange={(value) => handleGameDiffChange(value)} placeholder="Select Game difficulty" />
+                    {/* <Select options={gameDiffOptions} defaultValue={1} onChange={(value) => handleGameDiffChange(value)} placeholder="Select Game difficulty" /> */}
                 </div>
                 <div className="py-2">
                     <Label htmlFor="" className="text-left">
@@ -103,7 +101,7 @@ export default function BingoMaker({ }: BingoMakerProps) {
                     <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
-                        onHoverStart={() => {}}
+                        onHoverStart={() => { }}
                         onClick={handleBingoSubmit}
                         className="rounded bg-primary hover:text-secondary text-white font-bold px-5 py-2"
                     >

@@ -40,7 +40,14 @@ export default function App() {
               {AppUserRoutes.map((route, index) => (
                 <Route key={index} path={route.path} element={route.element} />
               ))}
+              <Route element={<GameLayout />}>
+                {GamesRoutes.map((route, index) => (
+                  <Route key={index} path={route.path} element={route.element} />
+                ))}
+              </Route>
             </Route>
+
+
 
             <Route element={<AdminRoute />}>
               <Route element={<DashboardLayout />}>

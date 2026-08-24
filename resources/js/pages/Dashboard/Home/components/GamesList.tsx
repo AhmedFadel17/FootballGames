@@ -1,38 +1,66 @@
-import { useGetDataQuery } from "@/services/api";
+import { useGetGamesQuery } from "@/store/apis";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { ErrorScreen, LoadingScreen } from "@/components/ui/Feedback/StatusScreens";
+import { Game } from "@/types";
+import { GenericDataGrid } from "@/components/ui/Grids/GenericDataGrid";
+import { GameCard } from "@/components/ui/Cards/GameCard";
 
 
 export default function GamesList() {
-    const [gamesList, setGamesList] = useState([]);
-    const { data, isLoading, isSuccess } = useGetDataQuery({
-        url: "/api/v1/u/games",
+    const navigate = useNavigate();
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(100);
+    const [searchTerm, setSearchTerm] = useState('');
+
+
+    const [queryState, setQueryState] = useState({
+        filters: {} as Record<string, any>,
+        orderBy: 'created_at' as string | undefined,
+        sortOrder: 'desc' as 'asc' | 'desc' | undefined,
     });
-    useEffect(() => {
-        if (isSuccess && data) {
-            setGamesList(data);
-        }
-    }, [isSuccess, data]);
+
+    const { data: response, isLoading, isError, refetch } = useGetGamesQuery({
+        page,
+        per_page: pageSize,
+        ...queryState.filters,
+        sort_by: queryState.orderBy,
+        sort_order: queryState.sortOrder,
+        search: searchTerm,
+    });
+    if (isLoading) return <LoadingScreen message="Loading games..." />;
+    if (isError) return <ErrorScreen title="Failed to fetch games" message="Please try again." />;
+
+    const gamesData = response?.data;
+    const games: Game[] = gamesData?.items || [];
+
     return (
-      <div className="flex items-center justify-center">
-
-        <div className="w-full md:w-10/12 px-6 md:px-0 space-y-10 py-10">
-            {gamesList && gamesList.map(({ id, name, slug, description }: Game, idx:number) => (
-                <Link
-                                to={"/games/" + slug}
-                            >
-                                <div key={idx} className="col m-4 rounded-lg bg-gradient-to-r from-[#ffc3a0] to-[#FFAFBD] text-primary min-h-48">
-                                    <div className="bg-secondary  px-4 py-2">
-                                        <p className="text-lg font-[600]">{name}</p>
-                                    </div>
-                                    <div className="p-4">
-                                        <p>{description}</p>
-
-                                    </div>
-                                </div>
-                            </Link>
-            ))}
-</div>
-        </div>
+        <GenericDataGrid<Game>
+            items={games}
+            isLoading={isLoading}
+            error={isError}
+            loadingMessage="Loading games..."
+            errorTitle="Network Error"
+            errorMessage="Failed to fetch games. Please try again."
+            emptyStateMessage="No game parameters found matching your filters."
+            renderItem={(game) => <GameCard game={game} />}
+            searchOption={{
+                placeholder: "Search games catalog...",
+                value: searchTerm,
+                onChange: (val) => { setSearchTerm(val); setPage(1); }
+            }}
+            filterOptions={{
+                fields: [],
+                values: queryState.filters,
+                onChange: (nextFilters) => {
+                    setQueryState(prev => ({ ...prev, filters: nextFilters }));
+                    setPage(1);
+                }
+            }}
+            paginationData={gamesData}
+            onPageChange={setPage}
+            onPageSizeChange={(size) => { setPageSize(size); setPage(1); }}
+            cols={{ sm: 1, md: 2, lg: 4 }}
+        />
     );
 }

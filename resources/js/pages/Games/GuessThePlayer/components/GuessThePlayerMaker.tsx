@@ -1,6 +1,6 @@
 import { useCreateDataMutation } from "@/services/api";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { guessThePlayerConfig,setGameDetails,startGame } from "@/store/slices/games/geussThePlayerSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { guessThePlayerConfig, setGameDetails, startGame } from "@/store/slices/games/geussThePlayerSlice";
 import { setRoom } from "@/store/slices/roomSlice";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -42,12 +42,12 @@ export default function GuessThePlayerMaker() {
         ).then((newGame: GuessThePlayerGame) => {
             if (newGame?.game_instance) {
                 dispatch(setGameDetails(newGame));
-                
+
                 dispatch(setRoom({
                     instance: newGame.game_instance,
                     game: guessThePlayerConfig
                 }));
-                
+
                 navigate(`/lobby`);
             } else {
                 toast.error("Invalid game data received");
@@ -68,12 +68,12 @@ export default function GuessThePlayerMaker() {
         ).then((newGame) => {
             if (newGame?.game_instance) {
                 dispatch(setGameDetails(newGame));
-                
+
                 dispatch(setRoom({
                     instance: newGame.game_instance,
                     game: guessThePlayerConfig
                 }));
-                
+
                 navigate(`/lobby`);
             } else {
                 toast.error("No available rooms now...");
@@ -100,12 +100,12 @@ export default function GuessThePlayerMaker() {
         ).then((newGame) => {
             if (newGame?.game_instance) {
                 dispatch(setGameDetails(newGame));
-                
+
                 dispatch(setRoom({
                     instance: newGame.game_instance,
                     game: guessThePlayerConfig
                 }));
-                
+
                 navigate(`/lobby`);
             } else {
                 toast.error("Invalid game data received");

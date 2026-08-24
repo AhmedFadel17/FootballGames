@@ -9,7 +9,7 @@ import {
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { ErrorScreen, LoadingScreen } from '@/components/ui/Feedback/StatusScreens';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { Button } from '@/components/ui/Button';
+import Button from '@/components/ui/Buttons/Button';
 import { CompetitionSeason, CompetitionType, Team } from '@/types';
 import { GenericDataGrid } from '@/components/ui/Grids/GenericDataGrid';
 import ConfirmationDialog from '@/components/ui/Feedback/ConfirmationDialog';

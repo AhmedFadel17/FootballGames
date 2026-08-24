@@ -12,13 +12,10 @@ import Players from "@/pages/Admin/Core/Players";
 import Managers from "@/pages/Admin/Core/Managers";
 import Seasons from "@/pages/Admin/Core/Seasons";
 
-import PlayerStats from "@/pages/Admin/Statistics/PlayersStats";
-import TeamStats from "@/pages/Admin/Statistics/TeamsStats";
 
 import Continents from "@/pages/Admin/Areas/Continents";
 import Countries from "@/pages/Admin/Areas/Countries";
 import GamesListPage from "@/pages/Admin/Games/GamesList";
-import TopListPage from "@/pages/Admin/Games/TopListGame";
 import Home from "@/pages/Main/Home";
 import Multi from "@/pages/Dashboard/Multi";
 import GuessThePlayerPage from "@/pages/Games/GuessThePlayer";
@@ -122,11 +119,7 @@ export const AppAdminRoutes: AppRoute[] = [
     label: "Games List",
     element: <GamesListPage />,
   },
-  {
-    path: "/dashboard/admin/games/types/top-list",
-    label: "Top List",
-    element: <TopListPage />,
-  },
+
   {
     path: "/dashboard/admin/competitions",
     label: "Competitions",

@@ -21,32 +21,19 @@ use App\Services\Core\Seasons\ISeasonService;
 use App\Services\Core\Seasons\SeasonService;
 use App\Services\Core\Managers\IManagerService;
 use App\Services\Core\Managers\ManagerService;
-use App\Services\Transfer\ITransferService;
-use App\Services\Transfer\TransferService;
-use App\Services\CompetitionParticipant\ICompetitionParticipantService;
-use App\Services\CompetitionParticipant\CompetitionParticipantService;
-use App\Services\PlayerTeamPeriod\IPlayerTeamPeriodService;
-use App\Services\PlayerTeamPeriod\PlayerTeamPeriodService;
-use App\Services\ManagerTeamPeriod\IManagerTeamPeriodService;
-use App\Services\ManagerTeamPeriod\ManagerTeamPeriodService;
-use App\Services\CompetitionPlayerFullStat\ICompetitionPlayerFullStatService;
-use App\Services\CompetitionPlayerFullStat\CompetitionPlayerFullStatService;
-use App\Services\CompetitionTeamFullStat\ICompetitionTeamFullStatService;
-use App\Services\CompetitionTeamFullStat\CompetitionTeamFullStatService;
 
-use App\Services\GameServices\GameInstance\IGameInstanceService;
-use App\Services\GameServices\GameInstance\GameInstanceService;
-use App\Services\GameServices\GameEntry\IGameEntryService;
-use App\Services\GameServices\GameEntry\GameEntryService;
-use App\Services\GameServices\GameResult\IGameResultService;
-use App\Services\GameServices\GameResult\GameResultService;
-use App\Services\GameServices\GamePrize\IGamePrizeService;
-use App\Services\GameServices\GamePrize\GamePrizeService;
 
-use App\Services\GameServices\Game\GameService;
-use App\Services\GameServices\Game\IGameService;
-use App\Services\GameServices\GameType\GameTypeService;
-use App\Services\GameServices\GameType\IGameTypeService;
+use App\Services\GameEngine\GameInstances\IGameInstanceService;
+use App\Services\GameEngine\GameInstances\GameInstanceService;
+use App\Services\GameEngine\GameEntries\IGameEntryService;
+use App\Services\GameEngine\GameEntries\GameEntryService;
+use App\Services\GameEngine\GameResults\IGameResultService;
+use App\Services\GameEngine\GameResults\GameResultService;
+use App\Services\GameEngine\GamePrizes\IGamePrizeService;
+use App\Services\GameEngine\GamePrizes\GamePrizeService;
+use App\Services\GameEngine\Games\GameService;
+use App\Services\GameEngine\Games\IGameService;
+
 use App\Services\GamesListServices\Bingo\BingoCondition\BingoConditionService;
 use App\Services\GamesListServices\Bingo\BingoCondition\IBingoConditionService;
 use App\Services\GamesListServices\Bingo\BingoGame\BingoGameService;
@@ -76,33 +63,32 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(IPaginationService::class, PaginationService::class);
-        $this->app->bind(IPlayerService::class, PlayerService::class);
-        $this->app->bind(ITeamService::class, TeamService::class);
-        $this->app->bind(ICountryService::class, CountryService::class);
-        $this->app->bind(IContinentService::class, ContinentService::class);
-        $this->app->bind(ICompetitionService::class, CompetitionService::class);
-        $this->app->scoped(ICompetitionSeasonService::class, CompetitionSeasonService::class);
+        // Pagination Sevices
+        $this->app->scoped(IPaginationService::class, PaginationService::class);
+        $this->app->scoped(IPlayerService::class, PlayerService::class);
 
-        $this->app->bind(ISeasonService::class, SeasonService::class);
-        $this->app->bind(IManagerService::class, ManagerService::class);
-        $this->app->bind(ITransferService::class, TransferService::class);
-        $this->app->bind(ICompetitionParticipantService::class, CompetitionParticipantService::class);
-        $this->app->bind(IPlayerTeamPeriodService::class, PlayerTeamPeriodService::class);
-        $this->app->bind(IManagerTeamPeriodService::class, ManagerTeamPeriodService::class);
-        $this->app->bind(ICompetitionPlayerFullStatService::class, CompetitionPlayerFullStatService::class);
-        $this->app->bind(ICompetitionTeamFullStatService::class, CompetitionTeamFullStatService::class);
-        $this->app->bind(IGameService::class, GameService::class);
-        $this->app->bind(IGameTypeService::class, GameTypeService::class);
-        $this->app->bind(IGameInstanceService::class, GameInstanceService::class);
-        $this->app->bind(IGameEntryService::class, GameEntryService::class);
-        $this->app->bind(IGameResultService::class, GameResultService::class);
-        $this->app->bind(IGamePrizeService::class, GamePrizeService::class);
-        $this->app->bind(IBingoGameService::class, BingoGameService::class);
-        $this->app->bind(IBingoConditionService::class, BingoConditionService::class);
-        $this->app->bind(IBingoMatchService::class, BingoMatchService::class);
-        $this->app->bind(ITopListGameService::class, TopListGameService::class);
-        $this->app->bind(IGuessThePlayerGameService::class, GuessThePlayerGameService::class);
+        // Core Services
+        $this->app->scoped(ITeamService::class, TeamService::class);
+        $this->app->scoped(ICountryService::class, CountryService::class);
+        $this->app->scoped(IContinentService::class, ContinentService::class);
+        $this->app->scoped(ICompetitionService::class, CompetitionService::class);
+        $this->app->scoped(ICompetitionSeasonService::class, CompetitionSeasonService::class);
+        $this->app->scoped(ISeasonService::class, SeasonService::class);
+        $this->app->scoped(IManagerService::class, ManagerService::class);
+
+        // Game Engine Services
+        $this->app->scoped(IGameService::class, GameService::class);
+        $this->app->scoped(IGameInstanceService::class, GameInstanceService::class);
+        $this->app->scoped(IGameEntryService::class, GameEntryService::class);
+        $this->app->scoped(IGameResultService::class, GameResultService::class);
+        $this->app->scoped(IGamePrizeService::class, GamePrizeService::class);
+
+        // Games Services
+        $this->app->scoped(IBingoGameService::class, BingoGameService::class);
+        $this->app->scoped(IBingoConditionService::class, BingoConditionService::class);
+        $this->app->scoped(IBingoMatchService::class, BingoMatchService::class);
+        $this->app->scoped(ITopListGameService::class, TopListGameService::class);
+        $this->app->scoped(IGuessThePlayerGameService::class, GuessThePlayerGameService::class);
 
         $this->app->singleton(
             ExceptionHandler::class,

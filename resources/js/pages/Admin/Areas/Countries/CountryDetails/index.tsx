@@ -10,7 +10,7 @@ import {
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { ErrorScreen, LoadingScreen } from '@/components/ui/Feedback/StatusScreens';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { Button } from '@/components/ui/Button';
+import Button from '@/components/ui/Buttons/Button';
 import { GenericDataGrid } from '@/components/ui/Grids/GenericDataGrid';
 import { Competition, Team, Player, Manager } from '@/types';
 import TeamCard from '@/components/ui/Cards/TeamCard';

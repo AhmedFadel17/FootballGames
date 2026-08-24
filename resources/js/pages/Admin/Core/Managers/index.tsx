@@ -98,7 +98,7 @@ export default function ManagersPage() {
       <div className="flex flex-col h-full overflow-hidden">
         <div>
           <Breadcrumbs items={[
-            { label: 'Home', path: '/dashboard' },
+            { label: 'Home', path: '/dashboard/admin' },
             { label: 'Managers' }
           ]} />
 

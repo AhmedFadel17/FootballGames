@@ -2,7 +2,7 @@
 
 namespace App\Models\GamesList\Bingo;
 
-use App\Shared\Enums\BingoConnectionType;
+use App\Enums\GamesList\BingoConnectionType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

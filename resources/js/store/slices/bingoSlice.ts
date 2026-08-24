@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { bingoApi } from "@/services/bingoApi";
+import { bingoGameApi } from "@/store/apis";
+import { BingoCondition, BingoGame, BingoMatch } from "@/types";
 
 interface BingoState {
   bingoGame: BingoGame | null;
@@ -53,7 +54,7 @@ const bingoSlice = createSlice({
       }
       const unMarked = state.conditions.filter((c) => c.is_marked === false).length;
       if (state.bingoGame.remaining_answers == 0 || unMarked === 0 || (state.bingoGame.remaining_answers == 1 && action.payload.bingo_match_id == null)) {
-      state.isFinished = true;
+        state.isFinished = true;
       }
     },
     finishGame: (state) => {
@@ -63,14 +64,14 @@ const bingoSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addMatcher(
-        bingoApi.endpoints.createBingoGame.matchFulfilled,
+        bingoGameApi.endpoints.createBingoGame.matchFulfilled,
         (state, { payload }) => {
-          state.bingoGame = payload;
+          state.bingoGame = payload.data;
           state.isActive = true;
         }
       )
       .addMatcher(
-        bingoApi.endpoints.createBingoGame.matchRejected,
+        bingoGameApi.endpoints.createBingoGame.matchRejected,
         (state) => {
           state.bingoGame = null;
           state.isActive = false;

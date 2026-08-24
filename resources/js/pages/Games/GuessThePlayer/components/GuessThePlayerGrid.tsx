@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import GuessThePlayerCard from "./GuessThePlayerCard";
 import { useEffect, useMemo } from "react";
 import { useWebRTC } from "@/hooks/useWebRTC";

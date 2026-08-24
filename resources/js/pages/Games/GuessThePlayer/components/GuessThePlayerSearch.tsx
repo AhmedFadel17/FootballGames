@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import Input from "@/components/form/input/InputField";
 import { FaSearch } from "react-icons/fa";
-import { useAppDispatch, useAppSelector } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { submitAnswer } from "@/store/slices/topListGameSlice";
 import { useCreateDataMutation, useGetDataQuery } from "@/services/api";
 import toast from "react-hot-toast";
 import { pluralize } from "@/utils/stringUtils";
 
 interface GuessThePlayerSearchProps {
-  assignmentId:number;
+  assignmentId: number;
 }
-export default function GuessThePlayerSearch({assignmentId}:GuessThePlayerSearchProps) {
+export default function GuessThePlayerSearch({ assignmentId }: GuessThePlayerSearchProps) {
   const dispatch = useAppDispatch();
 
   const [query, setQuery] = useState("");
@@ -22,7 +22,7 @@ export default function GuessThePlayerSearch({assignmentId}:GuessThePlayerSearch
     params: {
       search: debouncedQuery,
     },
-  }, { skip: debouncedQuery.length < 3  });
+  }, { skip: debouncedQuery.length < 3 });
 
   const [createData] = useCreateDataMutation();
 
@@ -54,7 +54,7 @@ export default function GuessThePlayerSearch({assignmentId}:GuessThePlayerSearch
         createData({
           url: `/api/v1/u/games-list/guess-the-player/assignments/${assignmentId}/submit`,
           body: {
-            answer_id:id
+            answer_id: id
           },
         }).unwrap(),
         {

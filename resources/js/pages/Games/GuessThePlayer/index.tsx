@@ -1,10 +1,10 @@
 import PageMeta from "@/components/common/PageMeta";
 import GuessThePlayerGrid from "./components/GuessThePlayerGrid";
 import GuessThePlayerMaker from "./components/GuessThePlayerMaker";
-import { useAppSelector } from "@/store";
+import { useAppSelector } from "@/store/hooks";
 
 export default function GuessThePlayerPage() {
-    const {isActive}=useAppSelector((s)=>s.guessThePlayer);
+    const { isActive } = useAppSelector((s) => s.guessThePlayer);
     return (
         <>
             <PageMeta
@@ -14,9 +14,9 @@ export default function GuessThePlayerPage() {
             <div className="grid grid-cols-12 gap-4 md:gap-6">
                 <div className="col-span-12">
                     {!isActive ?
-                    <GuessThePlayerMaker/>
-                    :
-                    <GuessThePlayerGrid/>
+                        <GuessThePlayerMaker />
+                        :
+                        <GuessThePlayerGrid />
                     }
 
 

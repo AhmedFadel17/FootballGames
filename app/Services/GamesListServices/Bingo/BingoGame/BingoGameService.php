@@ -2,21 +2,16 @@
 
 namespace App\Services\GamesListServices\Bingo\BingoGame;
 
-use App\DTOs\Game\GameResult\GameResultResponseDTO;
-use App\DTOs\GamesList\Bingo\BingoCondition\BingoConditionResponseDTO;
-use App\DTOs\GamesList\Bingo\BingoGame\BingoGameDTO;
-use App\DTOs\GamesList\Bingo\BingoGame\BingoGameResponseDTO;
-use App\DTOs\GamesList\Bingo\BingoMatch\BingoMatchResponseDTO;
-use App\DTOs\Pagination\PaginationDTO;
-use App\DTOs\Pagination\PaginationResponseDTO;
+
+use App\DTOs\GamesList\BingoGameDTO;
 use App\Models\Core\Country;
 use App\Models\Core\Player;
 use App\Models\Core\PlayerTeamPeriod;
 use App\Models\Core\Team;
-use App\Models\Game\Game;
-use App\Models\Game\GameEntry;
-use App\Models\Game\GameInstance;
-use App\Models\Game\GameResult;
+use App\Models\GameEngine\Game;
+use App\Models\GameEngine\GameEntry;
+use App\Models\GameEngine\GameInstance;
+use App\Models\GameEngine\GameResult;
 use App\Models\GamesList\Bingo\BingoCondition;
 use App\Models\GamesList\Bingo\BingoGame;
 use App\Models\GamesList\Bingo\BingoMatch;
@@ -24,33 +19,31 @@ use App\Models\User;
 use App\Services\GamesListServices\Bingo\BingoCondition\IBingoConditionService;
 use App\Services\GamesListServices\Bingo\BingoMatch\IBingoMatchService;
 use App\Services\Pagination\IPaginationService;
-use App\Shared\Enums\BingoConnectionType;
-use App\Shared\Enums\GameDifficulty;
-use App\Shared\Enums\GameEntryStatus;
-use App\Shared\Enums\GameResultStatus;
-use App\Shared\Enums\GameStatus;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
+use App\Enums\GamesList\BingoConnectionType;
+use App\Enums\GameEngine\GameDifficulty;
+use App\Enums\GameEngine\GameStatus;
+use App\Enums\GameEngine\GameResultStatus;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class BingoGameService implements IBingoGameService
 {
 
 
     const ANSWERS_SIZE = 40;
-    const SLUG='bingo-football';
+    const SLUG = 'bingo-football';
     public function __construct(
         private readonly IPaginationService $_paginationService,
         private readonly IBingoMatchService $_matcherService,
         private readonly IBingoConditionService $_conditionService
-    ) {}
+    ) {
+    }
 
 
-    public function check(User $user, int $gameId, int $conditionPos): BingoConditionResponseDTO
+    public function check(User $user, int $gameId, int $conditionPos): BingoCondition
     {
         $bingoGame = BingoGame::query()->findOrFail($gameId);
-        if ($bingoGame->instance->status !== GameStatus::ACTIVE) abort(400, "Game is not Active");
+        if ($bingoGame->instance->status !== GameStatus::ACTIVE)
+            abort(400, "Game is not Active");
         $isFinished = $this->checkGameFinished($bingoGame);
         if ($isFinished) {
             $this->finishGame($user, $bingoGame);
@@ -119,7 +112,7 @@ class BingoGameService implements IBingoGameService
             $this->finishGame($user, $bingoGame);
         }
 
-        return BingoConditionResponseDTO::fromModel($bingoCondition);
+        return $bingoCondition;
     }
 
     public function cancelGame(User $user, int $gameId): void
@@ -128,10 +121,12 @@ class BingoGameService implements IBingoGameService
         $this->finishGame($user, $bingoGame, GameStatus::CANCELLED);
     }
 
-    public function create(User $user, int $size, string $difficulty): BingoGameResponseDTO
+    public function create(User $user, BingoGameDTO $dto): BingoGame
     {
-        $game=Game::where('slug',$this::SLUG)->firstOr();
-        $game_id=$game->id;
+        $size = $dto->size;
+        $difficulty = GameDifficulty::tryFrom($dto->difficulty);
+        $game = Game::where('slug', $this::SLUG)->firstOr();
+        $game_id = $game->id;
         $gameInstance = GameInstance::create([
             'game_id' => $game_id,
             'status' => GameStatus::ACTIVE,
@@ -147,7 +142,6 @@ class BingoGameService implements IBingoGameService
             'size' => $size,
             'remaining_answers' => $this::ANSWERS_SIZE
         ]);
-        $difficulty = GameDifficulty::tryFrom($difficulty);
 
         $minPlayersPopularity = $this->getMinPopularityByDifficulty($difficulty, Player::class);
 
@@ -186,10 +180,10 @@ class BingoGameService implements IBingoGameService
         }
         BingoMatch::insert($bingoMatchesArr);
         $bingoGame->load(['conditions']);
-        return BingoGameResponseDTO::fromModel($bingoGame);
+        return $bingoGame;
     }
 
-    public function results(User $user, int $gameId): GameResultResponseDTO
+    public function results(User $user, int $gameId): GameResult
     {
         $bingoGame = BingoGame::query()->findOrFail($gameId);
         if ($bingoGame->instance->status !== GameStatus::FINISHED) {
@@ -212,13 +206,14 @@ class BingoGameService implements IBingoGameService
             abort(400, "Game not found");
         }
 
-        return GameResultResponseDTO::fromModel($result);
+        return $result;
     }
 
-    public function nextMatch(User $user, int $gameId): BingoMatchResponseDTO
+    public function nextMatch(User $user, int $gameId): BingoMatch
     {
         $bingoGame = BingoGame::query()->findOrFail($gameId);
-        if ($bingoGame->instance->status !== GameStatus::ACTIVE) abort(400, "Game is not Active");
+        if ($bingoGame->instance->status !== GameStatus::ACTIVE)
+            abort(400, "Game is not Active");
         $isFinished = $this->checkGameFinished($bingoGame);
 
         if ($isFinished) {
@@ -233,19 +228,21 @@ class BingoGameService implements IBingoGameService
             ->where('bingo_game_id', $gameId)
             ->where('pos', $nextPos)
             ->firstOrFail();
-        if (!$bingoMatch) abort(400, "Invalid Request");
+        if (!$bingoMatch)
+            abort(400, "Invalid Request");
         $bingoGame->update([
             "remaining_answers" => $bingoGame->remaining_answers - 1
         ]);
 
-        return BingoMatchResponseDTO::fromModel($bingoMatch);
+        return $bingoMatch;
     }
 
 
 
     private function finishGame(User $user, BingoGame $game, GameStatus $gameStatus = GameStatus::FINISHED): void
     {
-        if ($game->instance->status === GameStatus::FINISHED) abort(400, "Game is already finished");
+        if ($game->instance->status === GameStatus::FINISHED)
+            abort(400, "Game is already finished");
 
         $isWon = $this->evaluateBingoResult($game);
 
@@ -282,7 +279,7 @@ class BingoGameService implements IBingoGameService
         $preScore = ($completionRate == 1) ? 1000 : (int) round(1000 * pow($completionRate, 3));
         $timeTaken = $endAt->diffInSeconds($startAt);
         $score = ceil(($preScore) - ($timeTaken / 10));
-        $score = max(0, (int)$score);
+        $score = max(0, (int) $score);
         return $score;
     }
 

@@ -15,9 +15,9 @@ use App\Http\Controllers\Core\PlayerTeamPeriodController;
 use App\Http\Controllers\Core\SeasonController;
 use App\Http\Controllers\Core\TeamController;
 use App\Http\Controllers\Core\TransferController;
-use App\Http\Controllers\Game\GameController;
-use App\Http\Controllers\Game\GameInstanceController;
-use App\Http\Controllers\Game\GameResultController;
+use App\Http\Controllers\GameEngine\GameController;
+use App\Http\Controllers\GameEngine\GameInstanceController;
+use App\Http\Controllers\GameEngine\GameResultController;
 use App\Http\Controllers\GamesList\Bingo\BingoConditionController;
 use App\Http\Controllers\GamesList\Bingo\BingoGameController;
 use App\Http\Controllers\GamesList\Bingo\BingoMatchController;
@@ -62,10 +62,15 @@ Route::middleware('auth:api')->prefix('auth')->group(function () {
 // ─── Authenticated API routes ─────────────────────────────────────────────────
 Route::middleware('auth:api')->prefix('v1')->group(function () {
 
+    //-----------------------------All Authenticated User-----------------------------
+    Route::middleware(['role:user,guest,admin'])->group(function () {
+        Route::get('games', [GameController::class, 'index']);
+
+    });
+
     //-----------------------------User-----------------------------
     //--------------------------------------------------------------
-    Route::prefix('u')->middleware(['role:user,guest'])->group(function () {
-        Route::get('games', [GameController::class, 'index']);
+    Route::middleware(['role:user,guest'])->group(function () {
         Route::get('players', [PlayerController::class, 'index']);
         Route::get('countries', [CountryController::class, 'index']);
         Route::get('teams', [TeamController::class, 'index']);
@@ -105,8 +110,8 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
 
     //-----------------------------Admin-----------------------------
     //--------------------------------------------------------------
-    Route::prefix('admin')->middleware(['role:admin'])->group(function () {
-        Route::apiResource('games', GameController::class);
+    Route::middleware(['role:admin'])->group(function () {
+        Route::apiResource('games', GameController::class)->except('index');
         Route::prefix('games-list')->group(function () {
             Route::apiResource('top-list', TopListGameController::class);
         });

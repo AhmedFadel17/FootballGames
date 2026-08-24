@@ -9,7 +9,7 @@ import { ErrorScreen, LoadingScreen } from "@/components/ui/Feedback/StatusScree
 import { Continent, Season } from "@/types";
 import { showToast } from "@/utils/toast";
 import AddContinentModal from "./components/AddContinentModal";
-import { useDeleteContinentMutation, useGetContinentsQuery, useUpdateContinentMutation } from "@/store/apis/admin/core/continents.api";
+import { useDeleteContinentMutation, useGetContinentsQuery, useUpdateContinentMutation } from "@/store/apis";
 import { getContinentTableActions, getContinentTableColumns } from "./components/ContinentsTableConfig";
 
 export default function ContinentsPage() {

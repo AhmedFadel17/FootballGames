@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button } from '@/components/ui/Button';
+import Button from '@/components/ui/Buttons/Button';
 import { useCreateCompetitionSeasonMutation, useGetSeasonsQuery, useGetTeamsQuery } from '@/store/apis';
 import { showToast } from '@/utils/toast';
 import Modal from '@/components/ui/Modals';

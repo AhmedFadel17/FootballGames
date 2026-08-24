@@ -4,7 +4,7 @@ import { useGetManagerByIdQuery } from '@/store/apis';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { ErrorScreen, LoadingScreen } from '@/components/ui/Feedback/StatusScreens';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { Button } from '@/components/ui/Button';
+import Button from '@/components/ui/Buttons/Button';
 
 export default function ManagerDetails() {
     const { id: managerIdStr } = useParams<{ id: string }>();

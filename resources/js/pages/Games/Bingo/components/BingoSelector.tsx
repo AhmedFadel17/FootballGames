@@ -1,3 +1,4 @@
+import { BingoMatch } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { IoIosSkipForward } from "react-icons/io";
