@@ -24,8 +24,8 @@ export default function DashboardNavbar({
 
     const navigate = useNavigate();
     const { pathname } = useLocation();
-    const { data: profile } = useGetUserProfileQuery();
-
+    const { data: profileData } = useGetUserProfileQuery();
+    const profile = profileData?.data;
 
 
     const [isMobile, setIsMobile] = useState(false);
@@ -77,10 +77,9 @@ export default function DashboardNavbar({
                     <div className="lg:hidden text-xl font-headline font-bold text-white tracking-tight flex items-center">
                         <div className='flex items-center gap-2 cursor-pointer' onClick={() => navigate('/')}>
                             <img src="/images/logo/logo.png" alt="logo" className='w-8 h-8' />
-                            <div>
-                                <span className='text-primary-light'>VidiMetrics</span>
-                                <span className="text-primary">.Ai</span>
-                            </div>
+                            <h1 className="font-black italic tracking-tighter text-primary text-2xl md:text-3xl">
+                                FOOTBALL ARENA
+                            </h1>
                         </div>
                     </div>
                 </div>
@@ -90,7 +89,14 @@ export default function DashboardNavbar({
                     <div className="flex items-center gap-4 border-r border-white/5 pr-4">
                         {/* Notifications Dropdown */}
                         {/* <NotificationsDropdown user={user} /> */}
-
+                        <div>
+                            <button className="bg-surface-container-high/50 hover:bg-surface-container-high border border-outline px-4 py-1.5 rounded-full text-on-surface transition-colors flex items-center gap-2 text-xs font-semibold uppercase tracking-wider">
+                                <span className="material-symbols-outlined text-[16px] text-on-surface-variant">
+                                    military_tech
+                                </span>
+                                Lvl 24
+                            </button>
+                        </div>
 
                     </div>
 

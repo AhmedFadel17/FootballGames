@@ -3,14 +3,13 @@
 namespace App\Services\GamesListServices\Bingo\BingoMatch;
 
 use App\DTOs\GamesList\Bingo\BingoMatch\BingoMatchDTO;
-use App\DTOs\GamesList\Bingo\BingoMatch\BingoMatchResponseDTO;
-use App\DTOs\Pagination\PaginationDTO;
+use App\Enums\GameEngine\GameDifficulty;
+use App\Models\GamesList\Bingo\BingoGame;
 use App\Models\GamesList\Bingo\BingoMatch;
-use App\Models\User;
 
 interface IBingoMatchService
 {
-    // public function getByBingoGameId(User $user,int $gameId): BingoMatchResponseDTO;
-    // public function getBingoGameCurrentMatch(int $gameId): BingoMatch;
-
-} 
+    public function createGameMatches(BingoGame $game, GameDifficulty $difficulty, int $answersCount): void;
+    public function getCurrentMatch(BingoGame $game): BingoMatch;
+    public function getNextMatch(BingoGame $game): BingoMatch;
+}

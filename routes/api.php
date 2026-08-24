@@ -18,9 +18,7 @@ use App\Http\Controllers\Core\TransferController;
 use App\Http\Controllers\GameEngine\GameController;
 use App\Http\Controllers\GameEngine\GameInstanceController;
 use App\Http\Controllers\GameEngine\GameResultController;
-use App\Http\Controllers\GamesList\Bingo\BingoConditionController;
-use App\Http\Controllers\GamesList\Bingo\BingoGameController;
-use App\Http\Controllers\GamesList\Bingo\BingoMatchController;
+use App\Http\Controllers\GamesList\BingoGameController;
 use App\Http\Controllers\GamesList\GuessThePlayerController;
 use App\Http\Controllers\GamesList\TopList\TopListGameController;
 use Illuminate\Support\Facades\Broadcast;
@@ -81,13 +79,13 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         });
 
         Route::prefix('games-list')->group(function () {
-            Route::get('bingo/{id}/conditions', [BingoConditionController::class, 'getByGameId']);
+            Route::get('bingo/{id}/conditions', [BingoGameController::class, 'getConditions']);
             Route::post('bingo', [BingoGameController::class, 'store']);
-            Route::get('bingo/{id}/next-match', [BingoGameController::class, 'nextMatch']);
             Route::post('bingo/{id}/skip', [BingoGameController::class, 'skip']);
             Route::post('bingo/{id}/check/{pos}', [BingoGameController::class, 'check']);
             Route::get('bingo/{id}/results', [BingoGameController::class, 'gameResults']);
             Route::post('bingo/{id}/cancel', [BingoGameController::class, 'cancelGame']);
+            Route::get('bingo/{id}/next-match', [BingoGameController::class, 'nextMatch']);
 
             Route::apiResource('top-list', TopListGameController::class)->only(['index', 'show']);
             Route::post('top-list/{id}/start', [TopListGameController::class, 'startGame']);

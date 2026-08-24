@@ -31,10 +31,10 @@ export default function BingoPage() {
 
           <div className="py-5 flex justify-between gap-6">
             <PageHeader
-              chipText="Bingo"
+              chipText="Live"
               titlePrefix="Bingo"
               gradientText=" Game"
-              description="Play the bingo game and have fun."
+              description="Configure your high-stakes bingo card. Predict match events and dominate the leaderboard."
             />
 
           </div>

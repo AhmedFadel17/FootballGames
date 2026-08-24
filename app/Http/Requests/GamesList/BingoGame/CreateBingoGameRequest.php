@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\GamesList\Bingo\BingoGame;
+namespace App\Http\Requests\GamesList\BingoGame;
 
 use App\Enums\GameEngine\GameDifficulty;
 use Illuminate\Foundation\Http\FormRequest;

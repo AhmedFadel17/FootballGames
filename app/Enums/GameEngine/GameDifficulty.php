@@ -2,6 +2,10 @@
 
 namespace App\Enums\GameEngine;
 
+use App\Models\Core\Country;
+use App\Models\Core\Player;
+use App\Models\Core\Team;
+
 enum GameDifficulty: int
 {
     case EASY = 1;
@@ -14,6 +18,19 @@ enum GameDifficulty: int
             self::EASY => 'Easy',
             self::NORMAL => 'Normal',
             self::HARD => 'Hard',
+        };
+    }
+
+    public function minPopularity(string $class): int
+    {
+        return match ($this) {
+            self::EASY => match ($class) {
+                    Player::class => 95,
+                    Team::class, Country::class => 90,
+                    default => 90,
+                },
+            self::NORMAL => 70,
+            self::HARD => 40,
         };
     }
 

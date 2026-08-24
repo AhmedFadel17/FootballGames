@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import DashboardNavbar from './Navbar'
 import { useAuth } from 'react-oidc-context';
+import Footer from './Footer';
 
 export default function DashboardLayout() {
     const auth = useAuth();
@@ -29,6 +30,8 @@ export default function DashboardLayout() {
                     <Outlet />
                 </main>
             </div>
+            <Footer isAdmin={isAdmin} />
+
         </div>
     )
 }

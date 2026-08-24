@@ -10,44 +10,49 @@ export interface BreadcrumbItem {
 interface BreadcrumbsProps {
     items: BreadcrumbItem[];
 }
-
+<div className="flex items-center gap-2 text-on-surface-variant text-xs uppercase tracking-wider mb-2 font-semibold">
+    <span>Home</span>
+    <span className="material-symbols-outlined text-[14px]">
+        chevron_right
+    </span>
+    <span className="text-primary font-bold">Bingo</span>
+</div>
 const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
     return (
-        <nav className="flex items-center space-x-4">
+        <nav className="flex items-center">
             {items.map((item, index) => (
                 <React.Fragment key={index}>
-                    <div className="flex items-center group">
+                    <div className="flex items-center gap-2 text-on-surface-variant text-xs uppercase tracking-wider mb-2 font-semibold">
                         {item.path ? (
                             <Link
                                 to={item.path}
-                                className="flex items-center gap-2.5 text-white/40 hover:text-accent-cyan transition-all duration-300 py-1.5"
+                                className=""
                             >
                                 {item.icon && (
                                     <span className="material-symbols-outlined text-lg opacity-60 group-hover:opacity-100 transition-opacity">
                                         {item.icon}
                                     </span>
                                 )}
-                                <span className="tracking-[0.15em] uppercase text-xs font-black font-[500]">{item.label}</span>
+                                <span className="">{item.label}</span>
                             </Link>
                         ) : (
-                            <div className="flex items-center gap-2.5 text-accent-cyan hover:text-accent-cyan/80 transition-all duration-300 px-4 py-2 bg-white/5 rounded-xl border border-white/10 shadow-[0_0_20px_rgba(255,255,255,0.02)]">
+                            <div className="text-primary font-bold">
                                 {item.icon && (
                                     <span className="material-symbols-outlined text-lg text-accent-cyan">
                                         {item.icon}
                                     </span>
                                 )}
-                                <span className="tracking-[0.15em]  uppercase text-xs font-[500] font-black">{item.label}</span>
+                                <span className="">{item.label}</span>
                             </div>
                         )}
-                    </div>
 
-                    {index < items.length - 1 && (
-                        <div className="flex items-center justify-center">
-                            <span className="material-symbols-outlined text-white/10 text-sm select-none">
-                                arrow_forward_ios
+
+                        {index < items.length - 1 && (
+                            <span className="material-symbols-outlined text-[14px] pr-2">
+                                chevron_right
                             </span>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </React.Fragment>
             ))}
         </nav>

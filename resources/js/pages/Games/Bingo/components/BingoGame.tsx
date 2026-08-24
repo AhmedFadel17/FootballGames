@@ -17,12 +17,15 @@ import {
 } from "@/store/slices/bingoSlice";
 import { motion, AnimatePresence } from "framer-motion";
 import { store } from "@/store";
+import BingoResultModal from "@/components/ui/Modals/BingoResultModal";
+import { useNavigate } from "react-router-dom";
 
 interface BingoGameProps {
   isActive: boolean;
 }
 
 export default function BingoGame({ isActive }: BingoGameProps) {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { bingoGame, conditions, matcher } = useAppSelector((state) => state.bingo);
   const remainingAnswers = useAppSelector(
@@ -33,7 +36,7 @@ export default function BingoGame({ isActive }: BingoGameProps) {
   );
   const gameId = bingoGame?.id;
 
-  const { data: fetchedConditions = [], isLoading: isConditionsLoading } =
+  const { data: fetchedConditions, isLoading: isConditionsLoading } =
     useGetBingoConditionsQuery(gameId!, { skip: !gameId });
 
   const {
@@ -52,8 +55,8 @@ export default function BingoGame({ isActive }: BingoGameProps) {
   }, [isFinished, bingoGame, getResults]);
   // Set conditions
   useEffect(() => {
-    if (fetchedConditions.length) {
-      dispatch(setConditions(fetchedConditions));
+    if (fetchedConditions?.data) {
+      dispatch(setConditions(fetchedConditions.data));
     }
   }, [fetchedConditions]);
 
@@ -64,7 +67,6 @@ export default function BingoGame({ isActive }: BingoGameProps) {
     }
   }, [currentMatch]);
 
-  // ✅ Click cell → request → refetch matcher
   const handleCellClick = async (pos: number): Promise<boolean | undefined> => {
     if (!gameId || isFinished || remainingAnswers === undefined) return;
     let res: boolean = false;
@@ -72,9 +74,9 @@ export default function BingoGame({ isActive }: BingoGameProps) {
       if (remainingAnswers > 0) {
 
         const condition = await checkCondition({ gameId, pos }).unwrap();
-        dispatch(updateCondition(condition));
+        dispatch(updateCondition(condition.data));
         const f = store.getState().bingo.isFinished;
-        res = condition.is_marked;
+        res = condition.data.is_marked;
         if (!f) {
           await refetchMatch();
         }
@@ -105,69 +107,24 @@ export default function BingoGame({ isActive }: BingoGameProps) {
     );
   }
 
-  console.log('bingoIsActive66666666666', bingoGame.id)
-
 
   return (
     <>
-      <div className="w-full px-20">
-        <div className="mb-10">
-          {isFinished ?
-            <div className="results-container">
-              {isResultsLoading && <p>Loading results...</p>}
-              {resultsError && <p>Error loading results.</p>}
-              {results && (
-                <div className="border-2 rounded border-primary">
-                  <div className="text-center">
-                    <p className="text-2xl font-bold bg-primary rounded-top py-4 text-secondary">
-                      {results.status === 'won' ?
-                        "🎉 Congratulations!"
-                        : "Game Over"
-                      }
-                    </p>
-                  </div>
-                  <div className="p-4 text-center">
-                    {results.status === 'won' ? (
-                      <h2>🎉 Congratulations! You won the game!</h2>
-                    ) : (
-                      <h2>Game Over. Better luck next time!</h2>
-                    )}
-
-                    <div className="py-2 grid grid-cols-2 gap-4 text-lg">
-                      <span>Score</span>
-                      <span className="font-bold text-xl text-green-500">{results.score}</span>
-
-                      <span>Status</span>
-                      <span className={`font-bold text-xl  ${results.status === 'won' ? 'text-green-500' : 'text-red-500'}`}>{results.status}</span>
-                    </div>
-
-                    <div className="py-2">
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => dispatch(resetBingo())}
-                        className="rounded bg-primary uppercase hover:text-secondary text-white font-bold px-5 py-2"
-                      >
-                        Play Again
-                      </motion.button>
-                    </div>
-                  </div>
-                  {/* render other details if needed */}
-                </div>
-              )}
-            </div>
-            :
-            <>
-              {!isMatchLoading && matcher?.player && (
-                <BingoSelector matcher={matcher} remainingAnswers={remainingAnswers || 0} onSkip={handleSkipClick} />
-              )}
-            </>
-          }
-
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-20 py-6">
+        <div className="mb-8">
+          {!isFinished && !isMatchLoading && matcher?.player && (
+            <BingoSelector
+              matcher={matcher}
+              remainingAnswers={remainingAnswers || 0}
+              onSkip={handleSkipClick}
+            />
+          )}
         </div>
 
         {isConditionsLoading ? (
-          <div className="text-center p-4">Loading grid...</div>
+          <div className="text-center p-8 text-on-surface-variant font-medium">
+            Loading grid...
+          </div>
         ) : (
           <BingoGrid
             width={bingoGame.size}
@@ -177,7 +134,14 @@ export default function BingoGame({ isActive }: BingoGameProps) {
           />
         )}
       </div>
-
+      <BingoResultModal
+        isOpen={isFinished}
+        isLoading={isResultsLoading}
+        error={resultsError}
+        results={results}
+        onPlayAgain={() => dispatch(resetBingo())}
+        onExploreGames={() => { dispatch(resetBingo()); navigate("/dashboard") }}
+      />
     </>
 
   );
