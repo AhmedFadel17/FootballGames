@@ -34,6 +34,13 @@ class BingoGameService implements IBingoGameService
     ) {
     }
 
+    public function getById(User $user, int $id): BingoGame
+    {
+        return BingoGame::findOrFail($id)->load([
+            'conditions',
+        ]);
+    }
+
     public function create(User $user, BingoGameDTO $dto): BingoGame
     {
         return DB::transaction(function () use ($user, $dto) {
@@ -99,12 +106,6 @@ class BingoGameService implements IBingoGameService
         $this->decrementRemainingAnswers($bingoGame);
 
         return $nextMatch;
-    }
-
-    public function cancelGame(User $user, int $gameId): void
-    {
-        $bingoGame = BingoGame::query()->findOrFail($gameId);
-        $this->finishGame($user, $bingoGame, GameStatus::CANCELLED);
     }
 
     public function results(User $user, int $gameId): GameResult

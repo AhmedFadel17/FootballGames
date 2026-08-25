@@ -24,9 +24,10 @@ import CompetitionSeasonDetails from "@/pages/Admin/Core/Competitions/Competitio
 import PlayerDetails from "@/pages/Admin/Core/Players/PlayerDetails";
 import ManagerDetails from "@/pages/Admin/Core/Managers/ManagerDetails";
 import CountryDetails from "@/pages/Admin/Areas/Countries/CountryDetails";
+import PlayerCareerGame from "@/pages/Games/Career";
 
 // =============================
-// 🚀 MAIN ROUTES
+// MAIN ROUTES
 // =============================
 export const MainRoutes: AppRoute[] = [
   {
@@ -56,7 +57,7 @@ export const MainRoutes: AppRoute[] = [
   },
 ];
 // =============================
-// 🚀 USER ROUTES
+// USER ROUTES
 // =============================
 export const AppUserRoutes: AppRoute[] = [
   {
@@ -66,13 +67,18 @@ export const AppUserRoutes: AppRoute[] = [
   },
 ];
 // =============================
-// 🚀 GAMES ROUTES
+// GAMES ROUTES
 // =============================
 export const GamesRoutes: AppRoute[] = [
   {
     path: "/games/bingo-football",
     label: "Bingo",
     element: <BingoGame />,
+  },
+  {
+    path: "/games/player-career",
+    label: "Player Career",
+    element: <PlayerCareerGame />,
   },
   {
     path: "/games/top-list",

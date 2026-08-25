@@ -1,5 +1,5 @@
 import { BaseEntity } from "../api";
-import { Player, Team } from "./core";
+import { Player, PlayerTeamPeriod, Team } from "./core";
 
 
 // bingo game models
@@ -26,6 +26,25 @@ export interface BingoMatch extends BaseEntity {
     player_id: number,
     player: Player,
     pos: number;
+}
+
+// career game models
+export interface CareerGame extends BaseEntity {
+    game_instance_id: number;
+    player_id: number;
+    player: Player | null;
+    total_steps: number;
+    revealed_steps: number;
+    attempts_left: number;
+    steps: CareerStep[];
+}
+
+export interface CareerStep {
+    step_number: number;
+    is_revealed: boolean;
+    team: Team | null;
+    start_year: string;
+    end_year: string;
 }
 
 

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\Pagination\IPaginationService;
 use App\Enums\GameEngine\GameStatus;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class GameInstanceService implements IGameInstanceService
 {
@@ -29,14 +30,12 @@ class GameInstanceService implements IGameInstanceService
 
     public function getById(int $id): GameInstance
     {
-        $gameInstance = GameInstance::findOrFail($id);
-        return $gameInstance;
+        return GameInstance::findOrFail($id);
     }
 
     public function create(GameInstanceDTO $dto): GameInstance
     {
-        $gameInstance = GameInstance::create($dto->toArray());
-        return $gameInstance;
+        return GameInstance::create($dto->toArray());
     }
 
     public function update(int $id, GameInstanceDTO $dto): GameInstance
@@ -54,37 +53,70 @@ class GameInstanceService implements IGameInstanceService
 
     public function leaveRoom(User $user, int $roomId): void
     {
-        $userId = $user->id;
-        $this->removeMember($roomId, $userId);
+        $this->removeMember($roomId, $user->id);
     }
 
     public function cancelRoom(int $roomId): void
     {
         $room = GameInstance::findOrFail($roomId);
-        if ($room->status != GameStatus::FINISHED) {
+        if ($room->status !== GameStatus::FINISHED) {
             $room->update([
                 'status' => GameStatus::CANCELLED
             ]);
         }
     }
+
     public function removeMember(int $roomId, int $memberId): void
     {
-        $room = GameInstance::findOrFail($roomId);
-        $status = $room->status;
-        $admin = $room->admin;
-        if ($status === GameStatus::PENDING) {
-            $entry = GameEntry::where('game_instance_id', $room->id)->where('user_id', $memberId)->firstOr();
-            if ($memberId === $admin->id) {
-                $newAdminEntry = GameEntry::where('game_instance_id', $room->id)->where('user_id', '!=', $memberId)->first();
-                if ($newAdminEntry) {
-                    $room->update([
-                        'creator_id' => $newAdminEntry->user_id
-                    ]);
+        DB::transaction(function () use ($roomId, $memberId) {
+            $room = GameInstance::findOrFail($roomId);
+
+            // Fetch all current entries in the room
+            $entries = GameEntry::where('game_instance_id', $room->id)->get();
+            $entryCount = $entries->count();
+
+            $userEntry = $entries->firstWhere('user_id', $memberId);
+            if (!$userEntry) {
+                return;
+            }
+
+            // Scenario 1: Leaving while PENDING
+            if ($room->status === GameStatus::PENDING) {
+                if ($entryCount <= 1) {
+                    // Last player leaving: cancel the room and delete entry
+                    $userEntry->delete();
+                    $this->cancelRoom($roomId);
                 } else {
+                    // Reassign creator/admin if the exiting user was the creator
+                    if ($memberId === $room->creator_id) {
+                        $nextAdminEntry = $entries->firstWhere('user_id', '!=', $memberId);
+                        if ($nextAdminEntry) {
+                            $room->update([
+                                'creator_id' => $nextAdminEntry->user_id
+                            ]);
+                        }
+                    }
+                    $userEntry->delete();
+                }
+            }
+            // Scenario 2: Leaving an IN_PROGRESS game
+            elseif ($room->status === GameStatus::ACTIVE) {
+                // Mark user's entry as left/cancelled
+                $userEntry->update([
+                    'status' => GameStatus::CANCELLED,
+                    'left_at' => now(),
+                ]);
+
+                $remainingActiveCount = GameEntry::where('game_instance_id', $room->id)
+                    ->where('user_id', '!=', $memberId)
+                    ->where('status', '!=', GameStatus::CANCELLED)
+                    ->count();
+
+                // If no active players remain, cancel room
+                if ($remainingActiveCount === 0) {
                     $this->cancelRoom($roomId);
                 }
             }
-            $entry->delete();
-        }
+        });
     }
 }

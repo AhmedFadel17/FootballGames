@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Exceptions\Handler;
 use App\Services\Core\CompetitionSeasons\CompetitionSeasonService;
 use App\Services\Core\CompetitionSeasons\ICompetitionSeasonService;
+use App\Services\GamesListServices\Career\CareerGameService;
+use App\Services\GamesListServices\Career\ICareerGameService;
 use App\Services\Pagination\IPaginationService;
 use App\Services\Pagination\PaginationService;
 use App\Services\Core\Players\IPlayerService;
@@ -89,6 +91,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->scoped(IBingoMatchService::class, BingoMatchService::class);
         $this->app->scoped(ITopListGameService::class, TopListGameService::class);
         $this->app->scoped(IGuessThePlayerGameService::class, GuessThePlayerGameService::class);
+        $this->app->scoped(ICareerGameService::class, CareerGameService::class);
 
         $this->app->singleton(
             ExceptionHandler::class,

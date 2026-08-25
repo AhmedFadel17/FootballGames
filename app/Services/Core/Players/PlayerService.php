@@ -7,6 +7,7 @@ use App\DTOs\Pagination\PaginationDTO;
 use App\Models\Core\Player;
 use App\Services\Pagination\IPaginationService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class PlayerService implements IPlayerService
 {
@@ -22,6 +23,24 @@ class PlayerService implements IPlayerService
             ->allowSorts(['id', 'name', 'country_id', 'popularity', 'date_of_birth', 'position', 'name', 'fullname', 'height_cm', 'weight_kg', 'market_value', 'preferred_foot', 'rating'])
             ->searchable(['name', 'fullname'])
             ->paginate();
+    }
+
+    public function getOptions(string $query, int $limit = 10): Collection
+    {
+        $term = trim($query);
+
+        if (strlen($term) < 2) {
+            return collect();
+        }
+
+        return Player::query()
+            // Include 'popularity' in select so orderBy works cleanly
+            ->select(['id', 'name', 'img_src', 'popularity'])
+            // ILIKE handles case-insensitivity on PostgreSQL (or use LOWER(name) LIKE LOWER(...))
+            ->where('name', 'ILIKE', "%{$term}%")
+            ->orderBy('popularity', 'desc')
+            ->limit($limit)
+            ->get();
     }
 
     public function getById($id): Player

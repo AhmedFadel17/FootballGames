@@ -1,8 +1,8 @@
 import { mainApi, API_URL } from '../mainApi';
-import { ApiResponse, PaginationResponse, PaginationFilter } from '@/types';
+import { ApiResponse, PaginationResponse, PaginationFilter, GameResult } from '@/types';
 import { GameInstance } from '@/types';
 
-const BASE_URL = `${API_URL}/game-instances`;
+const BASE_URL = `${API_URL}/rooms`;
 
 export interface CreateGameInstanceRequest {
     game_id: number;
@@ -48,6 +48,14 @@ export const gameInstancesApi = mainApi.injectEndpoints({
             providesTags: (_result, _err, id) => [{ type: 'GameInstance', id }],
         }),
 
+        gameInstanceResults: builder.mutation<ApiResponse<GameResult>, number>({
+            query: (gameId) => ({
+                url: `${BASE_URL}/${gameId}/results`,
+                method: "GET",
+            }),
+            invalidatesTags: (_result, _err, id) => [{ type: "GameInstance", id }],
+        }),
+
         createGameInstance: builder.mutation<ApiResponse<GameInstance>, CreateGameInstanceRequest>({
             query: (body) => ({ url: BASE_URL, method: 'POST', body }),
             invalidatesTags: [{ type: 'GameInstance', id: 'LIST' }],
@@ -86,4 +94,5 @@ export const {
     useUpdateGameInstanceMutation,
     useDeleteGameInstanceMutation,
     useLeaveGameInstanceMutation,
+    useGameInstanceResultsMutation,
 } = gameInstancesApi;

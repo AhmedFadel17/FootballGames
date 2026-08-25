@@ -2,7 +2,7 @@ import {
   useGetBingoConditionsQuery,
   useGetNextBingoMatchQuery,
   useCheckBingoConditionMutation,
-  useBingoGameResultsMutation,
+  useGameInstanceResultsMutation,
 } from "@/store/apis";
 import BingoGrid from "./BingoGrid";
 import BingoSelector from "./BingoSelector";
@@ -46,13 +46,14 @@ export default function BingoGame({ isActive }: BingoGameProps) {
   } = useGetNextBingoMatchQuery(gameId!, { skip: !gameId });
 
   const [checkCondition] = useCheckBingoConditionMutation();
-  const [getResults, { data: results, isLoading: isResultsLoading, error: resultsError }] = useBingoGameResultsMutation();
+  const [getResults, { data: results, isLoading: isResultsLoading, error: resultsError }] =
+    useGameInstanceResultsMutation();
 
   useEffect(() => {
-    if (isFinished && bingoGame) {
-      getResults(bingoGame.id);
+    if (isFinished && bingoGame?.game_instance_id) {
+      getResults(bingoGame?.game_instance_id);
     }
-  }, [isFinished, bingoGame, getResults]);
+  }, [isFinished, bingoGame?.game_instance_id, getResults]);
   // Set conditions
   useEffect(() => {
     if (fetchedConditions?.data) {
@@ -138,7 +139,7 @@ export default function BingoGame({ isActive }: BingoGameProps) {
         isOpen={isFinished}
         isLoading={isResultsLoading}
         error={resultsError}
-        results={results}
+        results={results?.data}
         onPlayAgain={() => dispatch(resetBingo())}
         onExploreGames={() => { dispatch(resetBingo()); navigate("/dashboard") }}
       />

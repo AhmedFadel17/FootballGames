@@ -9,6 +9,7 @@ use App\Http\Requests\Core\Player\CreatePlayerRequest;
 use App\Http\Requests\Core\Player\PlayerFilterRequest;
 use App\Http\Requests\Core\Player\UpdatePlayerRequest;
 use App\Resources\Core\PlayerResource;
+use App\Resources\Shared\LookupResource;
 use App\Services\Core\Players\IPlayerService;
 use App\Traits\ApiResponses;
 use Illuminate\Http\JsonResponse;
@@ -29,6 +30,21 @@ class PlayerController extends Controller
         $dto = PaginationDTO::fromRequest($request);
         $players = $this->_service->getAll($dto);
         return $this->paginatedResponse($players, PlayerResource::class, 'Players retrieved successfully');
+    }
+
+    public function getOptions(Request $request): JsonResponse
+    {
+        $query = $request->input('query');
+        $players = $this->_service->getOptions($query);
+        return $this->successResponse(
+            data: LookupResource::collectionWith(
+                resource: $players,
+                valueKey: 'id',
+                labelKey: 'name',
+                extraFields: ['img_src']
+            ),
+            message: 'Players retrieved successfully'
+        );
     }
 
     public function store(CreatePlayerRequest $request): JsonResponse

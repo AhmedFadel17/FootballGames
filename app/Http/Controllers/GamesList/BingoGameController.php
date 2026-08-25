@@ -71,22 +71,4 @@ class BingoGameController extends Controller
         );
     }
 
-    public function cancelGame(Request $request, int $id): JsonResponse
-    {
-        $user = $request->user();
-        $this->gameService->cancelGame($user, $id);
-
-        return $this->successResponse(true, 'Bingo game cancelled successfully');
-    }
-
-    public function gameResults(Request $request, int $id): JsonResponse
-    {
-        $user = $request->user();
-        $res = $this->gameService->results($user, $id);
-
-        return $this->successResponse(
-            new GameResultResource($res),
-            'Bingo game results retrieved successfully'
-        );
-    }
 }

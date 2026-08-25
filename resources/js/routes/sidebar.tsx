@@ -31,6 +31,11 @@ export const SidebarUserRoutes: SidebarRoute[] = [
     icon: <FaMagic size={18} />,
   },
   {
+    path: "/games/player-career",
+    label: "Player Career",
+    icon: <FaListOl size={18} />,
+  },
+  {
     path: "/games/top-list",
     label: "Top List",
     icon: <FaListOl size={18} />,

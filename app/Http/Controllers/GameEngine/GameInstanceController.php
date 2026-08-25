@@ -63,4 +63,11 @@ class GameInstanceController extends Controller
         $this->_service->leaveRoom($user, $id);
         return $this->successResponse(null, 'Game instance left successfully');
     }
+
+    public function cancelGame(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $this->_service->cancelRoom($user);
+        return $this->successResponse(null, 'Game instance cancelled successfully');
+    }
 }

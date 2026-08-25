@@ -19,6 +19,7 @@ use App\Http\Controllers\GameEngine\GameController;
 use App\Http\Controllers\GameEngine\GameInstanceController;
 use App\Http\Controllers\GameEngine\GameResultController;
 use App\Http\Controllers\GamesList\BingoGameController;
+use App\Http\Controllers\GamesList\CareerGameController;
 use App\Http\Controllers\GamesList\GuessThePlayerController;
 use App\Http\Controllers\GamesList\TopList\TopListGameController;
 use Illuminate\Support\Facades\Broadcast;
@@ -63,29 +64,35 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
     //-----------------------------All Authenticated User-----------------------------
     Route::middleware(['role:user,guest,admin'])->group(function () {
         Route::get('games', [GameController::class, 'index']);
-
+        Route::get('lookups/countries', [CountryController::class, 'getAllOptions']);
+        Route::get('lookups/players', [PlayerController::class, 'getOptions']);
     });
 
     //-----------------------------User-----------------------------
     //--------------------------------------------------------------
     Route::middleware(['role:user,guest'])->group(function () {
-        Route::get('players', [PlayerController::class, 'index']);
-        Route::get('countries', [CountryController::class, 'index']);
-        Route::get('teams', [TeamController::class, 'index']);
 
         Route::prefix('rooms')->group(function () {
-            Route::get('{id}/leave', [GameInstanceController::class, 'leaveRoom']);
-            Route::get('{id}/result', [GameResultController::class, 'getByGameInstanceId']);
+            Route::post('{id}/leave', [GameInstanceController::class, 'leaveRoom']);
+            Route::get('{id}/results', [GameResultController::class, 'getByGameInstanceId']);
         });
 
         Route::prefix('games-list')->group(function () {
-            Route::get('bingo/{id}/conditions', [BingoGameController::class, 'getConditions']);
-            Route::post('bingo', [BingoGameController::class, 'store']);
-            Route::post('bingo/{id}/skip', [BingoGameController::class, 'skip']);
-            Route::post('bingo/{id}/check/{pos}', [BingoGameController::class, 'check']);
-            Route::get('bingo/{id}/results', [BingoGameController::class, 'gameResults']);
-            Route::post('bingo/{id}/cancel', [BingoGameController::class, 'cancelGame']);
-            Route::get('bingo/{id}/next-match', [BingoGameController::class, 'nextMatch']);
+            Route::prefix('bingo')->group(function () {
+                Route::get('', [BingoGameController::class, 'show']);
+                Route::get('{id}/conditions', [BingoGameController::class, 'getConditions']);
+                Route::post('', [BingoGameController::class, 'store']);
+                Route::post('{id}/skip', [BingoGameController::class, 'skip']);
+                Route::post('{id}/check/{pos}', [BingoGameController::class, 'check']);
+                Route::get('{id}/next-match', [BingoGameController::class, 'nextMatch']);
+            });
+
+            Route::prefix('career')->group(function () {
+                Route::get('{id}', [CareerGameController::class, 'show']);
+                Route::post('{id}/reveal', [CareerGameController::class, 'reveal']);
+                Route::post('{id}/guess', [CareerGameController::class, 'guess']);
+                Route::post('', [CareerGameController::class, 'store']);
+            });
 
             Route::apiResource('top-list', TopListGameController::class)->only(['index', 'show']);
             Route::post('top-list/{id}/start', [TopListGameController::class, 'startGame']);
@@ -130,8 +137,8 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::apiResource('teams', TeamController::class);
         Route::apiResource('transfers', TransferController::class);
 
-        Route::get('lookups/countries', [CountryController::class, 'getAllOptions']);
-        Route::get('lookups/players', [PlayerController::class, 'getAllOptions']);
+
+
         Route::get('lookups/teams', [TeamController::class, 'getAllOptions']);
         Route::get('lookups/competitions', [CompetitionController::class, 'getAllOptions']);
     });

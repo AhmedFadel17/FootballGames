@@ -4,6 +4,7 @@ namespace App\Services\GameEngine\GameResults;
 
 use App\DTOs\GameEngine\GameResultDTO;
 use App\DTOs\Pagination\PaginationDTO;
+use App\Enums\GameEngine\GameStatus;
 use App\Models\GameEngine\GameEntry;
 use App\Models\GameEngine\GameInstance;
 use App\Models\GameEngine\GameResult;
@@ -37,10 +38,16 @@ class GameResultService implements IGameResultService
     public function getByGameInstanceId(User $user, int $gameInstanceId): GameResult
     {
         $gameInstance = GameInstance::findOrFail($gameInstanceId);
-        $entry = GameEntry::where('game_instance_id', $gameInstance->id)->where('user_id', $user->id)->firstOr();
-        $gameResult = GameResult::where('game_entry_id', $entry->id)->firstOr();
+
+        if ($gameInstance->status == GameStatus::ACTIVE) {
+            abort(400, "Game is still Active");
+        }
+        $entry = GameEntry::where('game_instance_id', $gameInstance->id)->where('user_id', $user->id)->firstOrFail();
+        $gameResult = GameResult::where('game_entry_id', $entry->id)->firstOrFail();
+
         return $gameResult;
     }
+
 
     public function create(GameResultDTO $dto): GameResult
     {

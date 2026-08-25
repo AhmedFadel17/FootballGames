@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import bingoReducer from "./slices/bingoSlice";
+import careerGameReducer from "./slices/games/careerGameSlice";
 import topListGameReducer from "./slices/topListGameSlice";
 import adminTopListReducer from "./slices/admin/adminTopListSlice";
 import guessThePlayerReducer from "./slices/games/geussThePlayerSlice";
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
     bingo: bingoReducer,
     guessThePlayer: guessThePlayerReducer,
     toplist: topListGameReducer,
+    career: careerGameReducer,
     // adminTopList: adminTopListReducer,
     // [api.reducerPath]: api.reducer,
     [mainApi.reducerPath]: mainApi.reducer,

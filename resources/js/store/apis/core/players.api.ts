@@ -1,5 +1,5 @@
 import { mainApi, API_URL } from './../mainApi';
-import { ApiResponse, PaginationResponse, PaginationFilter } from '@/types';
+import { ApiResponse, PaginationResponse, PaginationFilter, LookupOption } from '@/types';
 import { Player } from '@/types';
 
 const BASE_URL = `${API_URL}/players`;
@@ -53,6 +53,23 @@ export const playersApi = mainApi.injectEndpoints({
                     : [{ type: 'Player', id: 'LIST' }],
         }),
 
+        getPlayersLookup: builder.query<ApiResponse<LookupOption[]>, { query: string, limit?: number }>({
+            query: ({ query, limit = 10 }) => ({
+                url: `${API_URL}/lookups/players`,
+                params: {
+                    query: query,
+                    limit: limit,
+                }
+            }),
+            providesTags: (result) =>
+                result?.data
+                    ? [
+                        ...result.data.map(({ id }) => ({ type: 'Player' as const, id })),
+                        { type: 'Player', id: 'LOOKUP' },
+                    ]
+                    : [{ type: 'Player', id: 'LOOKUP' }],
+        }),
+
         getPlayerById: builder.query<ApiResponse<Player>, number>({
             query: (id) => `${BASE_URL}/${id}`,
             providesTags: (_result, _err, id) => [{ type: 'Player', id }],
@@ -84,6 +101,7 @@ export const playersApi = mainApi.injectEndpoints({
 
 export const {
     useGetPlayersQuery,
+    useGetPlayersLookupQuery,
     useGetPlayerByIdQuery,
     useCreatePlayerMutation,
     useUpdatePlayerMutation,
