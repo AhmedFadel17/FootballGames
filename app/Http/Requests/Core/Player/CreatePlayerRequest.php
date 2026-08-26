@@ -39,6 +39,8 @@ class CreatePlayerRequest extends FormRequest
             'rating' => ['required', 'integer', 'min:0', 'max:100'],
             'market_value' => ['required', 'integer', 'min:0', 'max:1000000000'],
             'preferred_foot' => ['required', Rule::enum(PlayerPreferredFoot::class)],
+            'is_retired' => ['required', 'boolean'],
+            'current_team_id' => ['nullable', 'exists:teams,id'],
         ];
     }
 }

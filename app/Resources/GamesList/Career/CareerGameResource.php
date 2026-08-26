@@ -31,6 +31,7 @@ class CareerGameResource extends JsonResource
             'total_steps' => $this->total_steps,
             'revealed_steps' => $this->revealed_steps,
             'attempts_left' => $this->attempts_left,
+            'difficulty' => $this->difficulty,
             'steps' => $steps,
         ];
     }

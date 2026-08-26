@@ -11,6 +11,7 @@ class GridGameResource extends JsonResource
             'id' => $this->id,
             'game_instance_id' => $this->game_instance_id,
             'size' => $this->size,
+            'difficulty' => $this->difficulty,
             'conditions' => GridConditionResource::collection($this->whenLoaded('conditions')),
         ];
     }

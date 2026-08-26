@@ -2,6 +2,7 @@
 
 namespace App\Models\GamesList\Grid;
 
+use App\Enums\GameEngine\GameDifficulty;
 use App\Models\GameEngine\GameInstance;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,6 +13,12 @@ class GridGame extends Model
     protected $fillable = [
         'game_instance_id',
         'size',
+        'difficulty',
+    ];
+
+    protected $casts = [
+        'size' => 'integer',
+        'difficulty' => GameDifficulty::class,
     ];
 
     public function instance(): BelongsTo

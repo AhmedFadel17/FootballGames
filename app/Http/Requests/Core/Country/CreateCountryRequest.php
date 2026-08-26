@@ -26,6 +26,8 @@ class CreateCountryRequest extends FormRequest
             'code' => ['required', 'string', 'max:10'],
             'popularity' => ['required', 'integer', 'min:0', 'max:100'],
             'continent_id' => ['nullable', 'exists:continents,id'],
+            'img_src' => ['required', 'string', 'max:500'],
+            'is_federation' => ['required', 'boolean'],
         ];
     }
 }

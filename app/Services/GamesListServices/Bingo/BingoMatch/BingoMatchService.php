@@ -11,8 +11,9 @@ use App\Models\GamesList\Bingo\BingoMatch;
 class BingoMatchService implements IBingoMatchService
 {
 
-    public function createGameMatches(BingoGame $game, GameDifficulty $difficulty, int $answersCount): void
+    public function createGameMatches(BingoGame $game, int $answersCount): void
     {
+        $difficulty = $game->difficulty;
         $minPop = $difficulty->minPopularity(Player::class);
         $players = Player::inRandomOrder()->where('popularity', '>=', $minPop)->limit($answersCount)->get();
 

@@ -26,6 +26,8 @@ class UpdateCountryRequest extends FormRequest
             'code' => ['sometimes', 'string', 'max:10'],
             'popularity' => ['sometimes', 'integer', 'min:0', 'max:100'],
             'continent_id' => ['nullable', 'exists:continents,id'],
+            'img_src' => ['sometimes', 'string', 'max:500'],
+            'is_federation' => ['sometimes', 'boolean'],
         ];
     }
-} 
+}

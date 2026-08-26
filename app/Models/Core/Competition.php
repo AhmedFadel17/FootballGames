@@ -33,7 +33,12 @@ class Competition extends Model
         return $this->belongsTo(Country::class);
     }
 
-    public function competitionSeasons()
+    public function currentTeams(): HasMany
+    {
+        return $this->hasMany(Team::class, 'current_competition_id');
+    }
+
+    public function competitionSeasons(): HasMany
     {
         return $this->hasMany(CompetitionSeason::class);
     }

@@ -28,6 +28,8 @@ class UpdateManagerRequest extends FormRequest
             'img_src' => ['nullable', 'string', 'max:255'],
             'country_id' => ['sometimes', 'exists:countries,id'],
             'popularity' => ['sometimes', 'integer'],
+            'is_retired' => ['sometimes', 'boolean'],
+            'current_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
         ];
     }
 }

@@ -18,6 +18,8 @@ export interface CreatePlayerRequest {
     api_id?: number;
     img_src: string;
     country_id: number;
+    is_retired: boolean;
+    current_team_id?: number;
 }
 
 export interface UpdatePlayerRequest extends Partial<CreatePlayerRequest> { }

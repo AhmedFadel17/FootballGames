@@ -35,7 +35,6 @@ class GridGameService implements IGridGameService
     {
 
         return DB::transaction(function () use ($user, $dto) {
-            $difficulty = GameDifficulty::tryFrom($dto->difficulty) ?? GameDifficulty::EASY;
             $game = Game::where('slug', self::SLUG)->firstOrFail();
 
             $gameInstance = GameInstance::create([
@@ -52,9 +51,10 @@ class GridGameService implements IGridGameService
             $gridGame = GridGame::create([
                 'game_instance_id' => $gameInstance->id,
                 'size' => $dto->size,
+                'difficulty' => $dto->difficulty,
             ]);
 
-            $this->validationService->createGameConditions($gridGame, $difficulty);
+            $this->validationService->createGameConditions($gridGame);
 
             return $gridGame->load(['conditions.objectable']);
         });

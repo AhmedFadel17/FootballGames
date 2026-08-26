@@ -24,6 +24,8 @@ class CreateContinentRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'code' => ['required', 'string', 'max:3'],
+            'img_src' => ['required', 'string', 'max:500'],
+            'popularity' => ['required', 'integer', 'min:0', 'max:100'],
         ];
     }
 }

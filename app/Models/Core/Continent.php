@@ -7,7 +7,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Continent extends Model
 {
-    protected $fillable = ['name','code'];
+    protected $fillable = [
+        'name',
+        'code',
+        'img_src',
+        'popularity',
+    ];
+
+    protected $casts = [
+        'popularity' => 'integer',
+    ];
 
     public function countries(): HasMany
     {

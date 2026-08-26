@@ -21,6 +21,8 @@ class PlayerDTO
         public ?int $rating = null,
         public ?int $marketValue = null,
         public ?int $preferredFoot = null,
+        public ?bool $is_retired = null,
+        public ?int $current_team_id = null,
     ) {
     }
 
@@ -46,6 +48,8 @@ class PlayerDTO
             rating: isset($data['rating']) ? (int) $data['rating'] : null,
             marketValue: isset($data['market_value']) ? (int) $data['market_value'] : null,
             preferredFoot: isset($data['preferred_foot']) ? (int) $data['preferred_foot'] : null,
+            is_retired: isset($data['is_retired']) ? (bool) $data['is_retired'] : null,
+            current_team_id: isset($data['current_team_id']) ? (int) $data['current_team_id'] : null,
         );
     }
 
@@ -66,6 +70,8 @@ class PlayerDTO
             'rating' => $this->rating,
             'market_value' => $this->marketValue,
             'preferred_foot' => $this->preferredFoot,
+            'is_retired' => $this->is_retired,
+            'current_team_id' => $this->current_team_id,
         ];
     }
 

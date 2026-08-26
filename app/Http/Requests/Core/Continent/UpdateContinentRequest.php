@@ -24,6 +24,8 @@ class UpdateContinentRequest extends FormRequest
         return [
             'name' => ['sometimes', 'string', 'max:255'],
             'code' => ['sometimes', 'string', 'max:3'],
+            'img_src' => ['sometimes', 'string', 'max:500'],
+            'popularity' => ['sometimes', 'integer', 'min:0', 'max:100'],
         ];
     }
-} 
+}

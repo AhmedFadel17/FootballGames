@@ -28,6 +28,8 @@ class CreateManagerRequest extends FormRequest
             'img_src' => ['nullable', 'string', 'max:255'],
             'country_id' => ['required', 'exists:countries,id'],
             'popularity' => ['required', 'integer', 'min:0', 'max:100'],
+            'is_retired' => ['required', 'boolean'],
+            'current_team_id' => ['nullable', 'exists:teams,id'],
         ];
     }
 }

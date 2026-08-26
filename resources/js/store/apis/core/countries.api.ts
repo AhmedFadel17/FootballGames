@@ -8,6 +8,8 @@ export interface CreateCountryRequest {
     code: string;
     popularity: number;
     continent_id: number;
+    is_federation: boolean;
+    img_src?: string;
 }
 
 export interface UpdateCountryRequest extends Partial<CreateCountryRequest> { }

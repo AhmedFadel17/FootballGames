@@ -44,7 +44,6 @@ class BingoGameService implements IBingoGameService
     public function create(User $user, BingoGameDTO $dto): BingoGame
     {
         return DB::transaction(function () use ($user, $dto) {
-            $difficulty = GameDifficulty::tryFrom($dto->difficulty) ?? GameDifficulty::EASY;
             $game = Game::where('slug', self::SLUG)->firstOrFail();
 
             $gameInstance = GameInstance::create([
@@ -61,12 +60,13 @@ class BingoGameService implements IBingoGameService
             $bingoGame = BingoGame::create([
                 'game_instance_id' => $gameInstance->id,
                 'size' => $dto->size,
+                'difficulty' => $dto->difficulty,
                 'remaining_answers' => self::ANSWERS_SIZE,
             ]);
 
             // Delegate board setups to sub-services
-            $this->conditionService->createGameConditions($bingoGame, $difficulty);
-            $this->matchService->createGameMatches($bingoGame, $difficulty, self::ANSWERS_SIZE);
+            $this->conditionService->createGameConditions($bingoGame);
+            $this->matchService->createGameMatches($bingoGame, self::ANSWERS_SIZE);
 
             return $bingoGame->load(['conditions']);
         });

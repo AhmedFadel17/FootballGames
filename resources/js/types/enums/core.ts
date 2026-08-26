@@ -29,3 +29,9 @@ export enum TransferType {
     Retired = 6,
 }
 
+export enum TeamType {
+    CLUB = 1,
+    NATIONAL = 2,
+    YOUTH_CLUB = 3,
+    YOUTH_NATIONAL = 4,
+}

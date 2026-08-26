@@ -13,6 +13,7 @@ class TopListGameResource extends JsonResource
             'description' => $this->description,
             'items_type' => $this->items_type->value,
             'total_items' => $this->total_items,
+            'difficulty' => $this->difficulty,
             'items' => TopListItemResource::collection($this->whenLoaded('items')),
         ];
     }

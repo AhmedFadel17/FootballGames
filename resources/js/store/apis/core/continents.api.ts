@@ -7,6 +7,8 @@ const BASE_URL = `${API_URL}/continents`;
 export interface CreateContinentRequest {
     name: string;
     code: string;
+    img_src: string;
+    popularity: number;
 }
 
 export interface UpdateContinentRequest extends Partial<CreateContinentRequest> { }

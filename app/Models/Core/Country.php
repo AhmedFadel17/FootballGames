@@ -9,10 +9,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 // Country
 class Country extends Model
 {
-    protected $fillable = ['name', 'code','popularity'];
-    protected $appends = ['img_src'];
+    protected $fillable = [
+        'name',
+        'code',
+        'popularity',
+        'is_federation',
+        'img_src',
+    ];
 
-     public function continent(): BelongsTo
+    protected $casts = [
+        'is_federation' => 'boolean',
+        'popularity' => 'integer',
+    ];
+    public function continent(): BelongsTo
     {
         return $this->belongsTo(Continent::class);
     }
@@ -37,9 +46,4 @@ class Country extends Model
         return $this->hasMany(Manager::class);
     }
 
-     public function getImgSrcAttribute(): string
-    {
-        $code = strtolower($this->code);
-        return "https://flagcdn.com/w160/{$code}.png";
-    }
 }

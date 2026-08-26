@@ -13,6 +13,8 @@ class ManagerDTO
         public ?int $popularity = null,
         public ?string $slug = null,
         public ?int $apiId = null,
+        public ?bool $is_retired = null,
+        public ?int $current_team_id = null,
     ) {
     }
 
@@ -30,6 +32,8 @@ class ManagerDTO
             popularity: isset($data['popularity']) ? (int) $data['popularity'] : null,
             slug: $data['slug'] ?? null,
             apiId: isset($data['api_id']) ? (int) $data['api_id'] : null,
+            is_retired: isset($data['is_retired']) ? (bool) $data['is_retired'] : null,
+            current_team_id: isset($data['current_team_id']) ? (int) $data['current_team_id'] : null,
         );
     }
 
@@ -42,6 +46,8 @@ class ManagerDTO
             'popularity' => $this->popularity,
             'slug' => $this->slug,
             'api_id' => $this->apiId,
+            'is_retired' => $this->is_retired,
+            'current_team_id' => $this->current_team_id,
         ];
     }
 

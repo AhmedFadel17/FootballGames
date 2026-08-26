@@ -39,6 +39,8 @@ class UpdatePlayerRequest extends FormRequest
             'rating' => ['sometimes', 'integer', 'min:0', 'max:100'],
             'market_value' => ['sometimes', 'integer', 'min:0', 'max:1000000000'],
             'preferred_foot' => ['sometimes', Rule::enum(PlayerPreferredFoot::class)],
+            'is_retired' => ['sometimes', 'boolean'],
+            'current_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
         ];
     }
 }

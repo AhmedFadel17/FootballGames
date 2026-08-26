@@ -14,6 +14,8 @@ class TeamDTO
         public ?int $popularity = null,
         public ?string $slug = null,
         public ?int $apiId = null,
+        public ?int $type = null,
+        public ?int $current_competition_id = null,
     ) {
     }
 
@@ -32,6 +34,8 @@ class TeamDTO
             popularity: isset($data['popularity']) ? (int) $data['popularity'] : null,
             slug: $data['slug'] ?? null,
             apiId: isset($data['api_id']) ? (int) $data['api_id'] : null,
+            type: isset($data['type']) ? (int) $data['type'] : null,
+            current_competition_id: isset($data['current_competition_id']) ? (int) $data['current_competition_id'] : null,
         );
     }
 
@@ -45,6 +49,8 @@ class TeamDTO
             'popularity' => $this->popularity,
             'slug' => $this->slug,
             'api_id' => $this->apiId,
+            'type' => $this->type,
+            'current_competition_id' => $this->current_competition_id,
         ];
     }
 

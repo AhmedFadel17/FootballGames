@@ -14,6 +14,7 @@ class CountryResource extends JsonResource
             'img_src' => $this->img_src,
             'popularity' => $this->popularity,
             'code' => $this->code,
+            'is_federation' => $this->is_federation,
             'continent_id' => $this->continent_id,
         ];
     }

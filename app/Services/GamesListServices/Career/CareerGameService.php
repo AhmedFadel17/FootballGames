@@ -56,6 +56,7 @@ class CareerGameService implements ICareerGameService
                 'player_id' => $player->id,
                 'order_type' => rand(0, 1) ? 'CHRONOLOGICAL' : 'REVERSE',
                 'total_steps' => $totalSteps,
+                'difficulty' => $difficulty,
                 'revealed_steps' => 1,
                 'attempts_left' => 3,
             ]);

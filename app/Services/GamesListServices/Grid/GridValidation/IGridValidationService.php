@@ -17,5 +17,5 @@ interface IGridValidationService
     ): bool;
 
     public function satisfiesCondition(Player $player, GridCondition $condition): bool;
-    public function createGameConditions(GridGame $game, GameDifficulty $difficulty): void;
+    public function createGameConditions(GridGame $game): void;
 }

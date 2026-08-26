@@ -68,9 +68,10 @@ class GridValidationService implements IGridValidationService
         };
     }
 
-    public function createGameConditions(GridGame $game, GameDifficulty $difficulty): void
+    public function createGameConditions(GridGame $game): void
     {
         $size = $game->size;
+        $difficulty = $game->difficulty;
         $minPlayersPop = $difficulty->minPopularity(Player::class);
         $minTeamsPop = $difficulty->minPopularity(Team::class);
         $minCountriesPop = $difficulty->minPopularity(Country::class);

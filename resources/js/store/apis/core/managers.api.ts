@@ -10,6 +10,8 @@ export interface CreateManagerRequest {
     slug?: string;
     api_id?: number;
     country_id: number;
+    is_retired: boolean;
+    current_team_id?: number;
 }
 
 export interface UpdateManagerRequest extends Partial<CreateManagerRequest> { }

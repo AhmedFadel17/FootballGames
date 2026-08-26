@@ -47,9 +47,10 @@ class BingoConditionService implements IBingoConditionService
         return $condition;
     }
 
-    public function createGameConditions(BingoGame $game, GameDifficulty $difficulty): void
+    public function createGameConditions(BingoGame $game): void
     {
         $size = $game->size;
+        $difficulty = $game->difficulty;
         $minPlayersPop = $difficulty->minPopularity(Player::class);
         $minTeamsPop = $difficulty->minPopularity(Team::class);
         $minCountriesPop = $difficulty->minPopularity(Country::class);

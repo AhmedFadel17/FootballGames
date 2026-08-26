@@ -11,6 +11,8 @@ export interface CreateTeamRequest {
     api_id?: number;
     img_src: string;
     country_id: number;
+    type: number;
+    current_competition_id?: number;
 }
 
 export interface UpdateTeamRequest extends Partial<CreateTeamRequest> { }

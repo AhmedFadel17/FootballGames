@@ -25,16 +25,24 @@ class Player extends Model
         'slug',
         'rating',
         'market_value',
+        'is_retired',
+        'current_team_id',
     ];
     protected $casts = [
         'date_of_birth' => 'date',
         'position' => PlayerPosition::class,
         'preferred_foot' => PlayerPreferredFoot::class,
+        'is_retired' => 'boolean',
     ];
 
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
+    }
+
+    public function currentTeam(): BelongsTo
+    {
+        return $this->belongsTo(Team::class, 'current_team_id');
     }
 
     public function teamPeriods(): HasMany

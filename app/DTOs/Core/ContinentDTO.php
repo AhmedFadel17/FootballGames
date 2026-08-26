@@ -9,6 +9,8 @@ class ContinentDTO
     public function __construct(
         public ?string $name = null,
         public ?string $code = null,
+        public ?string $img_src = null,
+        public ?int $popularity = null,
     ) {
     }
 
@@ -22,6 +24,8 @@ class ContinentDTO
         return new self(
             name: $data['name'] ?? null,
             code: $data['code'] ?? null,
+            img_src: $data['img_src'] ?? null,
+            popularity: $data['popularity'] ?? null,
         );
     }
 
@@ -30,6 +34,8 @@ class ContinentDTO
         return [
             'name' => $this->name,
             'code' => $this->code,
+            'img_src' => $this->img_src,
+            'popularity' => $this->popularity,
         ];
     }
 

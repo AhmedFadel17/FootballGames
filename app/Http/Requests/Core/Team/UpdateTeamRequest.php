@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Core\Team;
 
+use App\Enums\Core\TeamType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateTeamRequest extends FormRequest
 {
@@ -29,6 +31,8 @@ class UpdateTeamRequest extends FormRequest
             'slug' => ['sometimes', 'string', 'max:255'],
             'country_id' => ['sometimes', 'exists:countries,id'],
             'popularity' => ['sometimes', 'integer', 'min:0', 'max:100'],
+            'type' => ['sometimes', Rule::enum(TeamType::class)],
+            'current_competition_id' => ['sometimes', 'nullable', 'exists:competitions,id'],
         ];
     }
 }

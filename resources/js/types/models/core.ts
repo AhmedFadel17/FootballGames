@@ -1,5 +1,5 @@
 import { BaseEntity } from "../api";
-import { CompetitionType, PlayerPosition, PlayerPreferredFoot } from "../enums";
+import { CompetitionType, PlayerPosition, PlayerPreferredFoot, TeamType } from "../enums";
 
 // Area types
 export interface Country extends BaseEntity {
@@ -9,11 +9,14 @@ export interface Country extends BaseEntity {
     popularity: number;
     continent_id?: number;
     continent?: Continent;
+    is_federation: boolean;
 }
 
 export interface Continent extends BaseEntity {
     name: string;
     code: string;
+    img_src: string;
+    popularity: number;
 }
 
 // Season types
@@ -77,6 +80,9 @@ export interface Manager extends BaseEntity {
     img_src: string;
     slug: string;
     api_id?: number;
+    is_retired: boolean;
+    current_team_id?: number;
+    current_team?: Team;
     country_id?: number;
     country?: Country;
     team_periods?: ManagerTeamPeriod[];
@@ -89,9 +95,12 @@ export interface Team extends BaseEntity {
     api_id?: number;
     slug?: string;
     img_src: string;
+    type: TeamType;
+    current_competition_id?: number;
     country_id?: number;
     titles_won?: number;
     country?: Country;
+    current_competition?: Competition;
 }
 
 export interface PlayerTeamPeriod extends BaseEntity {
@@ -159,6 +168,9 @@ export interface Player extends BaseEntity {
     slug: string;
     api_id?: number;
     img_src: string;
+    is_retired: boolean;
+    current_team_id?: number;
+    current_team?: Team;
     country_id?: number;
     country?: Country;
     team_periods?: PlayerTeamPeriod[];
