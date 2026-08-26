@@ -39,7 +39,7 @@ export const mainApi = createApi({
     'GuessThePlayer',
     'BingoGame',
     'CareerGame',
-    'Top10',
+    'TopListGame',
     'GridGame'
 
   ],

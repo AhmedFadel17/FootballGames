@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Collection;
 interface ICountryService
 {
     public function getAll(PaginationDTO $dto): LengthAwarePaginator;
-    public function getAllOptions(): Collection;
+    public function getOptions(string $query, int $limit = 10): Collection;
     public function getById(int $id): Country;
     public function create(CountryDTO $data): Country;
     public function update(int $id, CountryDTO $data): Country;

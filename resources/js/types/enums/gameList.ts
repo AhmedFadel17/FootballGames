@@ -8,11 +8,11 @@ export enum BingoConnectionType {
 }
 
 export enum TopListItemstype {
-    PLAYER = "player",
-    TEAM = "team",
-    COUNTRY = "country",
-    CONTINENT = "continent",
-    MANAGER = "manager",
+    PLAYER = 1,
+    TEAM = 2,
+    COUNTRY = 3,
+    CONTINENT = 4,
+    MANAGER = 5,
 }
 
 export enum GridCellType {

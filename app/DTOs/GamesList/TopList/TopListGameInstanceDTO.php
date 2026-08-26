@@ -4,13 +4,10 @@ namespace App\DTOs\GamesList\TopList;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TopListGameDTO
+class TopListGameInstanceDTO
 {
     public function __construct(
-        public ?string $title = null,
-        public ?string $description = null,
-        public ?int $items_type = null,
-        public ?array $items = null,
+        public ?int $gameInstanceId = null,
         public ?int $difficulty = null,
     ) {
     }
@@ -23,10 +20,7 @@ class TopListGameDTO
     public static function fromArray(array $data): self
     {
         return new self(
-            title: isset($data['title']) ? (string) $data['title'] : null,
-            description: isset($data['description']) ? (string) $data['description'] : null,
-            items_type: isset($data['items_type']) ? (int) $data['items_type'] : null,
-            items: isset($data['items']) ? array_map(fn($item) => TopListItemDTO::fromArray($item), $data['items']) : null,
+            gameInstanceId: isset($data['game_instance_id']) ? (int) $data['game_instance_id'] : null,
             difficulty: isset($data['difficulty']) ? (int) $data['difficulty'] : null,
         );
     }
@@ -34,10 +28,7 @@ class TopListGameDTO
     public function toArray(): array
     {
         return [
-            'title' => $this->title,
-            'description' => $this->description,
-            'items_type' => $this->items_type,
-            'items' => $this->items,
+            'game_instance_id' => $this->gameInstanceId,
             'difficulty' => $this->difficulty,
         ];
     }

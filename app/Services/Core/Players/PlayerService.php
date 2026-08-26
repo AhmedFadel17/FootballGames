@@ -34,9 +34,7 @@ class PlayerService implements IPlayerService
         }
 
         return Player::query()
-            // Include 'popularity' in select so orderBy works cleanly
             ->select(['id', 'name', 'img_src', 'popularity'])
-            // ILIKE handles case-insensitivity on PostgreSQL (or use LOWER(name) LIKE LOWER(...))
             ->where('name', 'ILIKE', "%{$term}%")
             ->orderBy('popularity', 'desc')
             ->limit($limit)

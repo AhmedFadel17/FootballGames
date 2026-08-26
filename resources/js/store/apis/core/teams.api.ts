@@ -1,5 +1,5 @@
 import { mainApi, API_URL } from './../mainApi';
-import { ApiResponse, PaginationResponse, PaginationFilter } from '@/types';
+import { ApiResponse, PaginationResponse, PaginationFilter, LookupOption } from '@/types';
 import { Team } from '@/types';
 
 const BASE_URL = `${API_URL}/teams`;
@@ -46,6 +46,19 @@ export const teamsApi = mainApi.injectEndpoints({
                     ]
                     : [{ type: 'Team', id: 'LIST' }],
         }),
+        getTeamsLookup: builder.query<ApiResponse<LookupOption[]>, { query: string, limit?: number }>({
+            query: ({ query, limit = 10 }) => ({
+                url: `${API_URL}/lookups/teams`,
+                params: { query, limit },
+            }),
+            providesTags: (result) =>
+                result?.data
+                    ? [
+                        ...result.data.map(({ id }) => ({ type: 'Team' as const, id })),
+                        { type: 'Team', id: 'LOOKUP' },
+                    ]
+                    : [{ type: 'Team', id: 'LOOKUP' }],
+        }),
 
         getTeamById: builder.query<ApiResponse<Team>, number>({
             query: (id) => `${BASE_URL}/${id}`,
@@ -82,4 +95,5 @@ export const {
     useCreateTeamMutation,
     useUpdateTeamMutation,
     useDeleteTeamMutation,
+    useGetTeamsLookupQuery
 } = teamsApi;

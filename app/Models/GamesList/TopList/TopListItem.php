@@ -2,13 +2,16 @@
 
 namespace App\Models\GamesList\TopList;
 
+use App\Enums\GamesList\TopListItemstype;
 use App\Models\Core\Country;
 use App\Models\Core\Player;
 use App\Models\Core\Team;
-use App\Shared\Enums\TopListItemstype;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class TopListItem extends Model
 {
@@ -16,33 +19,36 @@ class TopListItem extends Model
 
     protected $fillable = [
         'top_list_game_id',
-        'pos',
         'object_id',
+        'rank',
+        'display_value',
     ];
 
-    public function game()
+    protected $casts = [
+        'rank' => 'integer',
+    ];
+
+    public static function boot(): void
     {
-        return $this->belongsTo(TopListGame::class,'top_list_game_id');
+        parent::boot();
+
+        Relation::enforceMorphMap([
+            TopListItemstype::PLAYER->value => Player::class,
+            TopListItemstype::TEAM->value => Team::class,
+            TopListItemstype::COUNTRY->value => Country::class,
+        ]);
     }
 
-    public function object()
+    public function game(): BelongsTo
     {
-        $type = $this->game->items_type;
-
-        switch ($type) {
-            case TopListItemstype::PLAYER->value:
-                return $this->belongsTo(Player::class, 'object_id');
-            case TopListItemstype::TEAM->value:
-                return $this->belongsTo(Team::class, 'object_id');
-            case TopListItemstype::COUNTRY->value:
-                return $this->belongsTo(Country::class, 'object_id');
-            default:
-                return null;
-        }
+        return $this->belongsTo(TopListGame::class, 'top_list_game_id');
     }
-
-    public function answers()
+    public function object(): MorphTo
     {
-        return $this->hasMany(TopListAnswer::class);
+        return $this->morphTo(
+            name: 'object',
+            type: 'game.items_type',
+            id: 'object_id'
+        );
     }
 }

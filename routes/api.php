@@ -23,7 +23,7 @@ use App\Http\Controllers\GamesList\CareerGameController;
 use App\Http\Controllers\GamesList\FootballGridController;
 use App\Http\Controllers\GamesList\GridGameController;
 use App\Http\Controllers\GamesList\GuessThePlayerController;
-use App\Http\Controllers\GamesList\TopList\TopListGameController;
+use App\Http\Controllers\GamesList\TopListGameController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
@@ -66,8 +66,10 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
     //-----------------------------All Authenticated User-----------------------------
     Route::middleware(['role:user,guest,admin'])->group(function () {
         Route::get('games', [GameController::class, 'index']);
-        Route::get('lookups/countries', [CountryController::class, 'getAllOptions']);
+        Route::get('lookups/countries', [CountryController::class, 'getOptions']);
         Route::get('lookups/players', [PlayerController::class, 'getOptions']);
+        Route::get('lookups/managers', [ManagerController::class, 'getOptions']);
+        Route::get('lookups/teams', [TeamController::class, 'getOptions']);
     });
 
     //-----------------------------User-----------------------------
@@ -102,11 +104,12 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
                 Route::post('/{id}/submit', [GridGameController::class, 'submitAnswer']);
             });
 
-            Route::apiResource('top-list', TopListGameController::class)->only(['index', 'show']);
-            Route::post('top-list/{id}/start', [TopListGameController::class, 'startGame']);
-            Route::post('top-list/{id}/cancel', [TopListGameController::class, 'cancelGame']);
-            Route::get('top-list/{id}/results', [TopListGameController::class, 'gameResults']);
-            Route::post('top-list/{id}/check/{objectId}', [TopListGameController::class, 'check']);
+            Route::prefix('top-list')->group(function () {
+                Route::get('/{id}', [TopListGameController::class, 'show']);
+                Route::post('/start', [TopListGameController::class, 'startGame']);
+                Route::post('/{id}/check/{objectId}', [TopListGameController::class, 'check']);
+            });
+
 
             Route::prefix('guess-the-player')->group(function () {
                 Route::get('instance/{room_id}', [GuessThePlayerController::class, 'getByInstanceId']);
@@ -147,7 +150,5 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
 
 
 
-        Route::get('lookups/teams', [TeamController::class, 'getAllOptions']);
-        Route::get('lookups/competitions', [CompetitionController::class, 'getAllOptions']);
     });
 });

@@ -9,9 +9,11 @@ use App\Http\Requests\Core\Manager\CreateManagerRequest;
 use App\Http\Requests\Core\Manager\ManagerFilterRequest;
 use App\Http\Requests\Core\Manager\UpdateManagerRequest;
 use App\Resources\Core\ManagerResource;
+use App\Resources\Shared\LookupResource;
 use App\Services\Core\Managers\IManagerService;
 use App\Traits\ApiResponses;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ManagerController extends Controller
 {
@@ -28,6 +30,22 @@ class ManagerController extends Controller
         $dto = PaginationDTO::fromRequest($request);
         $managers = $this->_service->getAll($dto);
         return $this->paginatedResponse($managers, ManagerResource::class, 'Managers retrieved successfully');
+    }
+
+    public function getOptions(Request $request): JsonResponse
+    {
+        $query = $request->input('query');
+        $limit = $request->input('limit', 10);
+        $managers = $this->_service->getOptions($query, $limit);
+        return $this->successResponse(
+            data: LookupResource::collectionWith(
+                resource: $managers,
+                valueKey: 'id',
+                labelKey: 'name',
+                extraFields: ['img_src']
+            ),
+            message: 'Managers retrieved successfully'
+        );
     }
 
     public function store(CreateManagerRequest $request): JsonResponse

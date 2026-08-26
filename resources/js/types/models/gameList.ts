@@ -1,4 +1,4 @@
-import { BingoConnectionType } from './../enums/gameList';
+import { BingoConnectionType, TopListItemstype } from './../enums/gameList';
 import { BaseEntity } from "../api";
 import { GridCellType } from "../enums";
 import { Country, Player, PlayerTeamPeriod, Team } from "./core";
@@ -100,30 +100,49 @@ export interface GuessThePlayerGameAssignment extends BaseEntity {
 
 // toplist game models
 export interface TopListGame extends BaseEntity {
-    game_instance_id: number;
     title: string;
-    type: string;
-    size: number;
-    max_chances: number;
+    description: string | null;
+    items_type: TopListItemstype;
+    total_items: number;
+    difficulty: string;
     items?: TopListItem[];
-    answers?: TopListAnswer[];
+}
+
+export interface TopListGameInstance extends BaseEntity {
+    game_instance_id: number;
+    max_attempts: number;
+    guesses?: TopListGuess[];
+    question?: TopListGame;
+    masterQuestion?: TopListGame;
+}
+
+export interface TopListGuess extends BaseEntity {
+    top_list_game_instance_id: number;
+    game_entry_id: number;
+    object_id: number;
+    object_type?: string;
+    object?: {
+        id: number;
+        name: string;
+        img_src?: string;
+    };
+    is_correct: boolean;
+    matched_rank?: number | null;
+    guessed_at?: string;
 }
 
 export interface TopListItem extends BaseEntity {
-    pos: number;
+    top_list_game_id: number;
+    rank: number;
+    display_value?: string | null;
     object_id: number;
     object?: {
         id: number;
         name: string;
-        img_src: string;
+        img_src?: string;
     };
 }
 
-export interface TopListAnswer extends BaseEntity {
-    top_list_item_id: number;
-    game_entry_id: number;
-    item?: TopListItem | null;
-}
 
 
 

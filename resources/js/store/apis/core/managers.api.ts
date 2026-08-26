@@ -1,5 +1,5 @@
 import { mainApi, API_URL } from './../mainApi';
-import { ApiResponse, PaginationResponse, PaginationFilter } from '@/types';
+import { ApiResponse, PaginationResponse, PaginationFilter, LookupOption } from '@/types';
 import { Manager } from '@/types';
 
 const BASE_URL = `${API_URL}/managers`;
@@ -44,6 +44,19 @@ export const managersApi = mainApi.injectEndpoints({
                     ]
                     : [{ type: 'Manager', id: 'LIST' }],
         }),
+        getManagersLookup: builder.query<ApiResponse<LookupOption[]>, { query: string, limit?: number }>({
+            query: ({ query, limit = 10 }) => ({
+                url: `${API_URL}/lookups/managers`,
+                params: { query, limit },
+            }),
+            providesTags: (result) =>
+                result?.data
+                    ? [
+                        ...result.data.map(({ id }) => ({ type: 'Manager' as const, id })),
+                        { type: 'Manager', id: 'LOOKUP' },
+                    ]
+                    : [{ type: 'Manager', id: 'LOOKUP' }],
+        }),
 
         getManagerById: builder.query<ApiResponse<Manager>, number>({
             query: (id) => `${BASE_URL}/${id}`,
@@ -80,4 +93,5 @@ export const {
     useCreateManagerMutation,
     useUpdateManagerMutation,
     useDeleteManagerMutation,
+    useGetManagersLookupQuery,
 } = managersApi;

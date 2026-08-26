@@ -25,11 +25,19 @@ class CountryService implements ICountryService
             ->paginate();
     }
 
-    public function getAllOptions(): Collection
+    public function getOptions(string $query, int $limit = 10): Collection
     {
+        $term = trim($query);
+
+        if (strlen($term) < 2) {
+            return collect();
+        }
+
         return Country::query()
-            ->select(['id', 'name'])
-            ->orderBy('name', 'asc')
+            ->select(['id', 'name', 'img_src', 'popularity'])
+            ->where('name', 'ILIKE', "%{$term}%")
+            ->orderBy('popularity', 'desc')
+            ->limit($limit)
             ->get();
     }
 

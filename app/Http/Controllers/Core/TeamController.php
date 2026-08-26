@@ -9,9 +9,11 @@ use App\Http\Requests\Core\Team\CreateTeamRequest;
 use App\Http\Requests\Core\Team\TeamFilterRequest;
 use App\Http\Requests\Core\Team\UpdateTeamRequest;
 use App\Resources\Core\TeamResource;
+use App\Resources\Shared\LookupResource;
 use App\Services\Core\Teams\ITeamService;
 use App\Traits\ApiResponses;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class TeamController extends Controller
 {
@@ -28,6 +30,22 @@ class TeamController extends Controller
         $dto = PaginationDTO::fromRequest($request);
         $teams = $this->_service->getAll($dto);
         return $this->paginatedResponse($teams, TeamResource::class, 'Teams retrieved successfully');
+    }
+
+    public function getOptions(Request $request): JsonResponse
+    {
+        $query = $request->input('query');
+        $limit = $request->input('limit', 10);
+        $teams = $this->_service->getOptions($query, $limit);
+        return $this->successResponse(
+            data: LookupResource::collectionWith(
+                resource: $teams,
+                valueKey: 'id',
+                labelKey: 'name',
+                extraFields: ['img_src']
+            ),
+            message: 'Teams retrieved successfully'
+        );
     }
 
     public function store(CreateTeamRequest $request): JsonResponse

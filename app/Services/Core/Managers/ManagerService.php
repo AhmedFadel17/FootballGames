@@ -7,6 +7,7 @@ use App\DTOs\Pagination\PaginationDTO;
 use App\Models\Core\Manager;
 use App\Services\Pagination\IPaginationService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class ManagerService implements IManagerService
 {
@@ -22,6 +23,22 @@ class ManagerService implements IManagerService
             ->allowSorts(['id', 'name', 'country_id', 'popularity'])
             ->searchable(['name'])
             ->paginate();
+    }
+
+    public function getOptions(string $query, int $limit = 10): Collection
+    {
+        $term = trim($query);
+
+        if (strlen($term) < 2) {
+            return collect();
+        }
+
+        return Manager::query()
+            ->select(['id', 'name', 'img_src', 'popularity'])
+            ->where('name', 'ILIKE', "%{$term}%")
+            ->orderBy('popularity', 'desc')
+            ->limit($limit)
+            ->get();
     }
 
     public function getById($id): Manager

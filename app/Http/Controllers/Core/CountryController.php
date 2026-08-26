@@ -13,6 +13,7 @@ use App\Resources\Shared\LookupResource;
 use App\Services\Core\Countries\ICountryService;
 use App\Traits\ApiResponses;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class CountryController extends Controller
 {
@@ -31,15 +32,17 @@ class CountryController extends Controller
         return $this->paginatedResponse($countries, CountryResource::class, 'Countries retrieved successfully');
     }
 
-    public function getAllOptions(): JsonResponse
+    public function getOptions(Request $request): JsonResponse
     {
-
-        $countries = $this->_service->getAllOptions();
+        $query = $request->input('query');
+        $limit = $request->input('limit', 10);
+        $countries = $this->_service->getOptions($query, $limit);
         return $this->successResponse(
             data: LookupResource::collectionWith(
                 resource: $countries,
                 valueKey: 'id',
-                labelKey: 'name'
+                labelKey: 'name',
+                extraFields: ['img_src']
             ),
             message: 'Countries retrieved successfully'
         );

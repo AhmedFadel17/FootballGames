@@ -7,6 +7,7 @@ use App\DTOs\Pagination\PaginationDTO;
 use App\Models\Core\Team;
 use App\Services\Pagination\IPaginationService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class TeamService implements ITeamService
 {
@@ -22,6 +23,22 @@ class TeamService implements ITeamService
             ->allowSorts(['id', 'name', 'country_id', 'popularity', 'name', 'abbr', 'api_id'])
             ->searchable(['name', 'abbr'])
             ->paginate();
+    }
+
+    public function getOptions(string $query, int $limit = 10): Collection
+    {
+        $term = trim($query);
+
+        if (strlen($term) < 2) {
+            return collect();
+        }
+
+        return Team::query()
+            ->select(['id', 'name', 'img_src', 'popularity'])
+            ->where('name', 'ILIKE', "%{$term}%")
+            ->orderBy('popularity', 'desc')
+            ->limit($limit)
+            ->get();
     }
 
     public function getById($id): Team

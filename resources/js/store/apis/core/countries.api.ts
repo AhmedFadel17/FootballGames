@@ -41,9 +41,10 @@ export const countriesApi = mainApi.injectEndpoints({
                     ]
                     : [{ type: 'Country', id: 'LIST' }],
         }),
-        getCountriesLookup: builder.query<ApiResponse<LookupOption[]>, void>({
-            query: () => ({
+        getCountriesLookup: builder.query<ApiResponse<LookupOption[]>, { query: string, limit?: number }>({
+            query: ({ query, limit = 10 }) => ({
                 url: `${API_URL}/lookups/countries`,
+                params: { query, limit },
             }),
             providesTags: (result) =>
                 result?.data

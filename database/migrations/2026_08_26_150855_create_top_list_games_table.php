@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,13 +12,12 @@ return new class extends Migration
     {
         Schema::create('top_list_games', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('game_id')
-                ->constrained("games")
-                ->onDelete('cascade');
-            $table->string('items_type', 100);
             $table->string('title');
-            $table->integer('max_chances')->default(3);
-            $table->integer('size')->default(10);
+            $table->string('description')->nullable();
+            $table->unsignedTinyInteger('items_type');
+            $table->unsignedSmallInteger('total_items')->default(10);
+            $table->unsignedSmallInteger('difficulty')->default(1);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

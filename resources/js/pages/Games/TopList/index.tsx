@@ -1,6 +1,8 @@
 import PageMeta from "@/components/common/PageMeta";
-import BingoMaker from "./components/TopListMaker";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { useAppSelector } from "@/store/hooks";
+import TopListMaker from "./components/TopListMaker";
 import TopListGame from "./components/TopListGame";
 
 export default function TopListPage() {
@@ -9,29 +11,33 @@ export default function TopListPage() {
   return (
     <>
       <PageMeta
-        title="Top 10"
-        description="This is the football top list page"
+        title="Top 10 List"
+        description="This is the football top 10 list game"
       />
-      <div className="grid grid-cols-12 gap-4 md:gap-6">
+      <div className="flex flex-col h-full overflow-hidden">
+        <div>
+          <Breadcrumbs
+            items={[
+              { label: "Home", path: "/dashboard" },
+              { label: "Football Top 10" },
+            ]}
+          />
 
-
-        <div className="col-span-12">
-
-          {isActive ?
-            <TopListGame />
-            :
-            <BingoMaker />
-          }
+          <div className="py-5 flex justify-between gap-6">
+            <PageHeader
+              chipText="Live"
+              titlePrefix="Football"
+              gradientText=" Top 10 List"
+              description="Test your football knowledge by revealing top 10 ranked players, teams, or stats before running out of lives."
+            />
+          </div>
         </div>
 
-        <div className="col-span-12">
-        </div>
-
-        <div className="col-span-12 xl:col-span-5">
-        </div>
-
-        <div className="col-span-12 xl:col-span-7">
-        </div>
+        {isActive ? (
+          <TopListGame isActive={isActive} />
+        ) : (
+          <TopListMaker />
+        )}
       </div>
     </>
   );

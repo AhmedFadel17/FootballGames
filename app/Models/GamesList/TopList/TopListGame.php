@@ -2,28 +2,43 @@
 
 namespace App\Models\GamesList\TopList;
 
-use App\Models\Game\Game;
-use App\Models\Game\GameInstance;
+
+use App\Enums\GameEngine\GameDifficulty;
+use App\Enums\GamesList\TopListItemstype;
+use App\Models\GameEngine\GameInstance;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TopListGame extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'game_id',
-        'items_type',
         'title',
-        'size',
-        'max_chances',
+        'description',
+        'items_type',
+        'total_items',
+        'difficulty',
     ];
-    public function game()
+
+    protected $casts = [
+        'items_type' => TopListItemstype::class,
+        'total_items' => 'integer',
+        'max_attempts' => 'integer',
+        'difficulty' => GameDifficulty::class,
+    ];
+
+
+    public function items(): HasMany
     {
-        return $this->belongsTo(Game::class, 'game_id');
+        return $this->hasMany(TopListItem::class)->orderBy('rank', 'asc');
     }
-    public function items()
+
+    public function guesses(): HasMany
     {
-        return $this->hasMany(TopListItem::class);
+        return $this->hasMany(TopListGuess::class);
     }
+
 }

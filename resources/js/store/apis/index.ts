@@ -20,6 +20,7 @@ export * from './gameEngine/gameInstances.api';
 export * from './gameList/bingoGame.api';
 export * from './gameList/careerGame.api';
 export * from './gameList/gridGame.api';
+export * from './gameList/topListGame.api';
 
 // ─── Infra ────────────────────────────────────────────────────────────────────
 export * from './infra/user.api';

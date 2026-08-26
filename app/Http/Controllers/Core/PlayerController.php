@@ -35,7 +35,8 @@ class PlayerController extends Controller
     public function getOptions(Request $request): JsonResponse
     {
         $query = $request->input('query');
-        $players = $this->_service->getOptions($query);
+        $limit = $request->input('limit', 10);
+        $players = $this->_service->getOptions($query, $limit);
         return $this->successResponse(
             data: LookupResource::collectionWith(
                 resource: $players,
