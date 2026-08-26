@@ -25,6 +25,17 @@ class BingoGameController extends Controller
     ) {
     }
 
+    public function show(Request $request, int $id): JsonResponse
+    {
+        $user = $request->user();
+        $bingoGame = $this->gameService->getById($user, $id);
+
+        return $this->successResponse(
+            new BingoGameResource($bingoGame),
+            'Bingo game retrieved successfully'
+        );
+    }
+
     public function store(CreateBingoGameRequest $request): JsonResponse
     {
         $dto = BingoGameDTO::fromRequest($request);

@@ -20,6 +20,8 @@ use App\Http\Controllers\GameEngine\GameInstanceController;
 use App\Http\Controllers\GameEngine\GameResultController;
 use App\Http\Controllers\GamesList\BingoGameController;
 use App\Http\Controllers\GamesList\CareerGameController;
+use App\Http\Controllers\GamesList\FootballGridController;
+use App\Http\Controllers\GamesList\GridGameController;
 use App\Http\Controllers\GamesList\GuessThePlayerController;
 use App\Http\Controllers\GamesList\TopList\TopListGameController;
 use Illuminate\Support\Facades\Broadcast;
@@ -92,6 +94,12 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
                 Route::post('{id}/reveal', [CareerGameController::class, 'reveal']);
                 Route::post('{id}/guess', [CareerGameController::class, 'guess']);
                 Route::post('', [CareerGameController::class, 'store']);
+            });
+
+            Route::prefix('football-grid')->group(function () {
+                Route::get('/{id}', [GridGameController::class, 'show']);
+                Route::post('', [GridGameController::class, 'store']);
+                Route::post('/{id}/submit', [GridGameController::class, 'submitAnswer']);
             });
 
             Route::apiResource('top-list', TopListGameController::class)->only(['index', 'show']);

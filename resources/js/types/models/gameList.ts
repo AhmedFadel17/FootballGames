@@ -1,5 +1,7 @@
+import { BingoConnectionType } from './../enums/gameList';
 import { BaseEntity } from "../api";
-import { Player, PlayerTeamPeriod, Team } from "./core";
+import { GridCellType } from "../enums";
+import { Country, Player, PlayerTeamPeriod, Team } from "./core";
 
 
 // bingo game models
@@ -45,6 +47,35 @@ export interface CareerStep {
     team: Team | null;
     start_year: string;
     end_year: string;
+}
+
+
+// grid game models
+export interface GridGame extends BaseEntity {
+    game_instance_id: number;
+    size: number;
+    conditions?: GridCondition[];
+}
+
+export interface GridCondition extends BaseEntity {
+    grid_game_id: number,
+    object_id: number;
+    object: Player | Team | Country | null;
+    object_type: string,
+    connection_type: BingoConnectionType;
+    type: GridCellType;
+    pos: number;
+}
+
+export interface GridAnswer extends BaseEntity {
+    grid_game_id: number,
+    game_entry_id: number,
+    player_id: number,
+    player: Player,
+    row_index: number,
+    column_index: number,
+    is_correct: boolean,
+    rarity_score: number,
 }
 
 

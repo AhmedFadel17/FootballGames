@@ -36,6 +36,11 @@ export const SidebarUserRoutes: SidebarRoute[] = [
     icon: <FaListOl size={18} />,
   },
   {
+    path: "/games/football-grid",
+    label: "Football Grid",
+    icon: <FaListOl size={18} />,
+  },
+  {
     path: "/games/top-list",
     label: "Top List",
     icon: <FaListOl size={18} />,

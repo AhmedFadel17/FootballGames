@@ -40,6 +40,7 @@ export const mainApi = createApi({
     'BingoGame',
     'CareerGame',
     'Top10',
+    'GridGame'
 
   ],
   endpoints: () => ({}),

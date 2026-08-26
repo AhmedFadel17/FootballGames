@@ -14,3 +14,8 @@ export enum TopListItemstype {
     CONTINENT = "continent",
     MANAGER = "manager",
 }
+
+export enum GridCellType {
+    ROW = "row",
+    COLUMN = "column"
+}

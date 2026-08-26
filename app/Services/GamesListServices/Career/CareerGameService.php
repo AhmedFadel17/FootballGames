@@ -23,7 +23,7 @@ class CareerGameService implements ICareerGameService
 
     public function getById(User $user, int $careerGameId): CareerGame
     {
-        return CareerGame::findOrFail($careerGameId);
+        return CareerGame::where('id', $careerGameId)->where('game_instance_id', $careerGameId)->firstOrFail();
     }
 
     public function create(User $user, CareerGameDTO $dto): CareerGame

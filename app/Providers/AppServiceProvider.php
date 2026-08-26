@@ -7,6 +7,12 @@ use App\Services\Core\CompetitionSeasons\CompetitionSeasonService;
 use App\Services\Core\CompetitionSeasons\ICompetitionSeasonService;
 use App\Services\GamesListServices\Career\CareerGameService;
 use App\Services\GamesListServices\Career\ICareerGameService;
+use App\Services\GamesListServices\Grid\GridAnswer\GridAnswerService;
+use App\Services\GamesListServices\Grid\GridAnswer\IGridAnswerService;
+use App\Services\GamesListServices\Grid\GridGame\GridGameService;
+use App\Services\GamesListServices\Grid\GridGame\IGridGameService;
+use App\Services\GamesListServices\Grid\GridValidation\GridValidationService;
+use App\Services\GamesListServices\Grid\GridValidation\IGridValidationService;
 use App\Services\Pagination\IPaginationService;
 use App\Services\Pagination\PaginationService;
 use App\Services\Core\Players\IPlayerService;
@@ -89,6 +95,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->scoped(IBingoGameService::class, BingoGameService::class);
         $this->app->scoped(IBingoConditionService::class, BingoConditionService::class);
         $this->app->scoped(IBingoMatchService::class, BingoMatchService::class);
+
+        $this->app->scoped(IGridGameService::class, GridGameService::class);
+        $this->app->scoped(IGridAnswerService::class, GridAnswerService::class);
+        $this->app->scoped(IGridValidationService::class, GridValidationService::class);
+
+
         $this->app->scoped(ITopListGameService::class, TopListGameService::class);
         $this->app->scoped(IGuessThePlayerGameService::class, GuessThePlayerGameService::class);
         $this->app->scoped(ICareerGameService::class, CareerGameService::class);

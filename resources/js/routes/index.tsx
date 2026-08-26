@@ -25,6 +25,7 @@ import PlayerDetails from "@/pages/Admin/Core/Players/PlayerDetails";
 import ManagerDetails from "@/pages/Admin/Core/Managers/ManagerDetails";
 import CountryDetails from "@/pages/Admin/Areas/Countries/CountryDetails";
 import PlayerCareerGame from "@/pages/Games/Career";
+import GridGamePage from "@/pages/Games/Grid";
 
 // =============================
 // MAIN ROUTES
@@ -79,6 +80,11 @@ export const GamesRoutes: AppRoute[] = [
     path: "/games/player-career",
     label: "Player Career",
     element: <PlayerCareerGame />,
+  },
+  {
+    path: "/games/football-grid",
+    label: "Football Grid",
+    element: <GridGamePage />,
   },
   {
     path: "/games/top-list",
