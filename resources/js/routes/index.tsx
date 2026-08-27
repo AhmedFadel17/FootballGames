@@ -26,6 +26,12 @@ import ManagerDetails from "@/pages/Admin/Core/Managers/ManagerDetails";
 import CountryDetails from "@/pages/Admin/Areas/Countries/CountryDetails";
 import PlayerCareerGame from "@/pages/Games/Career";
 import GridGamePage from "@/pages/Games/Grid";
+import HowToPlay from "@/pages/Main/HowToPlay";
+import GlobalRanks from "@/pages/Main/Leaderboard";
+import DailyChallenge from "@/pages/Main/DailyChallenge";
+import TermsOfService from "@/pages/Main/Terms";
+import PrivacyPolicy from "@/pages/Main/Privacy";
+import Support from "@/pages/Main/Support";
 
 // =============================
 // MAIN ROUTES
@@ -37,24 +43,34 @@ export const MainRoutes: AppRoute[] = [
     element: <Home />,
   },
   {
-    path: "/",
-    label: "Games",
-    element: <Home />,
+    path: "/leaderboard",
+    label: "Leaderboard",
+    element: <GlobalRanks />,
   },
   {
-    path: "/",
-    label: "Fans",
-    element: <Home />,
+    path: "/how-to-play",
+    label: "How to Play",
+    element: <HowToPlay />,
   },
   {
-    path: "/",
-    label: "Contact Us",
-    element: <Home />,
+    path: "/daily-challenge",
+    label: "Daily Challenge",
+    element: <DailyChallenge />,
   },
   {
-    path: "/",
-    label: "About Us",
-    element: <Home />,
+    path: "/terms",
+    label: "Terms of Use",
+    element: <TermsOfService />,
+  },
+  {
+    path: "/privacy",
+    label: "Privacy Policy",
+    element: <PrivacyPolicy />,
+  },
+  {
+    path: "/contact",
+    label: "Contact",
+    element: <Support />,
   },
 ];
 // =============================

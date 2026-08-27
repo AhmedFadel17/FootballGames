@@ -39,7 +39,7 @@ class GameService implements IGameService
     public function update(int $id, GameDTO $dto): Game
     {
         $game = Game::findOrFail($id);
-        $game->update($dto->toArray());
+        $game->update($dto->toUpdateArray());
         return $game;
     }
 

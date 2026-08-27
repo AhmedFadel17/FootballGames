@@ -35,6 +35,22 @@ export const getGamesTableColumns = (): TableColumn<Game>[] => [
         ),
     },
     {
+        key: "img_src",
+        header: "Image",
+        align: "left",
+        sortable: true,
+        render: (game) => game.img_src ? <img src={game.img_src} alt={game.name} className="w-16 h-16 object-cover rounded" /> : <span className="text-gray-500">No Image</span>,
+        editRender: (game, onChange) => (
+            <input
+                type="text"
+                value={game.img_src || ''}
+                onChange={(e) => onChange({ img_src: e.target.value })}
+                placeholder="Image URL"
+                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/40 rounded px-2 py-1.5 text-xs text-white placeholder-white/20 focus:outline-none transition-colors"
+            />
+        ),
+    },
+    {
         key: "description",
         header: "Description",
         align: "left",

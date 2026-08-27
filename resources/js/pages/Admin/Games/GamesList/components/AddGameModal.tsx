@@ -15,6 +15,7 @@ export default function AddGameModal({ isOpen, onClose, onSuccess }: AddGameModa
         min_players: 0,
         max_players: 0,
         slug: '',
+        img_src: '',
         is_active: false
     });
 
@@ -36,11 +37,12 @@ export default function AddGameModal({ isOpen, onClose, onSuccess }: AddGameModa
                 min_players: Number(formData.min_players),
                 max_players: Number(formData.max_players),
                 slug: formData.slug,
+                img_src: formData.img_src,
                 is_active: formData.is_active,
             }).unwrap();
 
             showToast.success("Game Created", "New game has been added successfully.");
-            setFormData({ name: "", description: "", min_players: 0, max_players: 0, slug: '', is_active: false });
+            setFormData({ name: "", description: "", min_players: 0, max_players: 0, slug: '', img_src: '', is_active: false });
             onSuccess?.();
             onClose();
         } catch (error: any) {
@@ -116,6 +118,17 @@ export default function AddGameModal({ isOpen, onClose, onSuccess }: AddGameModa
                             required
                             value={formData.slug}
                             onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                            className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-colors"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-medium text-white/70 mb-1.5">Image URL</label>
+                        <input
+                            type="text"
+                            required
+                            value={formData.img_src}
+                            onChange={(e) => setFormData({ ...formData, img_src: e.target.value })}
                             className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-colors"
                         />
                     </div>

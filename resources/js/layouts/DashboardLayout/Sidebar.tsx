@@ -236,19 +236,14 @@ export default function Sidebar({ isCollapsed, isAdmin }: SidebarProps) {
                         }`}
                     onClick={() => navigate('/')}
                 >
-                    <img
-                        src="/images/logo/logo.png"
-                        alt="logo"
-                        className="w-9 h-9 flex-shrink-0 object-contain"
-                    />
+                    <span className="material-symbols-outlined text-primary text-3xl">sports_soccer</span>
+
                     <div
                         className={`flex font-headline gap-x-2 font-bold text-xl transition-all duration-300 overflow-hidden ${!isExpanded ? 'w-0 opacity-0 hidden' : 'w-auto opacity-100'
                             }`}
                     >
-                        <span className="text-primary-light whitespace-nowrap">
-                            Football
-                        </span>
-                        <span className="text-primary whitespace-nowrap"> Arena</span>
+                        <span className="font-headline font-black italic tracking-tighter text-xl md:text-2xl text-primary">FOOTBALL ARENA</span>
+
                     </div>
                 </div>
             </div>

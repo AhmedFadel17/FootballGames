@@ -1,53 +1,36 @@
-import { footerData } from "@/routes/footer";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer className="w-full pt-20 pb-10 px-8 bg-surface-dim border-t border-white/5">
-      <div className="max-w-screen-2xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-20">
-          <div className="md:col-span-6 space-y-6">
-            <div className="flex items-center gap-2">
-              <img src="/images/logo/logo.png" alt="logo" className='w-10 h-10' />
-              <div className="font-headline font-bold text-2xl tracking-tight">
-                <span className='text-primary-light'>Fade</span>
-                <span className="text-primary">Ball</span>
-              </div>
-            </div>
-            <p className="text-white/40 text-sm leading-relaxed max-w-xs font-body">
-              {footerData.description}
-            </p>
-            <div className="flex items-center gap-4">
-              {footerData.social.map((social) => (
-                <a key={social.title} href={social.path} className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-primary hover:border-primary/50 transition-all">
-                  <i className={`fab ${social.icon} text-sm`}></i>
-                </a>
-              ))}
-            </div>
+    <footer className="bg-surface-container-lowest border-t border-white/10 pt-16 pb-24 md:pb-12 relative overflow-hidden md:pl-20">
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-primary/20 blur-[100px] pointer-events-none"></div>
+      <div className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto text-center relative z-10">
+        <h2 className="font-display-lg text-display-lg md:text-[56px] font-black italic uppercase text-white tracking-tighter mb-6">
+          Ready to take the field?
+        </h2>
+        <p className="font-title-md text-title-md text-on-surface-variant mb-8 max-w-lg mx-auto">
+          Join thousands of players already building their legacy in the Football Arena.
+        </p>
+        <Link
+          to="/games/bingo-football"
+          className="red-action px-10 py-5 rounded font-headline-lg-mobile text-[20px] font-bold uppercase tracking-wider inline-flex items-center gap-3"
+        >
+          Get Started Now <span className="material-symbols-outlined">sports_score</span>
+        </Link>
+        <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-on-surface-variant/60 font-label-sm text-label-sm">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-lg text-primary">sports_soccer</span>
+            <span className="font-bold italic text-white/70 tracking-wider">FOOTBALL ARENA</span>
           </div>
-          {footerData.links.map((link) => (
-            <div className="md:col-span-2 space-y-6">
-              <h4 className="text-white text-xs font-label uppercase tracking-widest font-bold">{link.title}</h4>
-              <ul className="space-y-4 text-sm text-white/40 font-medium">
-                {link.links.map((l) => (
-                  <li key={l.title}><a href={l.path} className="hover:text-primary transition-colors">{l.title}</a></li>
-                ))}
-              </ul>
-            </div>
-          ))}
-
-        </div>
-
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="text-[10px] uppercase tracking-widest text-white/20 font-bold">
-            {footerData.copyright}
-          </div>
-          <div className="flex gap-8 text-[10px] uppercase tracking-widest text-white/20 font-bold">
-            {footerData.legal.map((l) => (
-              <a key={l.title} href={l.path} className="hover:text-white transition-colors">{l.title}</a>
-            ))}
+          <div>© {new Date().getFullYear()} Football Arena. All rights reserved.</div>
+          <div className="flex gap-6">
+            <Link className="hover:text-primary transition-colors" to="/terms">Terms</Link>
+            <Link className="hover:text-primary transition-colors" to="/privacy">Privacy</Link>
+            <Link className="hover:text-primary transition-colors" to="/contact">Support</Link>
           </div>
         </div>
       </div>
     </footer>
-  )
+  );
 }
+

@@ -43,20 +43,8 @@ export default function GamesList() {
             errorTitle="Network Error"
             errorMessage="Failed to fetch games. Please try again."
             emptyStateMessage="No game parameters found matching your filters."
-            renderItem={(game) => <GameCard game={game} />}
-            searchOption={{
-                placeholder: "Search games catalog...",
-                value: searchTerm,
-                onChange: (val) => { setSearchTerm(val); setPage(1); }
-            }}
-            filterOptions={{
-                fields: [],
-                values: queryState.filters,
-                onChange: (nextFilters) => {
-                    setQueryState(prev => ({ ...prev, filters: nextFilters }));
-                    setPage(1);
-                }
-            }}
+            renderItem={(game) => <GameCard game={game} onPlay={() => navigate(`/games/${game.slug}`)} />}
+
             paginationData={gamesData}
             onPageChange={setPage}
             onPageSizeChange={(size) => { setPageSize(size); setPage(1); }}

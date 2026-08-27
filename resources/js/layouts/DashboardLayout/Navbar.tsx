@@ -75,11 +75,9 @@ export default function DashboardNavbar({
 
                     {/* Logo visible only on mobile/tablet because sidebar is hidden */}
                     <div className="lg:hidden text-xl font-headline font-bold text-white tracking-tight flex items-center">
-                        <div className='flex items-center gap-2 cursor-pointer' onClick={() => navigate('/')}>
-                            <img src="/images/logo/logo.png" alt="logo" className='w-8 h-8' />
-                            <h1 className="font-black italic tracking-tighter text-primary text-2xl md:text-3xl">
-                                FOOTBALL ARENA
-                            </h1>
+                        <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
+                            <span className="material-symbols-outlined text-primary text-3xl">sports_soccer</span>
+                            <span className="font-headline font-black italic tracking-tighter text-xl md:text-2xl text-primary">FOOTBALL ARENA</span>
                         </div>
                     </div>
                 </div>

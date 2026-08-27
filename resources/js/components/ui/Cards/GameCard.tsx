@@ -1,67 +1,75 @@
-import { Link } from "react-router-dom";
 import { Game } from "@/types";
-import { Users, Gamepad2, ArrowRight } from "lucide-react";
+import { Play, Zap, Flame, ChevronRight } from "lucide-react";
 
 interface GameCardProps {
-    game: Game;
+    game: Game & {
+        stamina_cost?: number;
+    };
+    onPlay?: (game: Game) => void;
 }
 
-export const GameCard = ({ game }: GameCardProps) => {
-    return (
-        <div className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500 hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
-            {/* Top Bar: Icon, Name & Active Badge */}
-            <div>
-                <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400">
-                            <Gamepad2 className="h-5 w-5" />
-                        </div>
-                        <h3 className="font-semibold text-gray-900 group-hover:text-emerald-600 dark:text-gray-100 dark:group-hover:text-emerald-400">
-                            {game.name}
-                        </h3>
-                    </div>
+export function GameCard({ game, onPlay }: GameCardProps) {
+    const staminaCost = game.stamina_cost ?? 1;
 
-                    <span
-                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${game.is_active
-                                ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400"
-                                : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
-                            }`}
-                    >
-                        {game.is_active ? "Active" : "Offline"}
+    return (
+        <div
+            onClick={() => onPlay?.(game)}
+            className="group relative bg-slate-900 rounded-3xl p-2.5 border border-slate-800 hover:border-emerald-500/50 shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-1.5 transition-all duration-300 flex flex-col cursor-pointer overflow-hidden"
+        >
+            {/* Visual Header / Cover Image */}
+            <div className="relative h-44 w-full rounded-2xl overflow-hidden bg-slate-950">
+                {game.img_src ? (
+                    <img
+                        src={game.img_src}
+                        alt={game.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-tr from-slate-900 to-emerald-950 text-emerald-400 font-black">
+                        FOOTBALL ARENA
+                    </div>
+                )}
+
+                {/* Dynamic Dark Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
+
+                {/* Top Badges */}
+                <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black tracking-wider uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 backdrop-blur-md">
+                        <Flame className="w-3 h-3 text-emerald-400 fill-emerald-400" />
+                        {game.slug || "ARENA"}
                     </span>
+
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-black bg-slate-950/80 text-amber-400 border border-amber-500/30 backdrop-blur-md">
+                        <Zap className="w-3.5 h-3.5 fill-amber-400 text-amber-400 animate-pulse" />
+                        -{staminaCost}
+                    </div>
                 </div>
 
-                {/* Description */}
-                <p className="mt-3 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
-                    {game.description || "No description available for this game."}
-                </p>
+                {/* Title over Image */}
+                <div className="absolute bottom-2.5 left-3 right-3">
+                    <h3 className="text-lg font-black text-white tracking-tight leading-tight drop-shadow-md group-hover:text-emerald-400 transition-colors">
+                        {game.name}
+                    </h3>
+                </div>
             </div>
 
-            {/* Bottom Bar: Player Capacity & Action Button */}
-            <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4 dark:border-gray-800">
-                <div className="flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400">
-                    <Users className="h-4 w-4 text-gray-400 dark:text-gray-500" />
-                    <span>
-                        {game.min_players === game.max_players
-                            ? `${game.min_players} Players`
-                            : `${game.min_players} - ${game.max_players} Players`}
-                    </span>
-                </div>
+            {/* Card Body */}
+            <div className="p-3 flex-1 flex flex-col justify-between space-y-3">
+                <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed font-medium">
+                    {game.description || "Test your football knowledge, climb the global leaderboards, and earn epic rewards!"}
+                </p>
 
-                {game.is_active ? (
-                    <Link
-                        to={`/games/${game.slug}`}
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
-                    >
-                        Play Now
-                        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                    </Link>
-                ) : (
-                    <span className="text-xs text-gray-400 dark:text-gray-600 cursor-not-allowed">
-                        Unavailable
+                {/* Action Trigger */}
+                <div className="pt-1 flex items-center justify-between gap-2 border-t border-slate-800/80">
+                    <span className="text-[11px] font-bold text-slate-500 group-hover:text-slate-300 transition-colors">
+                        Tap to launch
                     </span>
-                )}
+                    <div className="w-8 h-8 rounded-xl bg-emerald-500 group-hover:bg-emerald-400 text-slate-950 flex items-center justify-center transition-all group-hover:scale-110 shadow-md shadow-emerald-500/20">
+                        <ChevronRight className="w-5 h-5 stroke-[3]" />
+                    </div>
+                </div>
             </div>
         </div>
     );
-};
+}

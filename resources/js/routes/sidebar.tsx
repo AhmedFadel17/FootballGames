@@ -15,6 +15,8 @@ import { BiWorld } from "react-icons/bi";
 import { SiSecurityscorecard } from "react-icons/si";
 import { IoGameController } from "react-icons/io5";
 import { VscActivateBreakpoints } from "react-icons/vsc";
+import { BsFillGrid3X3GapFill, BsUiChecksGrid, BsListTask } from "react-icons/bs";
+import { PiPathFill } from "react-icons/pi";
 
 // =============================
 // 🚀 USER SIDEBAR ROUTES
@@ -23,42 +25,37 @@ export const SidebarUserRoutes: SidebarRoute[] = [
   {
     path: "/dashboard",
     label: "Home",
-    icon: <FaTrophy size={18} />,
+    icon: <FaHome size={18} />,
   },
   {
     path: "/games/bingo-football",
     label: "Bingo",
-    icon: <FaMagic size={18} />,
+    icon: <BsFillGrid3X3GapFill size={18} />,
   },
   {
     path: "/games/player-career",
     label: "Player Career",
-    icon: <FaListOl size={18} />,
+    icon: <PiPathFill size={18} />,
   },
   {
     path: "/games/football-grid",
     label: "Football Grid",
-    icon: <FaListOl size={18} />,
+    icon: <BsUiChecksGrid size={18} />,
   },
   {
     path: "/games/top-list",
     label: "Top List",
-    icon: <FaListOl size={18} />,
-  },
-  {
-    path: "/games/guess-the-player",
-    label: "Guess The Player",
-    icon: <VscActivateBreakpoints size={18} />,
-  },
-  {
-    path: "/multi",
-    label: "Multi",
-    icon: <VscActivateBreakpoints size={18} />,
+    icon: <BsListTask size={18} />,
   },
   // {
-  //   path: "/games/fantasy",
-  //   label: "Fantasy League",
-  //   icon: <FaGamepad size={18} />,
+  //   path: "/games/guess-the-player",
+  //   label: "Guess The Player",
+  //   icon: <VscActivateBreakpoints size={18} />,
+  // },
+  // {
+  //   path: "/multi",
+  //   label: "Multi",
+  //   icon: <VscActivateBreakpoints size={18} />,
   // },
 ];
 
