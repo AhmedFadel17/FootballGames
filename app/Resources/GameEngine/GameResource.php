@@ -12,6 +12,7 @@ class GameResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'description' => $this->description,
+            'img_src' => $this->img_src,
             'is_active' => $this->is_active,
             'min_players' => $this->min_players ?? 0,
             'max_players' => $this->max_players ?? 0,

@@ -31,6 +31,7 @@ class CreateGameRequest extends FormRequest
                 'max:100',
                 'gte:min_players',
             ],
+            'img_src' => 'nullable|string|max:500',
         ];
     }
 }

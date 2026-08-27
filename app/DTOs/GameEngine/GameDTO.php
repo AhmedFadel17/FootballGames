@@ -12,6 +12,7 @@ class GameDTO
         public ?int $maxPlayers = null,
         public ?string $slug = null,
         public ?string $description = null,
+        public ?string $imgSrc = null,
         public ?bool $isActive = null,
     ) {
     }
@@ -29,6 +30,7 @@ class GameDTO
             maxPlayers: isset($data['max_players']) ? (int) $data['max_players'] : null,
             slug: $data['slug'] ?? null,
             description: $data['description'] ?? null,
+            imgSrc: $data['img_src'] ?? null,
             isActive: isset($data['is_active']) ? (bool) $data['is_active'] : null,
         );
     }
@@ -41,6 +43,7 @@ class GameDTO
             'max_players' => $this->maxPlayers,
             'slug' => $this->slug,
             'description' => $this->description,
+            'img_src' => $this->imgSrc,
             'is_active' => $this->isActive,
         ];
     }

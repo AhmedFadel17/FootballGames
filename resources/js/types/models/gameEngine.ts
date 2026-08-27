@@ -7,6 +7,7 @@ export interface Game extends BaseEntity {
     max_players: number;
     slug: string;
     description: string;
+    img_src: string;
     is_active: boolean;
 };
 

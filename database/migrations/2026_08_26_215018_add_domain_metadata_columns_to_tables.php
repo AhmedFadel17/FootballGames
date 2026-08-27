@@ -65,7 +65,9 @@ return new class extends Migration {
         Schema::table('career_games', function (Blueprint $table) {
             $table->unsignedSmallInteger('difficulty')->default(1)->after('attempts_left');
         });
-
+        Schema::table('games', function (Blueprint $table) {
+            $table->string('img_src')->nullable()->after('max_players');
+        });
 
     }
 
@@ -107,6 +109,10 @@ return new class extends Migration {
 
         Schema::table('career_games', function (Blueprint $table) {
             $table->dropColumn(['difficulty']);
+        });
+
+        Schema::table('games', function (Blueprint $table) {
+            $table->dropColumn(['img_src']);
         });
     }
 };

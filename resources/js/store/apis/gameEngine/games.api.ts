@@ -10,6 +10,7 @@ export interface CreateGameRequest {
     description: string;
     max_players: number;
     min_players: number;
+    img_src: string;
     is_active: boolean;
 }
 
