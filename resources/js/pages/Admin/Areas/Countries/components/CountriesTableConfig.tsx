@@ -36,10 +36,18 @@ export const getCountryTableColumns = (): TableColumn<Country>[] => [
     },
     {
         key: "img_src",
-        header: "Flag",
+        header: "Image",
         align: "left",
-        render: (country) => <img src={country.img_src} alt="" className="w-10 h-8" />,
-
+        render: (country) => (country.img_src ? <img src={country.img_src} alt={country.name} className="w-10" /> : <span>No Image</span>),
+        editRender: (country, onChange) => (
+            <input
+                type="text"
+                value={country.img_src || ''}
+                onChange={(e) => onChange({ img_src: e.target.value })}
+                placeholder="Logo"
+                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/40 rounded px-2 py-1.5 text-xs text-white placeholder-white/20 focus:outline-none transition-colors"
+            />
+        ),
     },
     {
         key: "popularity",
@@ -54,6 +62,20 @@ export const getCountryTableColumns = (): TableColumn<Country>[] => [
                 onChange={(e) => onChange({ popularity: parseInt(e.target.value) })}
                 placeholder="Country Popularity"
                 className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/40 rounded px-2 py-1.5 text-xs text-white placeholder-white/20 focus:outline-none transition-colors"
+            />
+        ),
+    },
+    {
+        key: "is_federation",
+        header: "is_federation",
+        align: "center",
+        render: (country) => country.is_federation ? "Yes" : "No",
+        editRender: (country, onChange) => (
+            <input
+                type="checkbox"
+                checked={country.is_federation}
+                onChange={(e) => onChange({ is_federation: e.target.checked })}
+                className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
             />
         ),
     },

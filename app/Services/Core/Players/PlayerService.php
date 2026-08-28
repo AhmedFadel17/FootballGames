@@ -18,7 +18,7 @@ class PlayerService implements IPlayerService
     public function getAll(PaginationDTO $dto): LengthAwarePaginator
     {
         return $this->_paginationService
-            ->for(Player::query()->with('country'), $dto)
+            ->for(Player::query()->with(['country', 'currentTeam']), $dto)
             ->allowFilters(['country_id', 'popularity', 'date_of_birth', 'position', 'name', 'fullname', 'height_cm', 'weight_kg', 'market_value', 'preferred_foot', 'rating'])
             ->allowSorts(['id', 'name', 'country_id', 'popularity', 'date_of_birth', 'position', 'name', 'fullname', 'height_cm', 'weight_kg', 'market_value', 'preferred_foot', 'rating'])
             ->searchable(['name', 'fullname'])

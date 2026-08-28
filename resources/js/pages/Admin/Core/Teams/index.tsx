@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PageMeta from "@/components/common/PageMeta";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -14,6 +15,7 @@ import AddTeamModal from "./components/AddTeamModal";
 import { getTeamTableColumns, getTeamTableActions } from "./components/TeamsTableConfig";
 
 export default function TeamsPage() {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(8);
   const [searchTerm, setSearchTerm] = useState('');
@@ -121,10 +123,13 @@ export default function TeamsPage() {
         <GenericTable<Team>
           items={teams}
           columns={getTeamTableColumns()}
-          actions={getTeamTableActions((team) => {
-            setSelectedId(team.id);
-            setIsDeleteDialogOpen(true);
-          })}
+          actions={getTeamTableActions(
+            (team) => navigate(`/dashboard/admin/teams/${team.id}`),
+            (team) => {
+              setSelectedId(team.id);
+              setIsDeleteDialogOpen(true);
+            }
+          )}
           searchOption={{
             placeholder: "Search by name...",
             value: searchTerm,

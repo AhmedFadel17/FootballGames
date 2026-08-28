@@ -39,7 +39,7 @@ export const getPlayerTableColumns = (): TableColumn<Player>[] => [
         header: "Image",
         align: "left",
         sortable: true,
-        render: (manager) => <img src={manager.img_src} alt={manager.name} className="w-10 h-10" />,
+        render: (player) => <img src={player.img_src} alt={player.name} className="w-10 h-10" />,
         editRender: (manager, onChange) => (
             <input
                 type="text"
@@ -49,6 +49,17 @@ export const getPlayerTableColumns = (): TableColumn<Player>[] => [
                 className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/40 rounded px-2 py-1.5 text-xs text-white placeholder-white/20 focus:outline-none transition-colors"
             />
         ),
+    },
+    {
+        key: "current_team_id",
+        header: "Team",
+        align: "left",
+        render: (player) => {
+            if (!player?.current_team) {
+                return <span className="font-medium text-white/80">N/A</span>;
+            }
+            return <img src={player.current_team.img_src} alt={player.current_team.name} className="w-10" />;
+        },
     },
     {
         key: "birth_date",
@@ -231,7 +242,20 @@ export const getPlayerTableColumns = (): TableColumn<Player>[] => [
             />
         ),
     },
-
+    {
+        key: "is_retired",
+        header: "Retired",
+        align: "left",
+        render: (player) => player.is_retired ? "Yes" : "No",
+        editRender: (player, onChange) => (
+            <input
+                type="checkbox"
+                checked={player.is_retired || false}
+                onChange={(e) => onChange({ is_retired: e.target.checked })}
+                className="w-4 h-4 bg-white/5 border border-white/10 focus:border-cyan-500/40 rounded px-2 py-1.5 text-xs text-white placeholder-white/20 focus:outline-none transition-colors"
+            />
+        ),
+    },
 
 ];
 

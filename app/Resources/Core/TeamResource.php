@@ -22,6 +22,11 @@ class TeamResource extends JsonResource
             'titles_won' => $this->when(isset($this->titles_won), (int) $this->titles_won),
             'country' => new CountryResource($this->whenLoaded('country')),
             'current_competition' => new CompetitionResource($this->whenLoaded('currentCompetition')),
+            'current_squad' => PlayerResource::collection($this->whenLoaded('currentSquad')),
+            'current_manager' => new ManagerResource($this->whenLoaded('currentManager')),
+            'honors' => CompetitionSeasonResource::collection($this->whenLoaded('wonCompetitionSeasons')),
+            'standings' => StandingResource::collection($this->whenLoaded('standings')),
+            'manager_periods' => $this->whenLoaded('managerPeriods'),
         ];
     }
 }

@@ -14,6 +14,8 @@ export default function AddCountryModal({ isOpen, onClose, onSuccess }: AddCount
         code: "",
         popularity: 0,
         continent_id: 0,
+        is_federation: false,
+        img_src: "",
     });
 
     const [createCountry, { isLoading }] = useCreateCountryMutation();
@@ -33,10 +35,12 @@ export default function AddCountryModal({ isOpen, onClose, onSuccess }: AddCount
                 code: formData.code,
                 popularity: Number(formData.popularity),
                 continent_id: Number(formData.continent_id),
+                is_federation: formData.is_federation,
+                img_src: formData.img_src,
             }).unwrap();
 
             showToast.success("Country Created", "New Country has been added successfully.");
-            setFormData({ name: "", code: "", popularity: 0, continent_id: 0 });
+            setFormData({ name: "", code: "", popularity: 0, continent_id: 0, is_federation: false, img_src: "" });
             onSuccess?.();
             onClose();
         } catch (error: any) {
@@ -117,6 +121,26 @@ export default function AddCountryModal({ isOpen, onClose, onSuccess }: AddCount
                                 <option value="5">South America</option>
                                 <option value="6">Oceania</option>
                             </select>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                        <div>
+                            <label className="block text-xs font-medium text-white/70 mb-1.5">Is Federation</label>
+                            <input
+                                type="checkbox"
+                                checked={formData.is_federation}
+                                onChange={(e) => setFormData({ ...formData, is_federation: e.target.checked })}
+                                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-colors"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-white/70 mb-1.5">Image Source</label>
+                            <input
+                                type="text"
+                                value={formData.img_src}
+                                onChange={(e) => setFormData({ ...formData, img_src: e.target.value })}
+                                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-colors"
+                            />
                         </div>
                     </div>
 

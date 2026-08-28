@@ -22,6 +22,7 @@ class StandingResource extends JsonResource
             'goal_difference' => $this->goal_difference,
             'points' => $this->points,
             'team' => new TeamResource($this->whenLoaded('team')),
+            'competition_season' => new CompetitionSeasonResource($this->whenLoaded('competitionSeason')),
         ];
     }
 }

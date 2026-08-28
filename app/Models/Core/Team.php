@@ -50,4 +50,18 @@ class Team extends Model
         return $this->hasOne(Manager::class, 'current_team_id');
     }
 
+    public function wonCompetitionSeasons(): HasMany
+    {
+        return $this->hasMany(CompetitionSeason::class, 'winner_team_id');
+    }
+
+    public function standings(): HasMany
+    {
+        return $this->hasMany(Standing::class, 'team_id');
+    }
+
+    public function managerPeriods(): HasMany
+    {
+        return $this->hasMany(ManagerTeamPeriod::class, 'team_id');
+    }
 }

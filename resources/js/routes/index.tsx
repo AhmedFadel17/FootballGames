@@ -21,6 +21,7 @@ import Multi from "@/pages/Dashboard/Multi";
 import GuessThePlayerPage from "@/pages/Games/GuessThePlayer";
 import CompetitionDetails from "@/pages/Admin/Core/Competitions/CompetitionDetails";
 import CompetitionSeasonDetails from "@/pages/Admin/Core/Competitions/CompetitionSeasonDetails";
+import TeamDetails from "@/pages/Admin/Core/Teams/TeamDetails";
 import PlayerDetails from "@/pages/Admin/Core/Players/PlayerDetails";
 import ManagerDetails from "@/pages/Admin/Core/Managers/ManagerDetails";
 import CountryDetails from "@/pages/Admin/Areas/Countries/CountryDetails";
@@ -168,6 +169,11 @@ export const AppAdminRoutes: AppRoute[] = [
     path: "/dashboard/admin/teams",
     label: "Teams",
     element: <Teams />,
+  },
+  {
+    path: "/dashboard/admin/teams/:id",
+    label: "Team Details",
+    element: <TeamDetails />,
   },
   {
     path: "/dashboard/admin/players",

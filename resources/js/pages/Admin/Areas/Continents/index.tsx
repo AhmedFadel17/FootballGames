@@ -45,6 +45,8 @@ export default function ContinentsPage() {
         body: {
           name: updatedContinent.name,
           code: updatedContinent.code,
+          popularity: Number(updatedContinent.popularity),
+          img_src: updatedContinent.img_src,
         },
       }).unwrap();
       showToast.success('Continent Updated', 'Continent profile has been updated successfully.');

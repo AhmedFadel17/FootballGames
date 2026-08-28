@@ -43,7 +43,18 @@ class TeamService implements ITeamService
 
     public function getById($id): Team
     {
-        $team = Team::with('country')->findOrFail($id);
+        $team = Team::with([
+            'country',
+            'currentCompetition',
+            'currentSquad.country',
+            'currentManager.country',
+            'wonCompetitionSeasons.competition',
+            'wonCompetitionSeasons.season',
+            'standings.competitionSeason.competition',
+            'standings.competitionSeason.season',
+            'managerPeriods.manager.country',
+        ])->findOrFail($id);
+
         return $team;
     }
 

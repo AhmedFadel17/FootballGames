@@ -108,8 +108,15 @@ export const getTeamTableColumns = (): TableColumn<Team>[] => [
 ];
 
 export const getTeamTableActions = (
+    onView: (team: Team) => void,
     onDelete: (team: Team) => void
 ): TableAction<Team>[] => [
+        {
+            label: "View",
+            icon: "visibility",
+            onClick: onView,
+            className: "text-accent-cyan",
+        },
         {
             label: "Edit",
             icon: "edit",

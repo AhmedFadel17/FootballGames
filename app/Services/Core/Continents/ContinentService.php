@@ -19,24 +19,21 @@ class ContinentService implements IContinentService
     {
         return $this->_paginationService
             ->for(Continent::query(), $dto)
-            ->allowFilters(['id', 'name', 'code'])
-            ->allowSorts(['id', 'name', 'code'])
+            ->allowFilters(['id', 'name', 'code', 'popularity'])
+            ->allowSorts(['id', 'name', 'code', 'popularity'])
             ->searchable(['name', 'code'])
             ->paginate();
     }
 
     public function getById($id): Continent
     {
-        $continent = Cache::remember("continent:$id", 3600, function () use ($id) {
-            return Continent::findOrFail($id);
-        });
+        $continent = Continent::findOrFail($id);
         return $continent;
     }
 
     public function create(ContinentDTO $data): Continent
     {
         $continent = Continent::create($data->toArray());
-        $this->resetCache();
         return $continent;
     }
 
@@ -44,7 +41,6 @@ class ContinentService implements IContinentService
     {
         $continent = Continent::findOrFail($id);
         $continent->update($data->toUpdateArray());
-        $this->resetCache($id);
         return $continent;
     }
 
@@ -52,16 +48,8 @@ class ContinentService implements IContinentService
     {
         $continent = Continent::findOrFail($id);
         $continent->delete();
-        $this->resetCache($id);
         return true;
     }
 
-    private function resetCache($id = null)
-    {
-        $tableName = (new Continent())->getTable();
-        Cache::tags([$tableName])->flush();
-        if ($id) {
-            Cache::forget("continent:$id");
-        }
-    }
+
 }

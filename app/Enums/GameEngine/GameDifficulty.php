@@ -2,7 +2,9 @@
 
 namespace App\Enums\GameEngine;
 
+use App\Models\Core\Continent;
 use App\Models\Core\Country;
+use App\Models\Core\Manager;
 use App\Models\Core\Player;
 use App\Models\Core\Team;
 
@@ -26,7 +28,10 @@ enum GameDifficulty: int
         return match ($this) {
             self::EASY => match ($class) {
                     Player::class => 95,
-                    Team::class, Country::class => 90,
+                    Team::class => 90,
+                    Country::class => 90,
+                    Manager::class => 80,
+                    Continent::class => 90,
                     default => 90,
                 },
             self::NORMAL => 70,

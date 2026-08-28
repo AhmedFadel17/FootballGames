@@ -10,7 +10,7 @@ class ContinentFilterRequest extends BaseFilterRequest
 
     protected function allowedSortFields(): array
     {
-        return ['id', 'name', 'code', 'created_at'];
+        return ['id', 'name', 'code', 'popularity', 'created_at'];
     }
 
     protected function filterRules(): array
@@ -18,6 +18,7 @@ class ContinentFilterRequest extends BaseFilterRequest
         return [
             'name' => ['nullable', 'string', 'max:255'],
             'code' => ['nullable', 'string', 'max:10'],
+            'popularity' => ['nullable', 'integer', 'min:0', 'max:100'],
         ];
     }
 }

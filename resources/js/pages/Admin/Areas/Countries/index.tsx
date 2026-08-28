@@ -51,6 +51,8 @@ export default function CountriesPage() {
           code: updatedCountry.code,
           popularity: updatedCountry.popularity,
           continent_id: updatedCountry.continent_id,
+          is_federation: updatedCountry.is_federation,
+          img_src: updatedCountry.img_src,
         },
       }).unwrap();
       showToast.success('Season Updated', 'Season profile has been updated successfully.');
@@ -112,7 +114,7 @@ export default function CountriesPage() {
           items={countries}
           columns={getCountryTableColumns()}
           actions={getCountryTableActions(
-            (country) => navigate(`/admin/countries/${country.id}`),
+            (country) => navigate(`/dashboard/admin/countries/${country.id}`),
             (country) => {
               setSelectedId(country.id);
               setIsDeleteDialogOpen(true);

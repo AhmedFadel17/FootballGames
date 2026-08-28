@@ -54,6 +54,7 @@ export interface Standing extends BaseEntity {
     goal_difference: number;
     points: number;
     team?: Team;
+    competition_season?: CompetitionSeason;
 }
 
 export interface CompetitionSeason extends BaseEntity {
@@ -72,6 +73,7 @@ export interface ManagerTeamPeriod extends BaseEntity {
     start_date?: string;
     end_date?: string;
     team?: Team;
+    manager?: Manager;
 }
 
 export interface Manager extends BaseEntity {
@@ -101,6 +103,11 @@ export interface Team extends BaseEntity {
     titles_won?: number;
     country?: Country;
     current_competition?: Competition;
+    current_squad?: Player[];
+    current_manager?: Manager;
+    honors?: CompetitionSeason[];
+    standings?: Standing[];
+    manager_periods?: ManagerTeamPeriod[];
 }
 
 export interface PlayerTeamPeriod extends BaseEntity {

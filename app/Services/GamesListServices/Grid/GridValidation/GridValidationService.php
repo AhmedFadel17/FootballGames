@@ -75,12 +75,14 @@ class GridValidationService implements IGridValidationService
         $minPlayersPop = $difficulty->minPopularity(Player::class);
         $minTeamsPop = $difficulty->minPopularity(Team::class);
         $minCountriesPop = $difficulty->minPopularity(Country::class);
+        $minManagersPop = $difficulty->minPopularity(Manager::class);
+        $minContinentsPop = $difficulty->minPopularity(Continent::class);
 
         $players = Player::inRandomOrder()->where('popularity', '>=', $minPlayersPop)->limit($size * 3)->get();
         $teams = Team::inRandomOrder()->where('popularity', '>=', $minTeamsPop)->limit($size * 3)->get();
-        $countries = Country::inRandomOrder()->where('popularity', '>=', $minCountriesPop)->limit($size * 3)->get();
-        $managers = Manager::where('popularity', '>=', $minTeamsPop)->inRandomOrder()->limit($size * 3)->get();
-        $continents = Continent::inRandomOrder()->limit($size)->get();
+        $countries = Country::inRandomOrder()->where('is_federation', false)->where('popularity', '>=', $minCountriesPop)->limit($size * 3)->get();
+        $managers = Manager::where('popularity', '>=', $minManagersPop)->inRandomOrder()->limit($size * 3)->get();
+        $continents = Continent::inRandomOrder()->where('popularity', '>=', $minContinentsPop)->limit($size)->get();
 
         // 1. General items safe for both Rows & Columns (Teams, Teammates, Managers)
         $generalItems = collect()
