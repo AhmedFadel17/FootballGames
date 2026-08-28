@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 
@@ -6,18 +6,31 @@ import { useAuth } from 'react-oidc-context';
  * ProtectedRoute
  *
  * Wraps routes that require the user to be authenticated.
- * If the OIDC session is not active, triggers signinRedirect()
- * which sends the user through the Passport OAuth 2.0 PKCE flow.
+ * Prevents redirect loops when silent renew fails or tokens expire.
  */
 const ProtectedRoute = () => {
   const auth = useAuth();
+  const isRedirecting = useRef(false);
 
   useEffect(() => {
-    if (!auth.isLoading && !auth.isAuthenticated) {
+    // 1. Listen for silent renew failures (e.g., revoked/invalid refresh tokens)
+    const unbindSilentRenewError = auth.events.addSilentRenewError((error) => {
+      console.warn("Silent renew failed:", error);
+      auth.removeUser(); // Clear dead session state from localStorage
+    });
+
+    // 2. Safely trigger signinRedirect ONLY ONCE if not loading and not authenticated
+    if (!auth.isLoading && !auth.isAuthenticated && !auth.error && !isRedirecting.current) {
+      isRedirecting.current = true;
       auth.signinRedirect();
     }
-  }, [auth.isLoading, auth.isAuthenticated]);
 
+    return () => {
+      unbindSilentRenewError();
+    };
+  }, [auth.isLoading, auth.isAuthenticated, auth.error, auth]);
+
+  // Loading state (during initial check or silent renew)
   if (auth.isLoading) {
     return (
       <div className="bg-surface min-h-screen flex items-center justify-center">
@@ -26,8 +39,25 @@ const ProtectedRoute = () => {
     );
   }
 
+  // Handle authentication errors (e.g., invalid_grant) cleanly
+  if (auth.error) {
+    return (
+      <div className="bg-surface min-h-screen flex flex-col items-center justify-center gap-4">
+        <p className="text-red-500 font-medium">{auth.error?.message} : Session expired or authorization failed.</p>
+        <button
+          onClick={() => {
+            auth.removeUser();
+            auth.signinRedirect();
+          }}
+          className="px-4 py-2 bg-primary text-white rounded-md shadow hover:bg-opacity-90 transition"
+        >
+          Log In Again
+        </button>
+      </div>
+    );
+  }
+
   if (!auth.isAuthenticated) {
-    // signinRedirect() is in flight — render nothing
     return null;
   }
 

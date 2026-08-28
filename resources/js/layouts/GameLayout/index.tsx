@@ -3,7 +3,6 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { connectEcho } from "@/lib/echo";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { setOnlineUsers, userJoined, userLeft, startGame } from "@/store/slices/roomSlice";
-import { useLazyGetDataQuery } from "@/services/api";
 import { useWebRTC } from "@/hooks/useWebRTC";
 import { useAuth } from "react-oidc-context";
 export default function GameLayout() {
@@ -19,6 +18,7 @@ export default function GameLayout() {
     const [isStarting, setIsStarting] = useState(false);
     const { startAudio, toggleMic } = useWebRTC(channel, userId);
     const [triggerFetchGame] = useLazyGetDataQuery();
+
     useEffect(() => {
         if (channel && userId) {
             startAudio();

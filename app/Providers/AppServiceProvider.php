@@ -142,7 +142,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Passport OAuth 2.0 token lifetimes
-        Passport::tokensExpireIn(now()->addHour());
+        Passport::tokensExpireIn(now()->addHours(1));
         Passport::refreshTokensExpireIn(now()->addDays(30));
         Passport::personalAccessTokensExpireIn(now()->addMonths(6));
 

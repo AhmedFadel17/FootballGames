@@ -44,5 +44,5 @@ return [
     */
 
     'connection' => env('PASSPORT_CONNECTION'),
-
+    'revoke_refresh_tokens' => false,
 ];

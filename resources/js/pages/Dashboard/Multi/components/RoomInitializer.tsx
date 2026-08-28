@@ -5,7 +5,7 @@ import UserProfilePic from "./UserProfilePic";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { resetRoom } from "@/store/slices/roomSlice";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { useLazyGetDataQuery } from "@/services/api";
+// import { useLazyGetDataQuery } from "@/services/api";
 import { useAuth } from "react-oidc-context";
 
 export default function RoomInitializer() {

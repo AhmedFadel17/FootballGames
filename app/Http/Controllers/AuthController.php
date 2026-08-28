@@ -92,15 +92,24 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $request->user()->tokens()->delete();
+        if ($request->user()) {
+            $request->user()->tokens()->delete();
+        }
+
         if ($request->hasSession()) {
             auth('web')->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
         }
+
+        $redirectUri = $request->query('post_logout_redirect_uri');
+
+        if ($redirectUri) {
+            return redirect()->away($redirectUri);
+        }
+
         return response()->json(['message' => 'Logged out successfully']);
     }
-
     /**
      * Return the currently authenticated user's profile.
      */

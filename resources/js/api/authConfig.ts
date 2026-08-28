@@ -1,7 +1,6 @@
 import { WebStorageStateStore } from "oidc-client-ts";
 import type { AuthProviderProps } from "react-oidc-context";
 
-// Ensure no trailing slash on appUrl to prevent double slashes in paths (e.g., http://localhost:8000//oauth/authorize)
 const rawAppUrl = import.meta.env.VITE_APP_URL ?? "http://localhost:8000";
 const appUrl = rawAppUrl.replace(/\/+$/, "");
 
@@ -14,10 +13,13 @@ export const oidcConfig: AuthProviderProps = {
     scope: "openid profile email",
 
     userStore: new WebStorageStateStore({ store: window.localStorage }),
+
+    // Enable auto-renewal using stored refresh token
     automaticSilentRenew: true,
+    accessTokenExpiringNotificationTimeInSeconds: 60,
+
     loadUserInfo: true,
 
-    // 💡 Use 'metadata' (NOT 'metadataSeed') to disable the network fetch to /.well-known
     metadata: {
         issuer: appUrl,
         authorization_endpoint: `${appUrl}/oauth/authorize`,
