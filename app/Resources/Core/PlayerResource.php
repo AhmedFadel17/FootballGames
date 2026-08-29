@@ -12,6 +12,7 @@ class PlayerResource extends JsonResource
             'name' => $this->name,
             'fullname' => $this->fullname,
             'position' => $this->position,
+            'sub_position' => $this->sub_position,
             'date_of_birth' => $this->date_of_birth,
             'img_src' => $this->img_src,
             'popularity' => $this->popularity,

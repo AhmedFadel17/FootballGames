@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Core\PlayerSubPosition;
 use App\Enums\Core\TransferType;
 use App\Models\Core\Player;
 use App\Models\Core\PlayerTeamPeriod;
@@ -17,8 +18,11 @@ class TransfersSeeder extends Seeder
     {
         Transfer::truncate();
         PlayerTeamPeriod::truncate();
+
         $json = Storage::disk('public')->get('data/all_transfers.json');
-        $playersData = json_decode($json, true);
+        $playersData = json_decode($json, true) ?? [];
+
+        $inferredPlayersLog = [];
 
         foreach ($playersData as $playerData) {
             $player = Player::where('api_id', $playerData['player_id'])->first();
@@ -27,6 +31,31 @@ class TransfersSeeder extends Seeder
             }
 
             $rawTransfers = $playerData['transfers'] ?? [];
+
+            // 1. Check for "Inferred from page links" transfer type
+            $hasInferredType = collect($rawTransfers)->contains(function ($t) {
+                return isset($t['type']) && strtolower(trim($t['type'])) === 'inferred from page links';
+            });
+
+            if ($hasInferredType) {
+                // Log skipped player and do NOT create any transfers or periods
+                $inferredPlayersLog[] = [
+                    'player_id' => $playerData['player_id'],
+                    'player_slug' => $playerData['player_slug'] ?? $player->slug ?? null,
+                ];
+                continue;
+            }
+
+            $rating = (int) ($playerData['rating'] ?? 0);
+            $popularity = min(100, $rating + 5);
+
+            $player->update([
+                'is_retired' => (bool) ($playerData['is_retired'] ?? false),
+                'rating' => $rating,
+                'popularity' => $popularity,
+                'sub_position' => PlayerSubPosition::fromCode($playerData['position'] ?? null) ?? PlayerSubPosition::CM,
+            ]);
+
             if (empty($rawTransfers)) {
                 continue;
             }
@@ -42,7 +71,7 @@ class TransfersSeeder extends Seeder
                     return $dateA->timestamp <=> $dateB->timestamp;
                 }
 
-                return 0; // Preserve position if one or both dates are missing
+                return 0;
             });
 
             foreach ($rawTransfers as $tData) {
@@ -59,13 +88,10 @@ class TransfersSeeder extends Seeder
                     ? Team::where('slug', $tData['to_team_id'])->first()
                     : null;
 
-                // Parse financial fee string ("300K" -> 300000, "1M" -> 1000000)
                 $feeEur = $this->parseFee($tData['fee'] ?? null);
-
-                // Determine Enum Type
                 $transferType = $this->mapTransferType($tData['type'] ?? null);
 
-                // 1. ALWAYS Insert Transfer Record (supports null transfer_date)
+                // 2. Insert Transfer Record
                 Transfer::create([
                     'player_id' => $player->id,
                     'from_team_id' => $fromTeam?->id,
@@ -75,20 +101,36 @@ class TransfersSeeder extends Seeder
                     'transfer_date' => $transferDate,
                 ]);
 
-                // 2. Handle PlayerTeamPeriods ONLY IF transfer_date is NOT NULL
                 if ($transferDate === null) {
                     continue; // Skip period updates when transfer date is missing
                 }
 
-                // Close out the previous active period
-                PlayerTeamPeriod::where('player_id', $player->id)
+                // 3. Handle PlayerTeamPeriods & Contract Renewals
+                $currentPeriod = PlayerTeamPeriod::where('player_id', $player->id)
                     ->where('is_current', true)
-                    ->update([
+                    ->first();
+
+                // Check if this transfer is a renewal/stay with the same team
+                $isSameTeamRenewal = $currentPeriod
+                    && $toTeam
+                    && $currentPeriod->team_id === $toTeam->id;
+
+                $isContractRenewalType = ($transferType === TransferType::CONTRACT_RENEWAL);
+
+                if ($isSameTeamRenewal || $isContractRenewalType) {
+                    // Merge periods: keep existing period open (current) under the same team
+                    continue;
+                }
+
+                // Close existing active period if changing teams/leaving
+                if ($currentPeriod) {
+                    $currentPeriod->update([
                         'end_date' => $transferDate,
                         'is_current' => false,
                     ]);
+                }
 
-                // Create new player period
+                // Create new player period for incoming team
                 if ($toTeam) {
                     PlayerTeamPeriod::create([
                         'player_id' => $player->id,
@@ -96,16 +138,19 @@ class TransfersSeeder extends Seeder
                         'start_date' => $transferDate,
                         'end_date' => null,
                         'is_loan' => ($transferType === TransferType::LOAN),
-                        'is_current' => true, // Temporarily mark as current; next valid transfer will close it
+                        'is_current' => true,
                     ]);
                 }
             }
         }
+
+        // Save skipped players log to JSON file
+        Storage::disk('public')->put(
+            'inferred_players.json',
+            json_encode($inferredPlayersLog, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+        );
     }
 
-    /**
-     * Parse fee strings like "300K", "1.5M", "500000" into raw integer Euros.
-     */
     private function parseFee(?string $feeStr): ?int
     {
         if (empty($feeStr)) {
@@ -127,9 +172,6 @@ class TransfersSeeder extends Seeder
         return is_numeric($cleanStr) ? (int) $cleanStr : null;
     }
 
-    /**
-     * Map JSON string transfer type to PHP TransferType Enum.
-     */
     private function mapTransferType(?string $typeStr): TransferType
     {
         if (empty($typeStr)) {
@@ -139,9 +181,11 @@ class TransfersSeeder extends Seeder
         return match (strtolower(trim($typeStr))) {
             'loan' => TransferType::LOAN,
             'end of loan' => TransferType::LOAN_RETURN,
-            'free' => TransferType::FREE,
+            'free', 'free agent' => TransferType::FREE,
             'promotion' => TransferType::PROMOTION,
             'retired' => TransferType::RETIRED,
+            'released' => TransferType::RELEASED,
+            'contract extension', 'renewal' => TransferType::CONTRACT_RENEWAL,
             default => TransferType::PERMANENT,
         };
     }

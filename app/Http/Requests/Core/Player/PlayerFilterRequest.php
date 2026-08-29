@@ -8,7 +8,19 @@ class PlayerFilterRequest extends BaseFilterRequest
 {
     protected function allowedSortFields(): array
     {
-        return ['id', 'name', 'position', 'date_of_birth', 'fullname', 'height_cm', 'weight_kg', 'country_id', 'popularity', 'created_at'];
+        return [
+            'id',
+            'name',
+            'position',
+            'sub_position',
+            'date_of_birth',
+            'fullname',
+            'height_cm',
+            'weight_kg',
+            'country_id',
+            'popularity',
+            'created_at'
+        ];
     }
 
     protected function filterRules(): array
@@ -17,6 +29,7 @@ class PlayerFilterRequest extends BaseFilterRequest
             'name' => ['nullable', 'string', 'max:255'],
             'fullname' => ['nullable', 'string', 'max:255'],
             'position' => ['nullable', 'string', 'max:50'],
+            'sub_position' => ['nullable', 'string', 'max:50'],
             'country_id' => ['nullable', 'exists:countries,id'],
             'date_of_birth' => ['nullable', 'date'],
             'height_cm' => ['nullable', 'integer', 'min:0', 'max:250'],

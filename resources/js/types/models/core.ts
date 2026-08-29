@@ -1,5 +1,5 @@
 import { BaseEntity } from "../api";
-import { CompetitionType, PlayerPosition, PlayerPreferredFoot, TeamType } from "../enums";
+import { CompetitionType, PlayerPosition, PlayerPreferredFoot, PlayerSubPosition, TeamType } from "../enums";
 
 // Area types
 export interface Country extends BaseEntity {
@@ -165,6 +165,7 @@ export interface Player extends BaseEntity {
     name: string;
     fullname: string;
     position: PlayerPosition;
+    sub_position: PlayerSubPosition;
     date_of_birth: string;
     height_cm: number;
     weight_kg: number;

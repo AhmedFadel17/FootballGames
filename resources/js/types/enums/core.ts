@@ -12,6 +12,31 @@ export enum PlayerPosition {
     Forward = 4,
 }
 
+export enum PlayerSubPosition {
+    // Goalkeeper
+    GK = 1,
+    CB = 10,
+    LB = 11,
+    RB = 12,
+    LWB = 13,
+    RWB = 14,
+
+    // Midfielders
+    DM = 19,
+    CDM = 20,
+    CM = 21,
+    CAM = 22,
+    LM = 23,
+    RM = 24,
+    LAM = 25,
+    RAM = 26,
+    // Forwards
+    ST = 30,
+    CF = 31,
+    LW = 32,
+    RW = 33,
+}
+
 export enum PlayerPreferredFoot {
     Unknown = 0,
     Right = 1,
@@ -21,12 +46,14 @@ export enum PlayerPreferredFoot {
 }
 
 export enum TransferType {
-    Permanent = 1,
-    Loan = 2,
-    Free = 3,
-    LoanReturn = 4,
-    AcademyPromotion = 5,
-    Retired = 6,
+    Transfer = 0,
+    Loan = 1,
+    Free = 2,
+    EndofLoan = 3,
+    Promotion = 4,
+    Retired = 5,
+    Released = 6,
+    Renewal = 7,
 }
 
 export enum TeamType {

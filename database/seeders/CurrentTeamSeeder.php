@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Core\Manager;
+use App\Models\Core\Player;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -22,13 +23,13 @@ class CurrentTeamSeeder extends Seeder
         $today = Carbon::today();
 
         // Process all managers in manageable chunks
-        Manager::with([
+        Player::with([
             'teamPeriods' => function ($query) {
                 $query->orderBy('start_date', 'desc');
             }
-        ])->chunk(500, function ($managers) use ($today, &$activeCount, &$retiredCount, &$noPeriodsCount) {
-            foreach ($managers as $manager) {
-                $latestPeriod = $manager->teamPeriods->first();
+        ])->chunk(500, function ($players) use ($today, &$activeCount, &$retiredCount, &$noPeriodsCount) {
+            foreach ($players as $player) {
+                $latestPeriod = $player->teamPeriods->first();
 
                 if (!$latestPeriod) {
                     // Manager has no recorded team periods
@@ -40,15 +41,13 @@ class CurrentTeamSeeder extends Seeder
                 $endDate = $latestPeriod->end_date ? Carbon::parse($latestPeriod->end_date) : null;
                 $isActive = is_null($endDate) || $endDate->greaterThanOrEqualTo($today);
 
-                if ($isActive) {
-                    $manager->update([
-                        'is_retired' => false,
+                if ($isActive && !$player->is_retired) {
+                    $player->update([
                         'current_team_id' => $latestPeriod->team_id,
                     ]);
                     $activeCount++;
                 } else {
-                    $manager->update([
-                        'is_retired' => true,
+                    $player->update([
                         'current_team_id' => null,
                     ]);
                     $retiredCount++;
@@ -57,7 +56,7 @@ class CurrentTeamSeeder extends Seeder
         });
 
         // Summary logging
-        $summary = "Update complete: {$activeCount} active managers, {$retiredCount} retired managers, and {$noPeriodsCount} managers without team periods.";
+        $summary = "Update complete: {$activeCount} active players, {$retiredCount} retired players, and {$noPeriodsCount} players without team periods.";
         $this->command->info($summary);
         Log::info($summary);
     }

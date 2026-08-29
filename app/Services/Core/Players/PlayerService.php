@@ -84,12 +84,14 @@ class PlayerService implements IPlayerService
 
     public function getRandom(int $minPopularity, bool $includeRetired = false, int $limit): Collection
     {
-        return Player::query()
-            ->where('popularity', '>=', $minPopularity)
-            ->when(!$includeRetired, fn($q) => $q->where('is_retired', false))
-            ->inRandomOrder()
-            ->limit($limit)
-            ->get();
+        $query = Player::query()
+            ->where('popularity', '>=', $minPopularity);
+
+        if (!$includeRetired) {
+            $query->where('is_retired', false);
+        }
+
+        return $query->inRandomOrder()->limit($limit)->get();
     }
 
     public function playedTogether(Player $player1, Player $player2): bool

@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Exceptions\Handler;
 use App\Services\Core\CompetitionSeasons\CompetitionSeasonService;
 use App\Services\Core\CompetitionSeasons\ICompetitionSeasonService;
+use App\Services\GameEngine\ConditionPool\ConditionPoolService;
+use App\Services\GameEngine\ConditionPool\IConditionPoolService;
 use App\Services\GamesListServices\Career\CareerGameService;
 use App\Services\GamesListServices\Career\ICareerGameService;
 use App\Services\GamesListServices\Grid\GridAnswer\GridAnswerService;
@@ -73,9 +75,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // Pagination Sevices
         $this->app->scoped(IPaginationService::class, PaginationService::class);
-        $this->app->scoped(IPlayerService::class, PlayerService::class);
 
         // Core Services
+        $this->app->scoped(IPlayerService::class, PlayerService::class);
         $this->app->scoped(ITeamService::class, TeamService::class);
         $this->app->scoped(ICountryService::class, CountryService::class);
         $this->app->scoped(IContinentService::class, ContinentService::class);
@@ -90,6 +92,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->scoped(IGameEntryService::class, GameEntryService::class);
         $this->app->scoped(IGameResultService::class, GameResultService::class);
         $this->app->scoped(IGamePrizeService::class, GamePrizeService::class);
+        $this->app->scoped(IConditionPoolService::class, ConditionPoolService::class);
 
         // Games Services
         $this->app->scoped(IBingoGameService::class, BingoGameService::class);

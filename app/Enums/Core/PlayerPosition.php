@@ -19,4 +19,39 @@ enum PlayerPosition: int
 
         };
     }
+    public function code(): string
+    {
+        return match ($this) {
+            self::GOALKEEPER => 'GK',
+            self::DEFENDER => 'DF',
+            self::MIDFIELDER => 'MF',
+            self::FORWARD => 'FW',
+        };
+    }
+    public function subPositions(): array
+    {
+        return match ($this) {
+            self::GOALKEEPER => [PlayerSubPosition::GK],
+            self::DEFENDER => [
+                PlayerSubPosition::CB,
+                PlayerSubPosition::LB,
+                PlayerSubPosition::RB,
+                PlayerSubPosition::LWB,
+                PlayerSubPosition::RWB,
+            ],
+            self::MIDFIELDER => [
+                PlayerSubPosition::CDM,
+                PlayerSubPosition::CM,
+                PlayerSubPosition::CAM,
+                PlayerSubPosition::LM,
+                PlayerSubPosition::RM,
+            ],
+            self::FORWARD => [
+                PlayerSubPosition::ST,
+                PlayerSubPosition::CF,
+                PlayerSubPosition::LW,
+                PlayerSubPosition::RW,
+            ],
+        };
+    }
 }

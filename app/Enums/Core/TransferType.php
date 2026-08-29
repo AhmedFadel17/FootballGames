@@ -9,6 +9,8 @@ enum TransferType: int
     case LOAN_RETURN = 3;
     case PROMOTION = 4;
     case RETIRED = 5;
+    case RELEASED = 6;
+    case CONTRACT_RENEWAL = 7;
 
 
     public function label(): string
@@ -20,6 +22,8 @@ enum TransferType: int
             self::LOAN_RETURN => 'Return from Loan',
             self::PROMOTION => 'Academy Promotion',
             self::RETIRED => 'Retired',
+            self::RELEASED => 'Released',
+            self::CONTRACT_RENEWAL => 'Contract Renewal',
         };
     }
 }

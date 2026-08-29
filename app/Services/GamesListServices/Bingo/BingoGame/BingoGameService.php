@@ -54,6 +54,7 @@ class BingoGameService implements IBingoGameService
             $gameInstance = $this->instanceService->create(new GameInstanceDTO(
                 gameId: $game->id,
                 status: GameStatus::ACTIVE,
+                maxPlayers: $game->max_players,
                 startAt: now(),
             ));
 

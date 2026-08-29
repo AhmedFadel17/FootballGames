@@ -5,7 +5,7 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { ErrorScreen, LoadingScreen } from '@/components/ui/Feedback/StatusScreens';
 import { PageHeader } from '@/components/ui/PageHeader';
 import Button from '@/components/ui/Buttons/Button';
-import { PlayerPosition, PlayerPreferredFoot } from '@/types/enums';
+import { PlayerPosition, PlayerPreferredFoot, PlayerSubPosition, TransferType } from '@/types/enums';
 import PlayerStatsTable from './components/PlayerStatsTable';
 import PlayerCareerSummaryTable from './components/PlayerCareerSummaryTable';
 
@@ -25,7 +25,9 @@ export default function PlayerDetails() {
     const positionLabel = typeof player.position === 'number'
         ? PlayerPosition[player.position]
         : String(player.position || 'Unknown');
-
+    const subPositionLabel = typeof player.sub_position === 'number'
+        ? PlayerSubPosition[player.sub_position]
+        : String(player.sub_position || 'Unknown');
     const footLabel = typeof player.preferred_foot === 'number'
         ? PlayerPreferredFoot[player.preferred_foot]
         : String(player.preferred_foot || 'N/A');
@@ -87,6 +89,9 @@ export default function PlayerDetails() {
                         <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
                             <span className="text-xs font-black uppercase tracking-wider text-accent-cyan bg-accent-cyan/10 px-3 py-1 rounded-full border border-accent-cyan/20">
                                 {positionLabel}
+                            </span>
+                            <span className="text-xs font-black uppercase tracking-wider text-accent-cyan bg-accent-cyan/10 px-3 py-1 rounded-full border border-accent-cyan/20">
+                                {subPositionLabel}
                             </span>
                             {player.rating > 0 && (
                                 <span className="text-xs font-bold text-emerald-400 bg-emerald-400/10 px-3 py-1 rounded-full border border-emerald-400/20">
@@ -270,7 +275,7 @@ export default function PlayerDetails() {
                                                 <td className="py-4 px-6 font-semibold text-accent-cyan">{tr.to_team?.name || 'Unknown'}</td>
                                                 <td className="py-4 px-4 text-center">
                                                     <span className="text-xs font-bold text-white/70 bg-white/5 px-2.5 py-1 rounded-full border border-white/10 capitalize">
-                                                        {String(tr.transfer_type || 'Transfer')}
+                                                        {TransferType[tr.transfer_type as keyof typeof TransferType]}
                                                     </span>
                                                 </td>
                                                 <td className="py-4 px-6 text-right font-bold text-amber-400">

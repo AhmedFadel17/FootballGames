@@ -4,6 +4,7 @@ namespace App\Models\Core;
 
 use App\Enums\Core\PlayerPosition;
 use App\Enums\Core\PlayerPreferredFoot;
+use App\Enums\Core\PlayerSubPosition;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,6 +15,7 @@ class Player extends Model
         'name',
         'fullname',
         'position',
+        'sub_position',
         'date_of_birth',
         'img_src',
         'popularity',
@@ -31,6 +33,7 @@ class Player extends Model
     protected $casts = [
         'date_of_birth' => 'date',
         'position' => PlayerPosition::class,
+        'sub_position' => PlayerSubPosition::class,
         'preferred_foot' => PlayerPreferredFoot::class,
         'is_retired' => 'boolean',
     ];

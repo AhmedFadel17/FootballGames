@@ -27,8 +27,8 @@ enum GameDifficulty: int
     {
         return match ($this) {
             self::EASY => match ($class) {
-                    Player::class => 95,
-                    Team::class => 90,
+                    Player::class => 92,
+                    Team::class => 88,
                     Country::class => 90,
                     Manager::class => 80,
                     Continent::class => 90,

@@ -4,6 +4,7 @@ namespace App\Http\Requests\Core\Player;
 
 use App\Enums\Core\PlayerPosition;
 use App\Enums\Core\PlayerPreferredFoot;
+use App\Enums\Core\PlayerSubPosition;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -28,6 +29,7 @@ class CreatePlayerRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'fullname' => ['required', 'string', 'max:455'],
             'position' => ['required', Rule::enum(PlayerPosition::class)],
+            'sub_position' => ['required', Rule::enum(PlayerSubPosition::class)],
             'date_of_birth' => ['required', 'date'],
             'country_id' => ['required', 'exists:countries,id'],
             'popularity' => ['required', 'integer', 'min:0', 'max:100'],
