@@ -6,6 +6,7 @@ use App\DTOs\Core\ContinentDTO;
 use App\DTOs\Pagination\PaginationDTO;
 use App\Models\Core\Continent;
 use App\Services\Pagination\IPaginationService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -51,5 +52,12 @@ class ContinentService implements IContinentService
         return true;
     }
 
-
+    public function getRandom(int $minPopularity, int $limit): Collection
+    {
+        return Continent::query()
+            ->where('popularity', '>=', $minPopularity)
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+    }
 }

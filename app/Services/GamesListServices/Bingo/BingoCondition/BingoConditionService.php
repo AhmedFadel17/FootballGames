@@ -2,24 +2,30 @@
 
 namespace App\Services\GamesListServices\Bingo\BingoCondition;
 
-use App\Enums\GameEngine\GameDifficulty;
-use App\Enums\GamesList\BingoConnectionType;
-use App\Models\Core\Continent;
-use App\Models\Core\Country;
-use App\Models\Core\Manager;
-use App\Models\Core\Player;
-use App\Models\Core\PlayerTeamPeriod;
-use App\Models\Core\Team;
 use App\Models\GamesList\Bingo\BingoCondition;
 use App\Models\GamesList\Bingo\BingoGame;
 use App\Models\GamesList\Bingo\BingoMatch;
 use App\Models\User;
 use App\Resources\GamesList\Bingo\BingoConditionResource;
 use App\Enums\GameEngine\GameStatus;
-use DB;
-
+use App\Services\Core\Continents\IContinentService;
+use App\Services\Core\Countries\ICountryService;
+use App\Services\Core\Managers\IManagerService;
+use App\Services\Core\Teams\ITeamService;
+use App\Services\GameEngine\ConditionPool\ConditionPoolService;
+use App\Services\Core\Players\IPlayerService;
 class BingoConditionService implements IBingoConditionService
 {
+
+    public function __construct(
+        private readonly IPlayerService $_playerService,
+        private readonly ICountryService $_countryService,
+        private readonly ITeamService $_teamService,
+        private readonly IManagerService $_managerService,
+        private readonly IContinentService $_continentService,
+        private readonly ConditionPoolService $poolService,
+    ) {
+    }
 
     public function getByBingoGameId(User $user, int $id): array
     {
@@ -50,26 +56,8 @@ class BingoConditionService implements IBingoConditionService
     public function createGameConditions(BingoGame $game): void
     {
         $size = $game->size;
-        $difficulty = $game->difficulty;
-        $minPlayersPop = $difficulty->minPopularity(Player::class);
-        $minTeamsPop = $difficulty->minPopularity(Team::class);
-        $minCountriesPop = $difficulty->minPopularity(Country::class);
-        $minManagersPop = $difficulty->minPopularity(Manager::class);
-        $minContinentsPop = $difficulty->minPopularity(Continent::class);
-
-        $players = Player::inRandomOrder()->where('popularity', '>=', $minPlayersPop)->limit($size * 3)->get();
-        $teams = Team::inRandomOrder()->where('popularity', '>=', $minTeamsPop)->limit($size * 3)->get();
-        $countries = Country::inRandomOrder()->where('is_federation', false)->where('popularity', '>=', $minCountriesPop)->limit($size * 3)->get();
-        $managers = Manager::where('popularity', '>=', $minManagersPop)->inRandomOrder()->limit($size * 3)->get();
-        $continents = Continent::inRandomOrder()->where('popularity', '>=', $minContinentsPop)->limit($size)->get();
-
-        $items = collect()
-            ->merge($players->map(fn($p) => ['type' => Player::class, 'con' => BingoConnectionType::PLAYED_WITH, 'id' => $p->id]))
-            ->merge($teams->map(fn($t) => ['type' => Team::class, 'con' => BingoConnectionType::PLAYED_FOR, 'id' => $t->id]))
-            ->merge($countries->map(fn($c) => ['type' => Country::class, 'con' => BingoConnectionType::FROM, 'id' => $c->id]))
-            ->merge($managers->map(fn($m) => ['type' => Manager::class, 'con' => BingoConnectionType::COACHED_BY, 'id' => $m->id]))
-            ->merge($continents->map(fn($c) => ['type' => Continent::class, 'con' => BingoConnectionType::FROM, 'id' => $c->id]))
-            ->shuffle()
+        $items = $this->poolService
+            ->generatePool($game->difficulty, $size)
             ->take($size * $size);
 
         $conditions = [];
@@ -95,37 +83,6 @@ class BingoConditionService implements IBingoConditionService
             return false;
         }
 
-        return match ($condition->object_type) {
-            Player::class => $player->id !== $object->id && DB::table('player_team_periods as pt1')
-                ->join('player_team_periods as pt2', function ($join) use ($object, $player) {
-                        $join->on('pt1.team_id', '=', 'pt2.team_id')
-                        ->where('pt1.player_id', $object->id)
-                        ->where('pt2.player_id', $player->id)
-                        ->whereRaw('pt1.start_date <= pt2.end_date')
-                        ->whereRaw('pt2.start_date <= pt1.end_date');
-                    })->exists(),
-
-            Team::class => PlayerTeamPeriod::query()
-                ->where('player_id', $player->id)
-                ->where('team_id', $object->id)
-                ->exists(),
-
-            Country::class => $player->country_id === $object->id,
-
-            Manager::class => DB::table('player_team_periods as pt')
-                ->join('manager_team_periods as mt', function ($join) use ($object, $player) {
-                        $join->on('pt.team_id', '=', 'mt.team_id')
-                        ->where('pt.player_id', $player->id)
-                        ->where('mt.manager_id', $object->id);
-
-                        $join->whereRaw('pt.start_date <= COALESCE(mt.end_date, "9999-12-31")')
-                        ->whereRaw('mt.start_date <= COALESCE(pt.end_date, "9999-12-31")');
-                    })
-                ->exists(),
-
-            Continent::class => $player->country?->continent_id === $object->id,
-
-            default => false,
-        };
+        return $this->poolService->validate($player, $object, $condition->object_type);
     }
 }

@@ -66,4 +66,14 @@ class ManagerService implements IManagerService
         $manager->delete();
         return true;
     }
+
+    public function getRandom(int $minPopularity, bool $includeRetired, int $limit): Collection
+    {
+        return Manager::query()
+            ->where('popularity', '>=', $minPopularity)
+            ->when(!$includeRetired, fn($q) => $q->where('is_retired', false))
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+    }
 }

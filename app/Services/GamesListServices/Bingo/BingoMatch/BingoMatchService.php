@@ -6,16 +6,21 @@ use App\Enums\GameEngine\GameDifficulty;
 use App\Models\Core\Player;
 use App\Models\GamesList\Bingo\BingoGame;
 use App\Models\GamesList\Bingo\BingoMatch;
+use App\Services\Core\Players\IPlayerService;
 
 
 class BingoMatchService implements IBingoMatchService
 {
 
+    public function __construct(private readonly IPlayerService $playerService)
+    {
+    }
+
     public function createGameMatches(BingoGame $game, int $answersCount): void
     {
         $difficulty = $game->difficulty;
         $minPop = $difficulty->minPopularity(Player::class);
-        $players = Player::inRandomOrder()->where('popularity', '>=', $minPop)->limit($answersCount)->get();
+        $players = $this->playerService->getRandom($minPop, false, $answersCount);
 
         $matches = [];
         foreach ($players as $index => $player) {

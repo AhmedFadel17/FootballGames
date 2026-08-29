@@ -17,4 +17,6 @@ interface IManagerService
     public function create(ManagerDTO $data): Manager;
     public function update(int $id, ManagerDTO $data): Manager;
     public function delete(int $id): bool;
+
+    public function getRandom(int $minPopularity, bool $includeRetired, int $limit): Collection;
 }

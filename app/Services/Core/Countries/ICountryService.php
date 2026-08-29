@@ -16,4 +16,5 @@ interface ICountryService
     public function create(CountryDTO $data): Country;
     public function update(int $id, CountryDTO $data): Country;
     public function delete(int $id): bool;
+    public function getRandom(int $minPopularity, int $limit): Collection;
 }

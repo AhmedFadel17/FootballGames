@@ -2,22 +2,23 @@
 
 namespace App\Services\GamesListServices\Bingo\BingoGame;
 
+use App\DTOs\GameEngine\GameEntryDTO;
+use App\DTOs\GameEngine\GameInstanceDTO;
+use App\DTOs\GameEngine\GameResultDTO;
 use App\DTOs\GamesList\BingoGameDTO;
-use App\Models\Core\Player;
-use App\Models\Core\Team;
-use App\Models\Core\Country;
 use App\Models\GameEngine\Game;
 use App\Models\GameEngine\GameEntry;
-use App\Models\GameEngine\GameInstance;
 use App\Models\GameEngine\GameResult;
 use App\Models\GamesList\Bingo\BingoCondition;
 use App\Models\GamesList\Bingo\BingoGame;
 use App\Models\GamesList\Bingo\BingoMatch;
 use App\Models\User;
+use App\Services\GameEngine\GameEntries\IGameEntryService;
+use App\Services\GameEngine\GameInstances\IGameInstanceService;
+use App\Services\GameEngine\GameResults\IGameResultService;
 use App\Services\GamesListServices\Bingo\BingoCondition\IBingoConditionService;
 use App\Services\GamesListServices\Bingo\BingoMatch\IBingoMatchService;
 use App\Services\Pagination\IPaginationService;
-use App\Enums\GameEngine\GameDifficulty;
 use App\Enums\GameEngine\GameStatus;
 use App\Enums\GameEngine\GameResultStatus;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +31,11 @@ class BingoGameService implements IBingoGameService
     public function __construct(
         private readonly IPaginationService $paginationService,
         private readonly IBingoMatchService $matchService,
-        private readonly IBingoConditionService $conditionService
+        private readonly IBingoConditionService $conditionService,
+        private readonly IGameInstanceService $instanceService,
+        private readonly IGameResultService $resultService,
+        private readonly IGameEntryService $entryService,
+
     ) {
     }
 
@@ -46,16 +51,16 @@ class BingoGameService implements IBingoGameService
         return DB::transaction(function () use ($user, $dto) {
             $game = Game::where('slug', self::SLUG)->firstOrFail();
 
-            $gameInstance = GameInstance::create([
-                'game_id' => $game->id,
-                'status' => GameStatus::ACTIVE,
-                'start_at' => now(),
-            ]);
+            $gameInstance = $this->instanceService->create(new GameInstanceDTO(
+                gameId: $game->id,
+                status: GameStatus::ACTIVE,
+                startAt: now(),
+            ));
 
-            GameEntry::create([
-                'game_instance_id' => $gameInstance->id,
-                'user_id' => $user->id,
-            ]);
+            $this->entryService->create(new GameEntryDTO(
+                gameInstanceId: $gameInstance->id,
+                userId: $user->id,
+            ));
 
             $bingoGame = BingoGame::create([
                 'game_instance_id' => $gameInstance->id,
@@ -64,7 +69,6 @@ class BingoGameService implements IBingoGameService
                 'remaining_answers' => self::ANSWERS_SIZE,
             ]);
 
-            // Delegate board setups to sub-services
             $this->conditionService->createGameConditions($bingoGame);
             $this->matchService->createGameMatches($bingoGame, self::ANSWERS_SIZE);
 
@@ -181,7 +185,7 @@ class BingoGameService implements IBingoGameService
         GameResult::updateOrCreate(
             ['game_entry_id' => $gameEntry->id],
             [
-                'status' => $isWon ? GameResultStatus::WON->value : GameResultStatus::LOST->value,
+                'status' => $isWon ? GameResultStatus::WON : GameResultStatus::LOST,
                 'score' => $this->evaluateBingoScore($game),
                 'is_winner' => $isWon,
             ]

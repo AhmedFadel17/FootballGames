@@ -15,9 +15,14 @@ use App\Models\GamesList\Grid\GridCondition;
 
 use App\Models\GamesList\Grid\GridGame;
 use DB;
-
+use App\Services\GameEngine\ConditionPool\IConditionPoolService;
 class GridValidationService implements IGridValidationService
 {
+
+    public function __construct(private readonly IConditionPoolService $poolService)
+    {
+    }
+
     public function validatePlayerForCell(
         Player $player,
         GridCondition $rowCondition,
@@ -34,83 +39,15 @@ class GridValidationService implements IGridValidationService
         if (!$object || !$player) {
             return false;
         }
-        return match ($condition->object_type) {
-            Player::class => $player->id !== $object->id && DB::table('player_team_periods as pt1')
-                ->join('player_team_periods as pt2', function ($join) use ($object, $player) {
-                        $join->on('pt1.team_id', '=', 'pt2.team_id')
-                        ->where('pt1.player_id', $object->id)
-                        ->where('pt2.player_id', $player->id)
-                        ->whereRaw('pt1.start_date <= pt2.end_date')
-                        ->whereRaw('pt2.start_date <= pt1.end_date');
-                    })->exists(),
-
-            Team::class => PlayerTeamPeriod::query()
-                ->where('player_id', $player->id)
-                ->where('team_id', $object->id)
-                ->exists(),
-
-            Country::class => $player->country_id === $object->id,
-
-            Manager::class => DB::table('player_team_periods as pt')
-                ->join('manager_team_periods as mt', function ($join) use ($object, $player) {
-                        $join->on('pt.team_id', '=', 'mt.team_id')
-                        ->where('pt.player_id', $player->id)
-                        ->where('mt.manager_id', $object->id);
-
-                        $join->whereRaw('pt.start_date <= COALESCE(mt.end_date, "9999-12-31")')
-                        ->whereRaw('mt.start_date <= COALESCE(pt.end_date, "9999-12-31")');
-                    })
-                ->exists(),
-
-            Continent::class => $player->country?->continent_id === $object->id,
-
-            default => false,
-        };
+        return $this->poolService->validate($player, $object, $condition->object_type);
     }
 
     public function createGameConditions(GridGame $game): void
     {
-        $size = $game->size;
-        $difficulty = $game->difficulty;
-        $minPlayersPop = $difficulty->minPopularity(Player::class);
-        $minTeamsPop = $difficulty->minPopularity(Team::class);
-        $minCountriesPop = $difficulty->minPopularity(Country::class);
-        $minManagersPop = $difficulty->minPopularity(Manager::class);
-        $minContinentsPop = $difficulty->minPopularity(Continent::class);
-
-        $players = Player::inRandomOrder()->where('popularity', '>=', $minPlayersPop)->limit($size * 3)->get();
-        $teams = Team::inRandomOrder()->where('popularity', '>=', $minTeamsPop)->limit($size * 3)->get();
-        $countries = Country::inRandomOrder()->where('is_federation', false)->where('popularity', '>=', $minCountriesPop)->limit($size * 3)->get();
-        $managers = Manager::where('popularity', '>=', $minManagersPop)->inRandomOrder()->limit($size * 3)->get();
-        $continents = Continent::inRandomOrder()->where('popularity', '>=', $minContinentsPop)->limit($size)->get();
-
-        // 1. General items safe for both Rows & Columns (Teams, Teammates, Managers)
-        $generalItems = collect()
-            ->merge($players->map(fn($p) => ['type' => Player::class, 'con' => BingoConnectionType::PLAYED_WITH, 'id' => $p->id]))
-            ->merge($teams->map(fn($t) => ['type' => Team::class, 'con' => BingoConnectionType::PLAYED_FOR, 'id' => $t->id]))
-            ->merge($managers->map(fn($m) => ['type' => Manager::class, 'con' => BingoConnectionType::COACHED_BY, 'id' => $m->id]))
-            ->shuffle();
-
-        // 2. Origin/Geography items restricted to ROW usage only (Countries & Continents)
-        $originItems = collect()
-            ->merge($countries->map(fn($c) => ['type' => Country::class, 'con' => BingoConnectionType::FROM, 'id' => $c->id]))
-            ->merge($continents->map(fn($c) => ['type' => Continent::class, 'con' => BingoConnectionType::FROM, 'id' => $c->id]))
-            ->shuffle();
-
-        // Max 1 geography condition in row pool to avoid row vs row country collisions
-        $rowOriginCount = rand(0, 1);
-
-        // Pick ROW conditions (mix of max 1 Origin item + General items)
-        $rowItems = $originItems->take($rowOriginCount)
-            ->concat($generalItems->splice(0, $size - $rowOriginCount))
-            ->shuffle();
-
-        // Pick COLUMN conditions strictly from remaining General items
-        $colItems = $generalItems->splice(0, $size)->shuffle();
+        [$rowItems, $colItems] = $this->poolService->generateGridPools($game->difficulty, $game->size);
 
         $conditions = [];
 
-        // Assign Row conditions
         foreach ($rowItems as $index => $item) {
             $conditions[] = [
                 'grid_game_id' => $game->id,
@@ -122,7 +59,6 @@ class GridValidationService implements IGridValidationService
             ];
         }
 
-        // Assign Column conditions
         foreach ($colItems as $index => $item) {
             $conditions[] = [
                 'grid_game_id' => $game->id,

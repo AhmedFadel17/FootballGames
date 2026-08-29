@@ -79,4 +79,13 @@ class TeamService implements ITeamService
         $team->delete();
         return true;
     }
+
+    public function getRandom(int $minPopularity, int $limit): Collection
+    {
+        return Team::query()
+            ->where('popularity', '>=', $minPopularity)
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+    }
 }

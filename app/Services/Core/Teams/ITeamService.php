@@ -17,4 +17,6 @@ interface ITeamService
     public function create(TeamDTO $data): Team;
     public function update(int $id, TeamDTO $data): Team;
     public function delete(int $id): bool;
+
+    public function getRandom(int $minPopularity, int $limit): Collection;
 }

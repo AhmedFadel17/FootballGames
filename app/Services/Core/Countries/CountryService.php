@@ -69,4 +69,14 @@ class CountryService implements ICountryService
         $country->delete();
         return true;
     }
+
+    public function getRandom(int $minPopularity, int $limit): Collection
+    {
+        return Country::query()
+            ->where('popularity', '>=', $minPopularity)
+            ->where('is_federation', false)
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+    }
 }
