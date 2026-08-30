@@ -75,6 +75,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Pagination Sevices
         $this->app->scoped(IPaginationService::class, PaginationService::class);
+        $this->app->scoped(IConditionPoolService::class, ConditionPoolService::class);
 
         // Core Services
         $this->app->scoped(IPlayerService::class, PlayerService::class);
@@ -92,7 +93,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->scoped(IGameEntryService::class, GameEntryService::class);
         $this->app->scoped(IGameResultService::class, GameResultService::class);
         $this->app->scoped(IGamePrizeService::class, GamePrizeService::class);
-        $this->app->scoped(IConditionPoolService::class, ConditionPoolService::class);
 
         // Games Services
         $this->app->scoped(IBingoGameService::class, BingoGameService::class);

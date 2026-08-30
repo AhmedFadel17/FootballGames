@@ -1,6 +1,7 @@
 <?php
 namespace App\Resources\GamesList\Career;
 
+use App\Enums\Core\TeamType;
 use App\Resources\Core\TeamResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Carbon;
@@ -10,6 +11,7 @@ class CareerGameResource extends JsonResource
     public function toArray($request): array
     {
         $allPeriods = $this->player->teamPeriods()
+            ->whereHas('team', fn($query) => $query->where('type', TeamType::CLUB))
             ->orderBy('start_date', 'asc')
             ->get();
 

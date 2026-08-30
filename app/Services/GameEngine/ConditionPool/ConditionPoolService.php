@@ -17,7 +17,7 @@ use App\Services\Core\Teams\ITeamService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-class ConditionPoolService
+class ConditionPoolService implements IConditionPoolService
 {
     public function __construct(
         protected IPlayerService $playerService,

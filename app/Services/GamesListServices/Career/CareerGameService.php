@@ -3,6 +3,7 @@
 namespace App\Services\GamesListServices\Career;
 
 use App\DTOs\GamesList\CareerGameDTO;
+use App\Enums\Core\TeamType;
 use App\Models\Core\Player;
 use App\Models\GameEngine\Game;
 use App\Models\GameEngine\GameEntry;
@@ -33,12 +34,17 @@ class CareerGameService implements ICareerGameService
             $difficulty = GameDifficulty::tryFrom($dto->difficulty) ?? GameDifficulty::EASY;
             $minPopularity = $difficulty->minPopularity(Player::class);
 
+            // Define relationship condition for team with type = 1
+            $type1TeamsFilter = fn($query) => $query->whereHas('team', fn($q) => $q->where('type', TeamType::CLUB));
+
             $player = Player::where('popularity', '>=', $minPopularity)
-                ->has('teamPeriods', '>=', 3)
+                ->whereHas('teamPeriods', $type1TeamsFilter, '>=', 3)
                 ->inRandomOrder()
                 ->firstOrFail();
 
-            $totalSteps = $player->teamPeriods()->count();
+            $totalSteps = $player->teamPeriods()
+                ->whereHas('team', fn($q) => $q->where('type', TeamType::CLUB))
+                ->count();
 
             $gameInstance = GameInstance::create([
                 'game_id' => $game->id,

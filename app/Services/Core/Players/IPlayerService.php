@@ -19,7 +19,7 @@ interface IPlayerService
     public function update(int $id, PlayerDTO $data): Player;
     public function delete(int $id): bool;
 
-    public function getRandom(int $minPopularity, bool $includeRetired = false, int $limit): Collection;
+    public function getRandom(int $minPopularity, bool $includeRetired = false, int $limit = 10): Collection;
     public function playedTogether(Player $player1, Player $player2): bool;
     public function playedForTeam(Player $player, Team $team): bool;
     public function playedUnderManager(Player $player, Manager $manager): bool;

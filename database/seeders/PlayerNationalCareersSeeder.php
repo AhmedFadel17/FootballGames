@@ -21,7 +21,7 @@ class PlayerNationalCareersSeeder extends Seeder
         $competitionsMap = DB::table('competitions')->pluck('id', 'slug')->all();
         $seasonsMap = DB::table('seasons')->pluck('id', 'name')->all();
 
-        $filePath = Storage::disk('public')->path('data/national_careers.json');
+        $filePath = Storage::disk('public')->path('data/national_careers_over_60.json');
         $playersData = Items::fromFile($filePath, [
             'decoder' => new ExtJsonDecoder(true)
         ]);

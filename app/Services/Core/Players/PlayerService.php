@@ -82,7 +82,7 @@ class PlayerService implements IPlayerService
         return true;
     }
 
-    public function getRandom(int $minPopularity, bool $includeRetired = false, int $limit): Collection
+    public function getRandom(int $minPopularity, bool $includeRetired = false, int $limit = 10): Collection
     {
         $query = Player::query()
             ->where('popularity', '>=', $minPopularity);

@@ -2,19 +2,12 @@
 
 namespace App\Services\GamesListServices\Grid\GridValidation;
 
-use App\Enums\GameEngine\GameDifficulty;
-use App\Enums\GamesList\BingoConnectionType;
-use App\Models\Core\Continent;
-use App\Models\Core\Country;
-use App\Models\Core\Manager;
+
 use App\Models\Core\Player;
-use App\Models\Core\PlayerTeamPeriod;
-use App\Models\Core\Team;
 
 use App\Models\GamesList\Grid\GridCondition;
 
 use App\Models\GamesList\Grid\GridGame;
-use DB;
 use App\Services\GameEngine\ConditionPool\IConditionPoolService;
 class GridValidationService implements IGridValidationService
 {
