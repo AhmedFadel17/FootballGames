@@ -2,80 +2,95 @@
 
 namespace Database\Seeders;
 
-use App\Models\Core\Competition;
-use App\Models\Core\Player;
-use App\Models\Core\PlayerCareerSummary;
-use App\Models\Core\PlayerSeasonStat;
-use App\Models\Core\Season;
-use App\Models\Core\Team;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use JsonMachine\Items;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
+
 class PlayerCareersSeeder extends Seeder
 {
-    public function run(): void
+    /**
+     * Run the database seeds.
+     *
+     * @param bool $onlySummaries Flag to seed ONLY career summaries (skip season stats)
+     */
+    public function run(bool $onlySummaries = false): void
     {
+        ini_set('memory_limit', '1024M');
         DB::disableQueryLog();
+        // 1. Conditional Table Truncation
+        if ($onlySummaries) {
+            DB::statement('TRUNCATE TABLE player_career_summaries RESTART IDENTITY;');
+        } else {
+            DB::statement('TRUNCATE TABLE player_season_stats, player_career_summaries RESTART IDENTITY;');
+        }
 
-        PlayerSeasonStat::truncate();
-        PlayerCareerSummary::truncate();
+        // 2. Pre-load all lookup maps into lightweight arrays (Massive performance boost)
+        $playersMap = DB::table('players')->pluck('id', 'slug')->all();
+        $teamsMap = DB::table('teams')->pluck('id', 'slug')->all();
+        $competitionsMap = DB::table('competitions')->pluck('id', 'slug')->all();
+        $seasonsMap = DB::table('seasons')->pluck('id', 'name')->all();
 
         $filePath = Storage::disk('public')->path('data/all_careers.json');
         $playersData = Items::fromFile($filePath, [
             'decoder' => new ExtJsonDecoder(true)
         ]);
 
+        $seasonStatsBuffer = [];
+        $summariesBuffer = [];
+        $now = now()->toDateTimeString();
 
         foreach ($playersData as $playerData) {
-            $player = Player::where('slug', $playerData['player_slug'])->first();
-            if (!$player) {
+            $playerId = $playersMap[$playerData['player_slug'] ?? ''] ?? null;
+            if (!$playerId) {
                 continue;
             }
 
-            // 1. Process Career Season Stats
-            $careerEntries = $playerData['career'] ?? [];
-            foreach ($careerEntries as $entry) {
-                $team = !empty($entry['club_slug'])
-                    ? Team::where('slug', $entry['club_slug'])->first()
-                    : null;
+            // 3. Process Season Stats (Skipped if $onlySummaries is true)
+            if (!$onlySummaries) {
+                $careerEntries = $playerData['career'] ?? [];
+                foreach ($careerEntries as $entry) {
+                    $teamId = !empty($entry['club_slug']) ? ($teamsMap[$entry['club_slug']] ?? null) : null;
+                    $competitionId = !empty($entry['competition_slug']) ? ($competitionsMap[$entry['competition_slug']] ?? null) : null;
+                    $seasonId = !empty($entry['season']) ? ($seasonsMap[$entry['season']] ?? null) : null;
 
-                $competition = !empty($entry['competition_slug'])
-                    ? Competition::where('slug', $entry['competition_slug'])->first()
-                    : null;
-                $season = Season::where('name', $entry['season'])->first();
+                    $seasonStatsBuffer[] = [
+                        'player_id' => $playerId,
+                        'team_id' => $teamId,
+                        'competition_id' => $competitionId,
+                        'season_id' => $seasonId,
+                        'is_detail' => (bool) ($entry['is_detail'] ?? true),
+                        'appearances' => $entry['appearances'] ?? 0,
+                        'goals' => $entry['goals'] ?? 0,
+                        'assists' => $entry['assists'] ?? 0,
+                        'yellow_cards' => $entry['yellow_cards'] ?? 0,
+                        'red_cards' => $entry['red_cards'] ?? 0,
+                        'matches_started' => $entry['matches_started'] ?? 0,
+                        'matches_from_bench' => $entry['matches_from_bench'] ?? 0,
+                        'minutes' => $entry['minutes'] ?? 0,
+                        'age' => $entry['age'] ?? null,
+                        'points' => $entry['points'] ?? null,
+                        'elo' => $entry['elo'] ?? null,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
 
-                PlayerSeasonStat::create([
-                    'player_id' => $player->id,
-                    'team_id' => $team?->id,
-                    'competition_id' => $competition?->id,
-                    'season_id' => $season?->id,
-                    'is_detail' => (bool) ($entry['is_detail'] ?? true),
-                    'appearances' => $entry['appearances'] ?? 0,
-                    'goals' => $entry['goals'] ?? 0,
-                    'assists' => $entry['assists'] ?? 0,
-                    'yellow_cards' => $entry['yellow_cards'] ?? 0,
-                    'red_cards' => $entry['red_cards'] ?? 0,
-                    'matches_started' => $entry['matches_started'] ?? 0,
-                    'matches_from_bench' => $entry['matches_from_bench'] ?? 0,
-                    'minutes' => $entry['minutes'] ?? 0,
-                    'age' => $entry['age'] ?? null,
-                    'points' => $entry['points'] ?? null,
-                    'elo' => $entry['elo'] ?? null,
-                ]);
+                    if (count($seasonStatsBuffer) >= 1000) {
+                        DB::table('player_season_stats')->insert($seasonStatsBuffer);
+                        $seasonStatsBuffer = [];
+                    }
+                }
             }
 
-            // 2. Process Career Summary Stats
+            // 4. Process Career Summaries
             $summaryEntries = $playerData['career_summary'] ?? [];
             foreach ($summaryEntries as $summary) {
-                $team = !empty($summary['team_slug'])
-                    ? Team::where('slug', $summary['team_slug'])->first()
-                    : null;
+                $teamId = !empty($summary['team_slug']) ? ($teamsMap[$summary['team_slug']] ?? null) : null;
 
-                PlayerCareerSummary::create([
-                    'player_id' => $player->id,
-                    'team_id' => $team?->id,
+                $summariesBuffer[] = [
+                    'player_id' => $playerId,
+                    'team_id' => $teamId,
                     'appearances' => $summary['appearances'] ?? 0,
                     'goals' => $summary['goals'] ?? 0,
                     'assists' => $summary['assists'] ?? 0,
@@ -86,8 +101,26 @@ class PlayerCareersSeeder extends Seeder
                     'minutes' => $summary['minutes'] ?? 0,
                     'points' => $summary['points'] ?? null,
                     'elo' => $summary['elo'] ?? null,
-                ]);
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+
+                if (count($summariesBuffer) >= 1000) {
+                    DB::table('player_career_summaries')->insert($summariesBuffer);
+                    $summariesBuffer = [];
+                }
             }
+        }
+
+        // Flush remaining buffer leftovers
+        if (!empty($seasonStatsBuffer)) {
+            DB::table('player_season_stats')->insert($seasonStatsBuffer);
+            unset($seasonStatsBuffer);
+        }
+
+        if (!empty($summariesBuffer)) {
+            DB::table('player_career_summaries')->insert($summariesBuffer);
+            unset($summariesBuffer);
         }
     }
 }

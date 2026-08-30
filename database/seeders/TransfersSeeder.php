@@ -1,150 +1,184 @@
 <?php
-
 namespace Database\Seeders;
 
-use App\Enums\Core\PlayerSubPosition;
 use App\Enums\Core\TransferType;
-use App\Models\Core\Player;
-use App\Models\Core\PlayerTeamPeriod;
-use App\Models\Core\Team;
-use App\Models\Core\Transfer;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class TransfersSeeder extends Seeder
 {
     public function run(): void
     {
-        Transfer::truncate();
-        PlayerTeamPeriod::truncate();
+        ini_set('memory_limit', '1024M');
+        DB::disableQueryLog();
 
-        $json = Storage::disk('public')->get('data/all_transfers.json');
+        // DB::statement('TRUNCATE TABLE transfers, player_team_periods RESTART IDENTITY;');
+
+        $json = Storage::disk('public')->get('data/all_transfers_3.json');
         $playersData = json_decode($json, true) ?? [];
+        unset($json);
 
+        $playersMap = DB::table('players')->pluck('id', 'api_id')->all();
+        $teamsMap = DB::table('teams')->pluck('id', 'slug')->all();
+
+        $transfersBuffer = [];
+        $rawPeriodsPerPlayer = [];
         $inferredPlayersLog = [];
+        $now = now()->toDateTimeString();
+        $todayDate = now()->toDateString(); // Used to exclude future transfers
 
         foreach ($playersData as $playerData) {
-            $player = Player::where('api_id', $playerData['player_id'])->first();
-            if (!$player) {
+            $playerId = $playersMap[$playerData['player_id']] ?? null;
+            if (!$playerId) {
                 continue;
             }
 
             $rawTransfers = $playerData['transfers'] ?? [];
 
-            // 1. Check for "Inferred from page links" transfer type
             $hasInferredType = collect($rawTransfers)->contains(function ($t) {
                 return isset($t['type']) && strtolower(trim($t['type'])) === 'inferred from page links';
             });
 
             if ($hasInferredType) {
-                // Log skipped player and do NOT create any transfers or periods
                 $inferredPlayersLog[] = [
                     'player_id' => $playerData['player_id'],
-                    'player_slug' => $playerData['player_slug'] ?? $player->slug ?? null,
+                    'player_slug' => $playerData['player_slug'] ?? null,
                 ];
                 continue;
             }
-
-            $rating = (int) ($playerData['rating'] ?? 0);
-            $popularity = min(100, $rating + 5);
-
-            $player->update([
-                'is_retired' => (bool) ($playerData['is_retired'] ?? false),
-                'rating' => $rating,
-                'popularity' => $popularity,
-                'sub_position' => PlayerSubPosition::fromCode($playerData['position'] ?? null) ?? PlayerSubPosition::CM,
-            ]);
 
             if (empty($rawTransfers)) {
                 continue;
             }
 
-            // Stable sort: valid dates sort chronologically; missing dates maintain raw position
+            // Sort transfers chronologically
             usort($rawTransfers, function ($a, $b) {
-                $hasDateA = !empty($a['date']);
-                $hasDateB = !empty($b['date']);
-
-                if ($hasDateA && $hasDateB) {
-                    $dateA = Carbon::createFromFormat('d/m/Y', $a['date']);
-                    $dateB = Carbon::createFromFormat('d/m/Y', $b['date']);
-                    return $dateA->timestamp <=> $dateB->timestamp;
+                if (!empty($a['date']) && !empty($b['date'])) {
+                    return Carbon::createFromFormat('d/m/Y', $a['date'])->timestamp <=> Carbon::createFromFormat('d/m/Y', $b['date'])->timestamp;
                 }
-
                 return 0;
             });
 
             foreach ($rawTransfers as $tData) {
-                // Parse date (DD/MM/YYYY -> YYYY-MM-DD)
                 $transferDate = !empty($tData['date'])
                     ? Carbon::createFromFormat('d/m/Y', $tData['date'])->format('Y-m-d')
                     : null;
 
-                // Resolve Teams by slug / api_id
-                $fromTeam = !empty($tData['from_team_id'])
-                    ? Team::where('slug', $tData['from_team_id'])->first()
-                    : null;
-                $toTeam = !empty($tData['to_team_id'])
-                    ? Team::where('slug', $tData['to_team_id'])->first()
-                    : null;
+                // --- Exclude Future Transfers ---
+                if ($transferDate && $transferDate > $todayDate) {
+                    continue;
+                }
 
                 $feeEur = $this->parseFee($tData['fee'] ?? null);
                 $transferType = $this->mapTransferType($tData['type'] ?? null);
 
-                // 2. Insert Transfer Record
-                Transfer::create([
-                    'player_id' => $player->id,
-                    'from_team_id' => $fromTeam?->id,
-                    'to_team_id' => $toTeam?->id,
+                $fromTeamSlug = strtolower(trim($tData['from_team_id'] ?? ''));
+                $toTeamSlug = strtolower(trim($tData['to_team_id'] ?? ''));
+
+                $isFreeAgentFrom = in_array($fromTeamSlug, ['without-team', 'free-agent', 'without_team', 'free_agent']);
+                $isFreeAgentTo = in_array($toTeamSlug, ['without-team', 'free-agent', 'without_team', 'free_agent']);
+
+                $fromTeamId = (!empty($tData['from_team_id']) && !$isFreeAgentFrom) ? ($teamsMap[$tData['from_team_id']] ?? null) : null;
+                $toTeamId = (!empty($tData['to_team_id']) && !$isFreeAgentTo) ? ($teamsMap[$tData['to_team_id']] ?? null) : null;
+
+                // 1. FREE / FREE AGENT logic: from_team_id MUST be null
+                if ($transferType === TransferType::FREE || $isFreeAgentFrom) {
+                    if (!$toTeamId && $fromTeamId) {
+                        $toTeamId = $fromTeamId;
+                    }
+                    $fromTeamId = null;
+                }
+
+                // 2. RELEASED logic: to_team_id MUST be null
+                if ($transferType === TransferType::RELEASED || $isFreeAgentTo) {
+                    if (!$fromTeamId && $toTeamId) {
+                        $fromTeamId = $toTeamId;
+                    }
+                    $toTeamId = null;
+                }
+
+                // Insert into transfers table
+                $transfersBuffer[] = [
+                    'player_id' => $playerId,
+                    'from_team_id' => $fromTeamId,
+                    'to_team_id' => $toTeamId,
                     'fee_eur' => $feeEur,
-                    'transfer_type' => $transferType,
+                    'transfer_type' => $transferType->value,
                     'transfer_date' => $transferDate,
-                ]);
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
 
-                if ($transferDate === null) {
-                    continue; // Skip period updates when transfer date is missing
-                }
-
-                // 3. Handle PlayerTeamPeriods & Contract Renewals
-                $currentPeriod = PlayerTeamPeriod::where('player_id', $player->id)
-                    ->where('is_current', true)
-                    ->first();
-
-                // Check if this transfer is a renewal/stay with the same team
-                $isSameTeamRenewal = $currentPeriod
-                    && $toTeam
-                    && $currentPeriod->team_id === $toTeam->id;
-
-                $isContractRenewalType = ($transferType === TransferType::CONTRACT_RENEWAL);
-
-                if ($isSameTeamRenewal || $isContractRenewalType) {
-                    // Merge periods: keep existing period open (current) under the same team
-                    continue;
-                }
-
-                // Close existing active period if changing teams/leaving
-                if ($currentPeriod) {
-                    $currentPeriod->update([
-                        'end_date' => $transferDate,
-                        'is_current' => false,
-                    ]);
-                }
-
-                // Create new player period for incoming team
-                if ($toTeam) {
-                    PlayerTeamPeriod::create([
-                        'player_id' => $player->id,
-                        'team_id' => $toTeam->id,
+                // Accumulate period entries ONLY if it is not a contract renewal
+                if ($transferDate !== null && $transferType !== TransferType::CONTRACT_RENEWAL) {
+                    $rawPeriodsPerPlayer[$playerId][] = [
+                        'player_id' => $playerId,
+                        'team_id' => $toTeamId,
                         'start_date' => $transferDate,
-                        'end_date' => null,
                         'is_loan' => ($transferType === TransferType::LOAN),
-                        'is_current' => true,
-                    ]);
+                    ];
+                }
+
+                if (count($transfersBuffer) >= 1000) {
+                    DB::table('transfers')->insert($transfersBuffer);
+                    $transfersBuffer = [];
                 }
             }
         }
 
-        // Save skipped players log to JSON file
+        if (!empty($transfersBuffer)) {
+            DB::table('transfers')->insert($transfersBuffer);
+            unset($transfersBuffer);
+        }
+
+        // --- Calculate end_date & is_current for player_team_periods ---
+        $periodsBuffer = [];
+        foreach ($rawPeriodsPerPlayer as $playerId => $periods) {
+            $total = count($periods);
+
+            for ($i = 0; $i < $total; $i++) {
+                $currentPeriod = $periods[$i];
+
+                // If player was released or retired (team_id is null), skip period creation
+                if (!$currentPeriod['team_id']) {
+                    continue;
+                }
+
+                $nextPeriod = $periods[$i + 1] ?? null;
+                $endDate = null;
+                $isCurrent = false;
+
+                if ($nextPeriod) {
+                    $endDate = Carbon::parse($nextPeriod['start_date'])->subDay()->format('Y-m-d');
+                } else {
+                    $isCurrent = true;
+                }
+
+                $periodsBuffer[] = [
+                    'player_id' => $currentPeriod['player_id'],
+                    'team_id' => $currentPeriod['team_id'],
+                    'start_date' => $currentPeriod['start_date'],
+                    'end_date' => $endDate,
+                    'is_loan' => $currentPeriod['is_loan'],
+                    'is_current' => $isCurrent,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+
+                if (count($periodsBuffer) >= 1000) {
+                    DB::table('player_team_periods')->insert($periodsBuffer);
+                    $periodsBuffer = [];
+                }
+            }
+        }
+
+        if (!empty($periodsBuffer)) {
+            DB::table('player_team_periods')->insert($periodsBuffer);
+            unset($periodsBuffer);
+        }
+
         Storage::disk('public')->put(
             'inferred_players.json',
             json_encode($inferredPlayersLog, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
@@ -181,7 +215,7 @@ class TransfersSeeder extends Seeder
         return match (strtolower(trim($typeStr))) {
             'loan' => TransferType::LOAN,
             'end of loan' => TransferType::LOAN_RETURN,
-            'free', 'free agent' => TransferType::FREE,
+            'free', 'free agent', 'without team' => TransferType::FREE,
             'promotion' => TransferType::PROMOTION,
             'retired' => TransferType::RETIRED,
             'released' => TransferType::RELEASED,
