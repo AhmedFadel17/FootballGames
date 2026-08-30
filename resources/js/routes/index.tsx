@@ -88,12 +88,6 @@ export const AppUserRoutes: AppRoute[] = [
     label: "Bingo",
     element: <BingoGame />,
   },
-];
-// =============================
-// GAMES ROUTES
-// =============================
-export const GamesRoutes: AppRoute[] = [
-
   {
     path: "/games/player-career",
     label: "Player Career",
@@ -109,6 +103,13 @@ export const GamesRoutes: AppRoute[] = [
     label: "Top List",
     element: <TopListGame />,
   },
+];
+// =============================
+// GAMES ROUTES
+// =============================
+export const GamesRoutes: AppRoute[] = [
+
+
   {
     path: "/games/guess-the-player",
     label: "Guess The Player",
