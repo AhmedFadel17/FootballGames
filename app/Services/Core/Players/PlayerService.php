@@ -112,8 +112,8 @@ class PlayerService implements IPlayerService
                 $join->on('pt1.team_id', '=', 'pt2.team_id')
                     ->where('pt1.player_id', '=', $player1->id)
                     ->where('pt2.player_id', '=', $player2->id)
-                    ->whereRaw('pt1.start_date <= COALESCE(pt2.end_date, "9999-12-31")')
-                    ->whereRaw('pt2.start_date <= COALESCE(pt1.end_date, "9999-12-31")');
+                    ->whereRaw("pt1.start_date <= COALESCE(pt2.end_date, '9999-12-31')")
+                    ->whereRaw("pt2.start_date <= COALESCE(pt1.end_date, '9999-12-31')");
             })
             ->exists();
     }
@@ -144,8 +144,8 @@ class PlayerService implements IPlayerService
                 $join->on('pt.team_id', '=', 'mt.team_id')
                     ->where('pt.player_id', '=', $player->id)
                     ->where('mt.manager_id', '=', $manager->id)
-                    ->whereRaw('pt.start_date <= COALESCE(mt.end_date, "9999-12-31")')
-                    ->whereRaw('mt.start_date <= COALESCE(pt.end_date, "9999-12-31")');
+                    ->whereRaw("pt.start_date <= COALESCE(mt.end_date, '9999-12-31')")
+                    ->whereRaw("mt.start_date <= COALESCE(pt.end_date, '9999-12-31')");
             })
             ->exists();
     }
