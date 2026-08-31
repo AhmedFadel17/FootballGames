@@ -32,6 +32,11 @@ class CreateGameRequest extends FormRequest
                 'gte:min_players',
             ],
             'img_src' => 'nullable|string|max:500',
+            'stamina_cost' => 'nullable|integer|min:0',
+            'base_xp' => 'required|integer|min:0',
+            'base_coins' => 'required|integer|min:0',
+            'base_points' => 'required|integer|min:0',
+            'time_limit_seconds' => 'nullable|integer|min:1|max:3600',
         ];
     }
 }

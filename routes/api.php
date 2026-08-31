@@ -53,6 +53,7 @@ Route::prefix('auth')->group(function () {
 Route::middleware('auth:api')->prefix('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+    Route::get('/my-progress', [AuthController::class, 'myProgress']);
 
     // OIDC-compatible UserInfo endpoint — used by react-oidc-context (loadUserInfo: true)
     // Returns standard OIDC claims + app-specific claims (role, username, etc.)
@@ -105,7 +106,7 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
             });
 
             Route::prefix('top-list')->group(function () {
-                Route::get('/{id}', [TopListGameController::class, 'show']);
+                Route::get('/{id}', [TopListGameController::class, 'getGameInstanceDetails']);
                 Route::post('/start', [TopListGameController::class, 'startGame']);
                 Route::post('/{id}/check/{objectId}', [TopListGameController::class, 'check']);
             });

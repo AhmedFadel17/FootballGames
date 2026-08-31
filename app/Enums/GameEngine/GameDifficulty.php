@@ -39,4 +39,13 @@ enum GameDifficulty: int
         };
     }
 
+    public function multiplier(): float
+    {
+        return match ($this) {
+            self::EASY => 1.0,
+            self::NORMAL => 1.5,
+            self::HARD => 2.0,
+        };
+    }
+
 }

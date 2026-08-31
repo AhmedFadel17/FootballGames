@@ -14,6 +14,11 @@ class GameDTO
         public ?string $description = null,
         public ?string $imgSrc = null,
         public ?bool $isActive = null,
+        public ?int $staminaCost = null,
+        public ?int $baseXp = null,
+        public ?int $baseCoins = null,
+        public ?int $basePoints = null,
+        public ?int $timeLimitSeconds = null,
     ) {
     }
 
@@ -32,6 +37,11 @@ class GameDTO
             description: $data['description'] ?? null,
             imgSrc: $data['img_src'] ?? null,
             isActive: isset($data['is_active']) ? (bool) $data['is_active'] : null,
+            staminaCost: isset($data['stamina_cost']) ? (int) $data['stamina_cost'] : null,
+            baseXp: isset($data['base_xp']) ? (int) $data['base_xp'] : null,
+            baseCoins: isset($data['base_coins']) ? (int) $data['base_coins'] : null,
+            basePoints: isset($data['base_points']) ? (int) $data['base_points'] : null,
+            timeLimitSeconds: isset($data['time_limit_seconds']) ? (int) $data['time_limit_seconds'] : null,
         );
     }
 
@@ -45,6 +55,11 @@ class GameDTO
             'description' => $this->description,
             'img_src' => $this->imgSrc,
             'is_active' => $this->isActive,
+            'stamina_cost' => $this->staminaCost,
+            'base_xp' => $this->baseXp,
+            'base_coins' => $this->baseCoins,
+            'base_points' => $this->basePoints,
+            'time_limit_seconds' => $this->timeLimitSeconds,
         ];
     }
 

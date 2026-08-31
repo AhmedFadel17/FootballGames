@@ -26,7 +26,6 @@ class User extends Authenticatable implements OAuthenticatable
         'email',
         'password',
         'avatar',
-        'coins',
         'games_played',
         'games_won',
         'games_lost',
@@ -34,6 +33,14 @@ class User extends Authenticatable implements OAuthenticatable
         'role',
         'refresh_token',
         'refresh_token_expires_at',
+
+        'points',
+        'coins',
+        'xp',
+        'level',
+        'stamina',
+        'max_stamina',
+        'last_stamina_update',
     ];
 
     /**
@@ -61,6 +68,7 @@ class User extends Authenticatable implements OAuthenticatable
             'games_played' => 'integer',
             'games_won' => 'integer',
             'games_lost' => 'integer',
+            'last_stamina_update' => 'datetime',
         ];
     }
 

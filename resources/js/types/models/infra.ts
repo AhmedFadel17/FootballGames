@@ -7,10 +7,17 @@ export interface User {
     username: string;
     email: string;
     avatar?: string;
-    coins: number;
-    games_played: number;
-    games_won: number;
-    games_lost: number;
     favorite_team?: string;
     role: UserRole;
+}
+
+export interface UserProgress {
+    coins: number;
+    points: number;
+    xp: number;
+    next_level_xp: number;
+    level: number;
+    stamina: number;
+    max_stamina: number;
+    last_stamina_update: string;
 }

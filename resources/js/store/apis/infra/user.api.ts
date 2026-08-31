@@ -1,6 +1,6 @@
 import { mainApi } from '../mainApi';
 import { ApiResponse, Lookup, PaginationFilter, PaginationResponse } from '@/types/api';
-import { User, UserRole } from '@/types';
+import { User, UserProgress, UserRole } from '@/types';
 export interface UserProfilesFilter extends PaginationFilter {
     role?: UserRole;
 }
@@ -32,6 +32,10 @@ export const userProfilesApi = mainApi.injectEndpoints({
 
         getUserProfile: builder.query<ApiResponse<User>, void>({
             query: () => `/api/auth/me`,
+            providesTags: ['User'],
+        }),
+        getMyProgress: builder.query<ApiResponse<UserProgress>, void>({
+            query: () => `/api/auth/my-progress`,
             providesTags: ['User'],
         }),
         updateUserProfile: builder.mutation<ApiResponse<User>, Partial<User>>({
@@ -94,6 +98,7 @@ export const userProfilesApi = mainApi.injectEndpoints({
 export const {
     useGetUsersProfilesQuery,
     useGetUserProfileQuery,
+    useGetMyProgressQuery,
     useUpdateUserProfileMutation,
     useUpdateUserProfilePictureMutation,
     useGetProfileQuery,

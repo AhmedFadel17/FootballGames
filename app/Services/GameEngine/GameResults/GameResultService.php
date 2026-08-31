@@ -4,7 +4,9 @@ namespace App\Services\GameEngine\GameResults;
 
 use App\DTOs\GameEngine\GameResultDTO;
 use App\DTOs\Pagination\PaginationDTO;
+use App\Enums\GameEngine\GameDifficulty;
 use App\Enums\GameEngine\GameStatus;
+use App\Models\GameEngine\Game;
 use App\Models\GameEngine\GameEntry;
 use App\Models\GameEngine\GameInstance;
 use App\Models\GameEngine\GameResult;
@@ -74,5 +76,38 @@ class GameResultService implements IGameResultService
     {
         $gameResult = GameResult::findOrFail($id);
         $gameResult->delete();
+    }
+
+
+    public function calculateRewards(
+        Game $game,
+        bool $isWon,
+        int $score,
+        int $correctCount,
+        int $totalItems,
+        GameDifficulty $difficulty
+    ): array {
+        if ($correctCount === 0 || $totalItems === 0) {
+            return [0, 0, 0];
+        }
+
+        $completionRate = $correctCount / $totalItems;
+        $difficultyMultiplier = $difficulty->multiplier();
+
+        $baseXp = $game->xp_reward ?? 50;
+        $baseCoins = $game->coins_reward ?? 20;
+        $basePoints = $game->points_reward ?? 10;
+
+        if ($isWon) {
+            $earnedXp = (int) round(($baseXp * $difficultyMultiplier) + ($score * 0.10));
+            $earnedCoins = (int) round(($baseCoins * $difficultyMultiplier) + ($score * 0.05));
+            $earnedPoints = (int) round(($basePoints * $difficultyMultiplier) + $score);
+        } else {
+            $earnedXp = (int) round(($baseXp * $completionRate) * $difficultyMultiplier);
+            $earnedCoins = (int) round(($baseCoins * $completionRate) * $difficultyMultiplier);
+            $earnedPoints = (int) round(($basePoints * $completionRate) + ($score * 0.50));
+        }
+
+        return [$earnedXp, $earnedCoins, $earnedPoints];
     }
 }

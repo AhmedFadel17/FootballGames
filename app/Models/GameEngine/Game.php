@@ -14,7 +14,12 @@ class Game extends Model
         'slug',
         'description',
         'is_active',
-        'img_src'
+        'img_src',
+        'stamina_cost',
+        'base_xp',
+        'base_coins',
+        'base_points',
+        'time_limit_seconds'
     ];
 
     public function instances(): HasMany

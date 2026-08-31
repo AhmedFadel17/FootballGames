@@ -1,4 +1,4 @@
-import { useGetUserProfileQuery } from "@/store/apis";
+import { useGetMyProgressQuery, useGetUserProfileQuery } from "@/store/apis";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useState, useEffect } from "react";
 import { useAuth } from "react-oidc-context";
@@ -21,12 +21,11 @@ export default function DashboardNavbar({
 }) {
     const auth = useAuth();
     const user = auth.user;
-
+    const profile = user?.profile;
     const navigate = useNavigate();
     const { pathname } = useLocation();
-    const { data: profileData } = useGetUserProfileQuery();
-    const profile = profileData?.data;
-
+    const { data: userProgressData } = useGetMyProgressQuery();
+    const userProgress = userProgressData?.data;
 
     const [isMobile, setIsMobile] = useState(false);
     const routes = isAdmin ? SidebarAdminRoutes : SidebarUserRoutes;
@@ -82,18 +81,41 @@ export default function DashboardNavbar({
                     </div>
                 </div>
 
-                {/* Right Section: Notifications + User Menu */}
-                <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-4 border-r border-white/5 pr-4">
-                        {/* Notifications Dropdown */}
-                        {/* <NotificationsDropdown user={user} /> */}
-                        <div>
-                            <button className="bg-surface-container-high/50 hover:bg-surface-container-high border border-outline px-4 py-1.5 rounded-full text-on-surface transition-colors flex items-center gap-2 text-xs font-semibold uppercase tracking-wider">
-                                <span className="material-symbols-outlined text-[16px] text-on-surface-variant">
-                                    military_tech
-                                </span>
-                                Lvl 24
-                            </button>
+                {/* Right Section: Game Stats + User Menu */}
+                <div className="flex items-center gap-3 md:gap-4">
+                    {/* Game Stats Badges */}
+                    <div className="flex items-center gap-2 md:gap-3 border-r border-white/10 pr-3 md:pr-4">
+
+                        {/* Stamina */}
+                        <div className="bg-surface-container-high/60 border border-emerald-500/30 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full text-emerald-400 flex items-center gap-1.5 text-xs font-semibold">
+                            <span className="material-symbols-outlined text-[16px] text-emerald-400">
+                                bolt
+                            </span>
+                            <span>{userProgress?.stamina ?? 100}/{userProgress?.max_stamina ?? 100}</span>
+                        </div>
+
+                        {/* Level */}
+                        <div className="bg-surface-container-high/60 border border-purple-500/30 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full text-purple-300 flex items-center gap-1.5 text-xs font-semibold">
+                            <span className="material-symbols-outlined text-[16px] text-purple-400">
+                                military_tech
+                            </span>
+                            <span>Lvl {userProgress?.level ?? 1}</span>
+                        </div>
+
+                        {/* Coins */}
+                        <div className="bg-surface-container-high/60 border border-amber-500/30 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full text-amber-400 flex items-center gap-1.5 text-xs font-semibold">
+                            <span className="material-symbols-outlined text-[16px] text-amber-400">
+                                paid
+                            </span>
+                            <span>{userProgress?.coins?.toLocaleString() ?? 0}</span>
+                        </div>
+
+                        {/* XP (Hidden on extra small screens for clean spacing) */}
+                        <div className="hidden sm:flex bg-surface-container-high/60 border border-blue-500/30 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full text-blue-300 items-center gap-1.5 text-xs font-semibold">
+                            <span className="material-symbols-outlined text-[16px] text-blue-400">
+                                auto_awesome
+                            </span>
+                            <span>{userProgress?.xp?.toLocaleString() ?? 0} XP</span>
                         </div>
 
                     </div>
@@ -104,7 +126,7 @@ export default function DashboardNavbar({
                             <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-white/10 p-[2px] group-hover:border-primary/50 transition-all duration-300">
                                 <img
                                     src={
-                                        profile?.avatar ||
+                                        profile?.picture ||
                                         "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
                                     }
                                     alt="Operator"
@@ -125,7 +147,7 @@ export default function DashboardNavbar({
                                 <div className="p-3 border-b border-white/5">
                                     <div className="flex flex-col">
                                         <span className="text-base capitalize text-white truncate">
-                                            {profile?.username}
+                                            {profile?.given_name}
                                         </span>
                                         <span className="text-sm text-white/40 truncate">
                                             {profile?.email}

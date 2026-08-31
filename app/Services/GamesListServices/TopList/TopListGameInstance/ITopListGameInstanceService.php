@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\GamesListServices\TopList;
+namespace App\Services\GamesListServices\TopList\TopListGameInstance;
 
 
 use App\DTOs\GamesList\TopList\TopListGameDTO;
@@ -10,9 +10,8 @@ use App\Models\GamesList\TopList\TopListGameInstance;
 use App\Models\GamesList\TopList\TopListGuess;
 use App\Models\User;
 
-interface ITopListGameService
+interface ITopListGameInstanceService
 {
-    public function create(TopListGameDTO $dto): TopListGame;
     public function startGame(User $user, TopListGameInstanceDTO $dto): TopListGameInstance;
     public function check(User $user, int $gameId, int $objectId): TopListGuess;
     public function getGameInstanceDetails(int $id): TopListGameInstance;

@@ -9,6 +9,11 @@ export interface Game extends BaseEntity {
     description: string;
     img_src: string;
     is_active: boolean;
+    stamina_cost: number;
+    base_xp: number;
+    base_coins: number;
+    base_points: number;
+    time_limit_seconds: number;
 };
 
 export interface GameInstance extends BaseEntity {
@@ -26,6 +31,10 @@ export interface GameResult extends BaseEntity {
     is_winner: boolean;
     rank: number;
     status: GameResultStatus;
+    duration_seconds: number;
+    earned_xp: number;
+    earned_coins: number;
+    earned_points: number;
 };
 export interface GamePrize extends BaseEntity {
     game_instance_id: number;

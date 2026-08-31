@@ -48,4 +48,12 @@ class GameEntryService implements IGameEntryService
         $gameEntry = GameEntry::findOrFail($id);
         $gameEntry->delete();
     }
+
+    public function getByUserAndGameInstance(int $userId, int $gameInstanceId): ?GameEntry
+    {
+        $gameEntry = GameEntry::where('user_id', $userId)
+            ->where('game_instance_id', $gameInstanceId)
+            ->first();
+        return $gameEntry;
+    }
 }

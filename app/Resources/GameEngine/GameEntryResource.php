@@ -2,7 +2,7 @@
 
 namespace App\Resources\GameEngine;
 
-use App\Resources\Auth\UserResource;
+use App\Resources\Infra\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class GameEntryResource extends JsonResource

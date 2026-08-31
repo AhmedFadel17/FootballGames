@@ -2,9 +2,7 @@ import { Game } from "@/types";
 import { Play, Zap, Flame, ChevronRight } from "lucide-react";
 
 interface GameCardProps {
-    game: Game & {
-        stamina_cost?: number;
-    };
+    game: Game;
     onPlay?: (game: Game) => void;
 }
 

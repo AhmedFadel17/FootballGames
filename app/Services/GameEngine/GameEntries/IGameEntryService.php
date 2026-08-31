@@ -11,6 +11,7 @@ interface IGameEntryService
 {
     public function getAll(PaginationDTO $dto): LengthAwarePaginator;
     public function getById(int $id): GameEntry;
+    public function getByUserAndGameInstance(int $userId, int $gameInstanceId): ?GameEntry;
     public function create(GameEntryDTO $dto): GameEntry;
     public function update(int $id, GameEntryDTO $dto): GameEntry;
     public function delete(int $id): void;

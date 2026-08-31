@@ -15,6 +15,8 @@ use App\Services\GamesListServices\Grid\GridGame\GridGameService;
 use App\Services\GamesListServices\Grid\GridGame\IGridGameService;
 use App\Services\GamesListServices\Grid\GridValidation\GridValidationService;
 use App\Services\GamesListServices\Grid\GridValidation\IGridValidationService;
+use App\Services\Infra\PlayerProgress\IPlayerProgressService;
+use App\Services\Infra\PlayerProgress\PlayerProgressService;
 use App\Services\Pagination\IPaginationService;
 use App\Services\Pagination\PaginationService;
 use App\Services\Core\Players\IPlayerService;
@@ -52,8 +54,10 @@ use App\Services\GamesListServices\Bingo\BingoMatch\BingoMatchService;
 use App\Services\GamesListServices\Bingo\BingoMatch\IBingoMatchService;
 use App\Services\GamesListServices\GuessThePlayer\GuessThePlayerGameService;
 use App\Services\GamesListServices\GuessThePlayer\IGuessThePlayerGameService;
-use App\Services\GamesListServices\TopList\ITopListGameService;
-use App\Services\GamesListServices\TopList\TopListGameService;
+use App\Services\GamesListServices\TopList\TopListGame\ITopListGameService;
+use App\Services\GamesListServices\TopList\TopListGame\TopListGameService;
+use App\Services\GamesListServices\TopList\TopListGameInstance\ITopListGameInstanceService;
+use App\Services\GamesListServices\TopList\TopListGameInstance\TopListGameInstanceService;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Debug\ExceptionHandler;
@@ -76,6 +80,7 @@ class AppServiceProvider extends ServiceProvider
         // Pagination Sevices
         $this->app->scoped(IPaginationService::class, PaginationService::class);
         $this->app->scoped(IConditionPoolService::class, ConditionPoolService::class);
+        $this->app->scoped(IPlayerProgressService::class, PlayerProgressService::class);
 
         // Core Services
         $this->app->scoped(IPlayerService::class, PlayerService::class);
@@ -103,8 +108,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->scoped(IGridAnswerService::class, GridAnswerService::class);
         $this->app->scoped(IGridValidationService::class, GridValidationService::class);
 
-
+        // Top List Services
         $this->app->scoped(ITopListGameService::class, TopListGameService::class);
+        $this->app->scoped(ITopListGameInstanceService::class, TopListGameInstanceService::class);
+
         $this->app->scoped(IGuessThePlayerGameService::class, GuessThePlayerGameService::class);
         $this->app->scoped(ICareerGameService::class, CareerGameService::class);
 

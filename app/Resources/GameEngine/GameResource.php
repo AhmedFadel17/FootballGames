@@ -16,6 +16,11 @@ class GameResource extends JsonResource
             'is_active' => $this->is_active,
             'min_players' => $this->min_players ?? 0,
             'max_players' => $this->max_players ?? 0,
+            'stamina_cost' => $this->stamina_cost,
+            'base_xp' => $this->base_xp,
+            'base_coins' => $this->base_coins,
+            'base_points' => $this->base_points,
+            'time_limit_seconds' => $this->time_limit_seconds,
         ];
     }
 }

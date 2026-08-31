@@ -30,6 +30,10 @@ class TopListGame extends Model
         'difficulty' => GameDifficulty::class,
     ];
 
+    public function topListInstances(): HasMany
+    {
+        return $this->hasMany(TopListGameInstance::class, 'top_list_game_id');
+    }
 
     public function items(): HasMany
     {

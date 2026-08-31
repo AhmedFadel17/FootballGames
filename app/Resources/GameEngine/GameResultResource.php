@@ -14,6 +14,10 @@ class GameResultResource extends JsonResource
             'score' => $this->score,
             'rank' => $this->rank,
             'status' => $this->status,
+            'duration_seconds' => $this->duration_seconds,
+            'earned_xp' => $this->earned_xp,
+            'earned_coins' => $this->earned_coins,
+            'earned_points' => $this->earned_points,
         ];
     }
 }

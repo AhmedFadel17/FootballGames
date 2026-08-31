@@ -13,6 +13,10 @@ class GameResultDTO
         public ?bool $isWinner = null,
         public ?int $rank = null,
         public ?GameResultStatus $status = null,
+        public ?int $durationSeconds = null,
+        public ?int $earnedXp = null,
+        public ?int $earnedCoins = null,
+        public ?int $earnedPoints = null,
     ) {
     }
 
@@ -36,6 +40,10 @@ class GameResultDTO
             isWinner: isset($data['is_winner']) ? (bool) $data['is_winner'] : null,
             rank: isset($data['rank']) ? (int) $data['rank'] : null,
             status: $status,
+            durationSeconds: isset($data['duration_seconds']) ? (int) $data['duration_seconds'] : null,
+            earnedXp: isset($data['earned_xp']) ? (int) $data['earned_xp'] : null,
+            earnedCoins: isset($data['earned_coins']) ? (int) $data['earned_coins'] : null,
+            earnedPoints: isset($data['earned_points']) ? (int) $data['earned_points'] : null,
         );
     }
 
@@ -47,6 +55,10 @@ class GameResultDTO
             'is_winner' => $this->isWinner,
             'rank' => $this->rank,
             'status' => $this->status?->value ?? $this->status,
+            'duration_seconds' => $this->durationSeconds,
+            'earned_xp' => $this->earnedXp,
+            'earned_coins' => $this->earnedCoins,
+            'earned_points' => $this->earnedPoints,
         ];
     }
 

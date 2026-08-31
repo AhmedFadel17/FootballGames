@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Resources\Infra\UserResource;
+use App\Resources\Infra\UserProgressResource;
+use App\Traits\ApiResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
 
 class AuthController extends Controller
 {
+    use ApiResponses;
     /**
      * Authenticate user session for Passport OIDC flow.
      */
@@ -110,12 +114,28 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Logged out successfully']);
     }
-    /**
-     * Return the currently authenticated user's profile.
-     */
+
     public function me(Request $request)
     {
-        return response()->json($request->user());
+        $user = $request->user();
+        return $this->successResponse(new UserResource($user), 'User fetched successfully');
+    }
+    public function myProgress(Request $request)
+    {
+        // Single DB Query: Fetches user along with next level required_xp
+        $userWithNextLevel = User::query()
+            ->where('users.id', $request->user()->id)
+            ->leftJoin('levels', 'levels.level', '=', \DB::raw('users.level + 1'))
+            ->select([
+                'users.*',
+                'levels.required_xp as next_level_xp',
+            ])
+            ->first();
+
+        return $this->successResponse(
+            new UserProgressResource($userWithNextLevel),
+            'User progress fetched successfully'
+        );
     }
 
     /**
@@ -144,10 +164,6 @@ class AuthController extends Controller
             'role' => $user->role,
             'username' => $user->username,
             'picture' => $user->avatar,
-            'coins' => $user->coins,
-            'games_played' => $user->games_played,
-            'games_won' => $user->games_won,
-            'games_lost' => $user->games_lost,
             'favorite_team' => $user->favorite_team,
         ]);
     }
