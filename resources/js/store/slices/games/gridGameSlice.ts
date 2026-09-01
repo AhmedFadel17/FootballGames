@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { gridGameApi } from "@/store/apis";
-import { GridGame, GridAnswer, GridCondition } from "@/types";
+import { GridGame, GridAnswer, GridCondition, GridGameInstance } from "@/types";
 
 interface GridConditionsMap {
   rows: Array<{ name: string; icon?: string; type: string }>;
@@ -8,7 +8,7 @@ interface GridConditionsMap {
 }
 
 interface GridGameState {
-  gridGame: GridGame | null;
+  gridGame: GridGameInstance | null;
   conditions: GridConditionsMap | null;
   /** Record keyed by "rowIndex_colIndex" for quick cell lookup */
   answers: Record<string, {
@@ -60,15 +60,15 @@ const gridGameSlice = createSlice({
   name: "gridGame",
   initialState,
   reducers: {
-    startGridGame: (state, action: PayloadAction<GridGame>) => {
+    startGridGame: (state, action: PayloadAction<GridGameInstance>) => {
       state.gridGame = action.payload;
       state.isActive = true;
       state.isFinished = false;
       state.answers = {};
 
       // If conditions came with the game creation response, transform them
-      if (action.payload.conditions && action.payload.conditions.length > 0) {
-        state.conditions = transformConditions(action.payload.conditions);
+      if (action.payload?.grid_game?.conditions && action.payload.grid_game.conditions.length > 0) {
+        state.conditions = transformConditions(action.payload.grid_game.conditions);
       }
     },
     setGridConditions: (state, action: PayloadAction<GridCondition[]>) => {
@@ -106,20 +106,20 @@ const gridGameSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addMatcher(
-        gridGameApi.endpoints.createGridGame.matchFulfilled,
+        gridGameApi.endpoints.createGridGameInstance.matchFulfilled,
         (state, { payload }) => {
           state.gridGame = payload.data;
           state.isActive = true;
           state.isFinished = false;
           state.answers = {};
 
-          if (payload.data.conditions && payload.data.conditions.length > 0) {
-            state.conditions = transformConditions(payload.data.conditions);
+          if (payload.data?.grid_game?.conditions && payload.data.grid_game.conditions.length > 0) {
+            state.conditions = transformConditions(payload.data.grid_game.conditions);
           }
         }
       )
       .addMatcher(
-        gridGameApi.endpoints.createGridGame.matchRejected,
+        gridGameApi.endpoints.createGridGameInstance.matchRejected,
         (state) => {
           state.gridGame = null;
           state.isActive = false;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\GamesListServices\Grid\GridValidation;
+namespace App\Services\GamesListServices\Grid\GridCondition;
 
 
 use App\Models\Core\Player;
@@ -9,7 +9,7 @@ use App\Models\GamesList\Grid\GridCondition;
 
 use App\Models\GamesList\Grid\GridGame;
 use App\Services\GameEngine\ConditionPool\IConditionPoolService;
-class GridValidationService implements IGridValidationService
+class GridConditionService implements IGridConditionService
 {
 
     public function __construct(private readonly IConditionPoolService $poolService)

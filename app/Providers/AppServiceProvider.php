@@ -11,10 +11,12 @@ use App\Services\GamesListServices\Career\CareerGameService;
 use App\Services\GamesListServices\Career\ICareerGameService;
 use App\Services\GamesListServices\Grid\GridAnswer\GridAnswerService;
 use App\Services\GamesListServices\Grid\GridAnswer\IGridAnswerService;
+use App\Services\GamesListServices\Grid\GridCondition\GridConditionService;
+use App\Services\GamesListServices\Grid\GridCondition\IGridConditionService;
 use App\Services\GamesListServices\Grid\GridGame\GridGameService;
 use App\Services\GamesListServices\Grid\GridGame\IGridGameService;
-use App\Services\GamesListServices\Grid\GridValidation\GridValidationService;
-use App\Services\GamesListServices\Grid\GridValidation\IGridValidationService;
+use App\Services\GamesListServices\Grid\GridGameInstance\GridGameInstanceService;
+use App\Services\GamesListServices\Grid\GridGameInstance\IGridGameInstanceService;
 use App\Services\Infra\PlayerProgress\IPlayerProgressService;
 use App\Services\Infra\PlayerProgress\PlayerProgressService;
 use App\Services\Pagination\IPaginationService;
@@ -105,8 +107,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->scoped(IBingoMatchService::class, BingoMatchService::class);
 
         $this->app->scoped(IGridGameService::class, GridGameService::class);
+        $this->app->scoped(IGridGameInstanceService::class, GridGameInstanceService::class);
         $this->app->scoped(IGridAnswerService::class, GridAnswerService::class);
-        $this->app->scoped(IGridValidationService::class, GridValidationService::class);
+        $this->app->scoped(IGridConditionService::class, GridConditionService::class);
 
         // Top List Services
         $this->app->scoped(ITopListGameService::class, TopListGameService::class);

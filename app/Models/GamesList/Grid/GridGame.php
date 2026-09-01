@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class GridGame extends Model
 {
     protected $fillable = [
-        'game_instance_id',
         'size',
         'difficulty',
     ];
@@ -21,17 +20,13 @@ class GridGame extends Model
         'difficulty' => GameDifficulty::class,
     ];
 
-    public function instance(): BelongsTo
+    public function gridGameInstances(): HasMany
     {
-        return $this->belongsTo(GameInstance::class, 'game_instance_id');
+        return $this->hasMany(GridGameInstance::class);
     }
     public function conditions(): HasMany
     {
         return $this->hasMany(GridCondition::class);
     }
 
-    public function answers(): HasMany
-    {
-        return $this->hasMany(GridAnswer::class);
-    }
 }

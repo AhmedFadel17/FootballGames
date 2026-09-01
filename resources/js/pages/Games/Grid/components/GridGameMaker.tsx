@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
-import { useCreateGridGameMutation } from "@/store/apis";
+import { useCreateGridGameInstanceMutation } from "@/store/apis";
 import { GridGame, GameDifficulty } from "@/types";
 import { startGridGame } from "@/store/slices/games/gridGameSlice";
 
@@ -15,7 +15,7 @@ export default function GridGameMaker() {
     const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
     const [gameDifficulty, setGameDifficulty] = useState<GameDifficulty>(2);
 
-    const [createGridGame, { isLoading }] = useCreateGridGameMutation();
+    const [createGridGame, { isLoading }] = useCreateGridGameInstanceMutation();
     const dispatch = useDispatch();
 
     const handleGridSubmit = async () => {

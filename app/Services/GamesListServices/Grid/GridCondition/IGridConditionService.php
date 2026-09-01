@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\GamesListServices\Grid\GridValidation;
+namespace App\Services\GamesListServices\Grid\GridCondition;
 
 use App\Enums\GameEngine\GameDifficulty;
 use App\Models\Core\Player;
@@ -8,7 +8,7 @@ use App\Models\GamesList\Grid\GridCondition;
 use App\Models\GamesList\Grid\GridGame;
 
 
-interface IGridValidationService
+interface IGridConditionService
 {
     public function validatePlayerForCell(
         Player $player,

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
-  useGetGridGameByIdQuery,
+  useGetGridGameInstanceByIdQuery,
   useSubmitGridAnswerMutation,
   useGameInstanceResultsMutation,
 } from "@/store/apis";
@@ -35,12 +35,12 @@ export default function GridGame({ isActive }: GridGameProps) {
 
   // Fetch full game details (with conditions.objectable) if we don't have conditions yet
   const { data: fetchedGame, isLoading: isGameLoading } =
-    useGetGridGameByIdQuery(gameId!, { skip: !gameId || !!conditions });
+    useGetGridGameInstanceByIdQuery(gameId!, { skip: !gameId || !!conditions });
 
   // When the game details come back, load conditions into Redux
   useEffect(() => {
-    if (fetchedGame?.data?.conditions && !conditions) {
-      dispatch(setGridConditions(fetchedGame.data.conditions));
+    if (fetchedGame?.data?.grid_game?.conditions && !conditions) {
+      dispatch(setGridConditions(fetchedGame.data.grid_game.conditions));
     }
   }, [fetchedGame, conditions, dispatch]);
 
@@ -113,7 +113,7 @@ export default function GridGame({ isActive }: GridGameProps) {
           <div className="flex items-center space-x-3 rtl:space-x-reverse">
             <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
             <span className="text-sm font-bold text-on-surface">
-              {gridGame.size}x{gridGame.size} Football Grid
+              {gridGame.grid_game.size}x{gridGame.grid_game.size} Football Grid
             </span>
           </div>
         </div>
@@ -125,7 +125,7 @@ export default function GridGame({ isActive }: GridGameProps) {
           </div>
         ) : (
           <GridGameGrid
-            size={gridGame.size}
+            size={gridGame.grid_game.size}
             conditions={conditions}
             answers={answers}
             onCellClick={handleCellClick}

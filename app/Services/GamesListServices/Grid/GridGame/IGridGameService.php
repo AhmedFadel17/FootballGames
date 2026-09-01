@@ -2,24 +2,20 @@
 
 namespace App\Services\GamesListServices\Grid\GridGame;
 
-use App\DTOs\GamesList\GridGameAnswerDTO;
-use App\Models\GameEngine\GameEntry;
-use App\DTOs\GamesList\GridGameDTO;
-use App\Models\GamesList\Grid\GridAnswer;
+use App\DTOs\Pagination\PaginationDTO;
+use App\DTOs\GamesList\Grid\GridGameDTO;
+use App\Enums\GameEngine\GameDifficulty;
 use App\Models\GamesList\Grid\GridGame;
 use App\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface IGridGameService
 {
-    public function createGame(User $user, GridGameDTO $dto): GridGame;
-    public function getGameDetails(int $gridGameId): GridGame;
-    public function getGridStateForEntry(GridGame $game, GameEntry $entry): array;
-    public function isGridCompleted(GridGame $game, GameEntry $entry): bool;
-
-    public function submitAnswer(
-        User $user,
-        int $gameId,
-        GridGameAnswerDTO $dto
-    ): array;
+    public function getAll(PaginationDTO $dto): LengthAwarePaginator;
+    public function getById(int $id): GridGame;
+    public function getRandom(User $user, GameDifficulty $difficulty): ?GridGame;
+    public function create(GridGameDTO $dto): GridGame;
+    public function update(int $id, GridGameDTO $data): GridGame;
+    public function delete(int $id): bool;
 
 }

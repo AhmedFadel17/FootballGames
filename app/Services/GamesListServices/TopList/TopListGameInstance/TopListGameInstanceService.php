@@ -156,13 +156,12 @@ class TopListGameInstanceService implements ITopListGameInstanceService
         $isWon = ($correctCount === $masterQuestion->total_items);
         $durationSeconds = (int) $now->diffInSeconds($gameInstance->start_at);
         $status = $isWon ? GameResultStatus::WON : GameResultStatus::LOST;
-        $score = $this->calculateScore($masterQuestion->total_items, $correctCount, $durationSeconds);
         $game = $gameInstance->game;
 
-        [$earnedXp, $earnedCoins, $earnedPoints] = $this->gameResultService->calculateRewards(
+        [$earnedXp, $earnedCoins, $earnedPoints, $score] = $this->gameResultService->calculateRewards(
             game: $game,
             isWon: $isWon,
-            score: $score,
+            durationSeconds: $durationSeconds,
             correctCount: $correctCount,
             totalItems: $masterQuestion->total_items,
             difficulty: $masterQuestion->difficulty
@@ -207,19 +206,4 @@ class TopListGameInstanceService implements ITopListGameInstanceService
 
         return $wrong >= $maxAttempts || $correct >= $masterQuestion->total_items;
     }
-
-    private function calculateScore(int $totalItems, int $correctCount, int $durationSeconds): int
-    {
-        if ($totalItems === 0) {
-            return 0;
-        }
-
-        $completionRate = $correctCount / $totalItems;
-        $preScore = ($completionRate === 1.0) ? 1000 : (int) round(1000 * pow($completionRate, 3));
-        $score = ceil($preScore - ($durationSeconds / 10));
-
-        return (int) max(0, $score);
-    }
-
-
 }

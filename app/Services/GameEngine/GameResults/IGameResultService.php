@@ -25,7 +25,7 @@ interface IGameResultService
     public function calculateRewards(
         Game $game,
         bool $isWon,
-        int $score,
+        int $durationSeconds,
         int $correctCount,
         int $totalItems,
         GameDifficulty $difficulty

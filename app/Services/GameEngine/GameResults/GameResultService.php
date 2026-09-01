@@ -82,7 +82,7 @@ class GameResultService implements IGameResultService
     public function calculateRewards(
         Game $game,
         bool $isWon,
-        int $score,
+        int $durationSeconds,
         int $correctCount,
         int $totalItems,
         GameDifficulty $difficulty
@@ -97,6 +97,12 @@ class GameResultService implements IGameResultService
         $baseXp = $game->xp_reward ?? 50;
         $baseCoins = $game->coins_reward ?? 20;
         $basePoints = $game->points_reward ?? 10;
+        $score = 0;
+        $completionRate = $correctCount / $totalItems;
+        $preScore = ($completionRate === 1.0) ? 1000 : (int) round(1000 * pow($completionRate, 3));
+        $score = ceil($preScore - ($durationSeconds / 10));
+
+        $score = (int) max(0, $score);
 
         if ($isWon) {
             $earnedXp = (int) round(($baseXp * $difficultyMultiplier) + ($score * 0.10));
@@ -108,6 +114,6 @@ class GameResultService implements IGameResultService
             $earnedPoints = (int) round(($basePoints * $completionRate) + ($score * 0.50));
         }
 
-        return [$earnedXp, $earnedCoins, $earnedPoints];
+        return [$earnedXp, $earnedCoins, $earnedPoints, $score];
     }
 }

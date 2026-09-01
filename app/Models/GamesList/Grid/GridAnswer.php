@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class GridAnswer extends Model
 {
     protected $fillable = [
-        'grid_game_id',
+        'grid_game_instance_id',
         'game_entry_id',
         'player_id',
         'row_index',
@@ -17,9 +17,9 @@ class GridAnswer extends Model
         'rarity_score',
     ];
 
-    public function game()
+    public function gridGameInstance()
     {
-        return $this->belongsTo(GridGame::class, 'grid_game_id');
+        return $this->belongsTo(GridGameInstance::class, 'grid_game_instance_id');
     }
 
     public function player()

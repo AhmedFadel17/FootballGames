@@ -1,10 +1,10 @@
 <?php
-namespace App\DTOs\GamesList;
+namespace App\DTOs\GamesList\Grid;
 
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class GridGameDTO
+class GridGameInstanceDTO
 {
     public function __construct(
         public ?int $gameInstanceId = null,

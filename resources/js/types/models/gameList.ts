@@ -1,6 +1,6 @@
 import { BingoConnectionType, TopListItemstype } from './../enums/gameList';
 import { BaseEntity } from "../api";
-import { GridCellType } from "../enums";
+import { GameDifficulty, GridCellType } from "../enums";
 import { Country, Player, PlayerTeamPeriod, Team } from "./core";
 
 
@@ -52,9 +52,16 @@ export interface CareerStep {
 
 // grid game models
 export interface GridGame extends BaseEntity {
-    game_instance_id: number;
     size: number;
+    difficulty: GameDifficulty;
     conditions?: GridCondition[];
+}
+
+export interface GridGameInstance extends BaseEntity {
+    game_instance_id: number;
+    max_attempts: number;
+    answers: GridAnswer[];
+    grid_game: GridGame;
 }
 
 export interface GridCondition extends BaseEntity {
@@ -68,7 +75,7 @@ export interface GridCondition extends BaseEntity {
 }
 
 export interface GridAnswer extends BaseEntity {
-    grid_game_id: number,
+    grid_game_instances_id: number,
     game_entry_id: number,
     player_id: number,
     player: Player,

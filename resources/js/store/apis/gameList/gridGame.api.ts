@@ -1,9 +1,9 @@
 import { mainApi, API_URL } from '../mainApi';
-import { ApiResponse, GridGame, GridAnswer, GridCondition } from '@/types';
+import { ApiResponse, GridGame, GridAnswer, GridCondition, GridGameInstance } from '@/types';
 
 const BASE_URL = `${API_URL}/games-list/football-grid`;
 
-export interface CreateGridGameRequest {
+export interface CreateGridGameInstanceRequest {
     game_id: number;
     difficulty: number;
     size: number;
@@ -23,12 +23,12 @@ export interface SubmitGridAnswerResponse {
 export const gridGameApi = mainApi.injectEndpoints({
     endpoints: (builder) => ({
 
-        getGridGameById: builder.query<ApiResponse<GridGame>, number>({
+        getGridGameInstanceById: builder.query<ApiResponse<GridGameInstance>, number>({
             query: (id) => `${BASE_URL}/${id}`,
             providesTags: (_result, _err, id) => [{ type: 'GridGame', id }],
         }),
 
-        createGridGame: builder.mutation<ApiResponse<GridGame>, CreateGridGameRequest>({
+        createGridGameInstance: builder.mutation<ApiResponse<GridGameInstance>, CreateGridGameInstanceRequest>({
             query: (body) => ({ url: BASE_URL, method: 'POST', body }),
             invalidatesTags: [{ type: 'GridGame', id: 'LIST' }],
         }),
@@ -46,7 +46,7 @@ export const gridGameApi = mainApi.injectEndpoints({
 });
 
 export const {
-    useGetGridGameByIdQuery,
-    useCreateGridGameMutation,
+    useGetGridGameInstanceByIdQuery,
+    useCreateGridGameInstanceMutation,
     useSubmitGridAnswerMutation,
 } = gridGameApi;

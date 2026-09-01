@@ -1,5 +1,5 @@
 <?php
-namespace App\DTOs\GamesList;
+namespace App\DTOs\GamesList\Grid;
 
 
 use App\Enums\GamesList\GridCellType;
