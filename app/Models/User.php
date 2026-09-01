@@ -72,6 +72,13 @@ class User extends Authenticatable implements OAuthenticatable
         ];
     }
 
+    public function findForPassport(string $username): ?self
+    {
+        return $this->where('email', $username)
+            ->orWhere('username', $username)
+            ->first();
+    }
+
     public function hasRole(string $role): bool
     {
         return $this->role === $role;

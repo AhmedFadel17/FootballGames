@@ -15,25 +15,31 @@ class AuthController extends Controller
 {
     use ApiResponses;
     /**
-     * Authenticate user session for Passport OIDC flow.
+     * Authenticate user session & return access token for mobile/web.
      */
     public function login(LoginRequest $request)
     {
         $request->authenticate();
 
-        $request->session()->regenerate();
+        $user = $request->user();
+
+        if ($request->hasSession()) {
+            $request->session()->regenerate();
+        }
+
+        $token = $user->createToken('auth_token')->accessToken;
 
         return response()->json([
-            'message' => 'Authenticated successfully. Redirecting...',
-            'user' => $request->user(),
+            'message' => 'Authenticated successfully.',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'expires_in' => 3600,
+            'user' => new UserResource($user),
         ]);
     }
 
     /**
-     * Register a new user account.
-     *
-     * This does NOT return tokens — after registration the user is
-     * redirected to /login where they authenticate via Passport OIDC.
+     * Register a new user account and return access token.
      */
     public function register(RegisterRequest $request)
     {
@@ -48,18 +54,20 @@ class AuthController extends Controller
             'role' => 'user',
         ]);
 
+        $token = $user->createToken('auth_token')->accessToken;
+
         return response()->json([
-            'message' => 'Account created successfully. Please sign in.',
-            'user' => ['id' => $user->id, 'email' => $user->email],
+            'message' => 'Account created successfully.',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'expires_in' => 3600,
+            'user' => new UserResource($user),
         ], 201);
     }
 
     /**
      * Guest login — creates a temporary user and issues a Passport
-     * personal access token directly (non-OIDC path).
-     *
-     * The token is short-lived and stored in the browser's localStorage
-     * by the frontend (key: guest_access_token).
+     * personal access token directly.
      */
     public function guestLogin()
     {
@@ -80,14 +88,11 @@ class AuthController extends Controller
         $token = $guest->createToken('guest_token')->accessToken;
 
         return response()->json([
+            'message' => 'Guest session initialized successfully.',
             'access_token' => $token,
             'token_type' => 'Bearer',
             'expires_in' => 3600,
-            'user' => [
-                'id' => $guest->id,
-                'username' => $guest->username,
-                'role' => $guest->role,
-            ],
+            'user' => new UserResource($guest),
         ]);
     }
 

@@ -39,6 +39,7 @@ Broadcast::routes(['middleware' => ['auth:api']]);
 //   - Guest creates a temp user and returns a short-lived Passport token directly
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
     Route::post('/guest', [AuthController::class, 'guestLogin']);
 });
 

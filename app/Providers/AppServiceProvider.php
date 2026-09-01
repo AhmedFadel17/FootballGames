@@ -138,6 +138,7 @@ class AppServiceProvider extends ServiceProvider
             'profile',
             'email',
         ]);
+        Passport::enablePasswordGrant();
         // Use custom client model to skip consent prompt for first-party clients
         Passport::useClientModel(\App\Models\PassportClient::class);
 
