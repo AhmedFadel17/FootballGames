@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { useCreateGridGameInstanceMutation } from "@/store/apis";
-import { GridGame, GameDifficulty } from "@/types";
+import { GridGame, GameDifficulty, GridGameInstance } from "@/types";
 import { startGridGame } from "@/store/slices/games/gridGameSlice";
 
 
@@ -29,7 +29,7 @@ export default function GridGameMaker() {
                 loading: "Starting grid game...",
                 success: (res) => {
                     if (res?.data) {
-                        dispatch(startGridGame(res.data as GridGame));
+                        dispatch(startGridGame(res.data as GridGameInstance));
                     }
                     return "Grid game created successfully!";
                 },
