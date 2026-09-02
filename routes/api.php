@@ -94,10 +94,10 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
             });
 
             Route::prefix('career')->group(function () {
-                Route::get('{id}', [CareerGameController::class, 'show']);
+                Route::get('{id}', [CareerGameController::class, 'getGameInstance']);
                 Route::post('{id}/reveal', [CareerGameController::class, 'reveal']);
                 Route::post('{id}/guess', [CareerGameController::class, 'guess']);
-                Route::post('', [CareerGameController::class, 'store']);
+                Route::post('', [CareerGameController::class, 'startGame']);
             });
 
             Route::prefix('football-grid')->group(function () {
@@ -133,7 +133,7 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::prefix('admin/games-list')->group(function () {
             Route::apiResource('top-list', TopListGameController::class);
             Route::apiResource('football-grid', GridGameController::class);
-
+            Route::apiResource('player-career', CareerGameController::class);
         });
         Route::get('competitions/{id}/teams', [CompetitionController::class, 'getTeams']);
         Route::apiResource('competitions', CompetitionController::class);

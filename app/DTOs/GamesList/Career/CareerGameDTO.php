@@ -1,5 +1,5 @@
 <?php
-namespace App\DTOs\GamesList;
+namespace App\DTOs\GamesList\Career;
 
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -7,8 +7,8 @@ use Illuminate\Foundation\Http\FormRequest;
 class CareerGameDTO
 {
     public function __construct(
-        public ?int $gameInstanceId = null,
         public ?int $difficulty = null,
+        public ?int $playerId = null,
     ) {
     }
 
@@ -20,16 +20,16 @@ class CareerGameDTO
     public static function fromArray(array $data): self
     {
         return new self(
-            gameInstanceId: isset($data['game_instance_id']) ? (int) $data['game_instance_id'] : null,
             difficulty: isset($data['difficulty']) ? (int) $data['difficulty'] : null,
+            playerId: isset($data['player_id']) ? (int) $data['player_id'] : null,
         );
     }
 
     public function toArray(): array
     {
         return [
-            'game_instance_id' => $this->gameInstanceId,
             'difficulty' => $this->difficulty,
+            'player_id' => $this->playerId,
         ];
     }
 

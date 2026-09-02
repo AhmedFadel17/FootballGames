@@ -7,8 +7,11 @@ use App\Services\Core\CompetitionSeasons\CompetitionSeasonService;
 use App\Services\Core\CompetitionSeasons\ICompetitionSeasonService;
 use App\Services\GameEngine\ConditionPool\ConditionPoolService;
 use App\Services\GameEngine\ConditionPool\IConditionPoolService;
-use App\Services\GamesListServices\Career\CareerGameService;
-use App\Services\GamesListServices\Career\ICareerGameService;
+use App\Services\GamesListServices\Career\CareerGame\CareerGameService;
+use App\Services\GamesListServices\Career\CareerGame\ICareerGameService;
+
+use App\Services\GamesListServices\Career\CareerGameInstance\CareerGameInstanceService;
+use App\Services\GamesListServices\Career\CareerGameInstance\ICareerGameInstanceService;
 use App\Services\GamesListServices\Grid\GridAnswer\GridAnswerService;
 use App\Services\GamesListServices\Grid\GridAnswer\IGridAnswerService;
 use App\Services\GamesListServices\Grid\GridCondition\GridConditionService;
@@ -117,6 +120,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->scoped(IGuessThePlayerGameService::class, GuessThePlayerGameService::class);
         $this->app->scoped(ICareerGameService::class, CareerGameService::class);
+        $this->app->scoped(ICareerGameInstanceService::class, CareerGameInstanceService::class);
 
         $this->app->singleton(
             ExceptionHandler::class,

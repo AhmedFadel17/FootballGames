@@ -2,11 +2,19 @@
 
 namespace App\Services\GameEngine\GameInstances;
 
+use App\DTOs\GameEngine\GameEntryDTO;
 use App\DTOs\GameEngine\GameInstanceDTO;
+use App\DTOs\GameEngine\GameResultDTO;
 use App\DTOs\Pagination\PaginationDTO;
+use App\Enums\GameEngine\GameResultStatus;
+use App\Models\GameEngine\Game;
 use App\Models\GameEngine\GameEntry;
 use App\Models\GameEngine\GameInstance;
+use App\Models\GameEngine\GameResult;
 use App\Models\User;
+use App\Services\GameEngine\GameEntries\IGameEntryService;
+use App\Services\GameEngine\GameResults\IGameResultService;
+use App\Services\Infra\PlayerProgress\IPlayerProgressService;
 use App\Services\Pagination\IPaginationService;
 use App\Enums\GameEngine\GameStatus;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -14,8 +22,13 @@ use Illuminate\Support\Facades\DB;
 
 class GameInstanceService implements IGameInstanceService
 {
-    public function __construct(private IPaginationService $_paginationService)
-    {
+
+    public function __construct(
+        private IPaginationService $_paginationService,
+        private readonly IGameEntryService $gameEntryService,
+        private readonly IGameResultService $gameResultService,
+        private readonly IPlayerProgressService $playerProgressService,
+    ) {
     }
 
     public function getAll(PaginationDTO $paginationDTO): LengthAwarePaginator
@@ -119,4 +132,91 @@ class GameInstanceService implements IGameInstanceService
             }
         });
     }
+
+    public function startSession(User $user, Game $game): array
+    {
+        if (!$this->playerProgressService->consumeStamina($user, $game->stamina_cost)) {
+            abort(400, "You don't have enough stamina to play this game.");
+        }
+
+        $gameInstance = GameInstance::create([
+            'game_id' => $game->id,
+            'status' => GameStatus::ACTIVE->value,
+            'max_players' => $game->max_players,
+            'start_at' => now(),
+        ]);
+
+        $gameEntry = $this->gameEntryService->create(
+            new GameEntryDTO(
+                gameInstanceId: $gameInstance->id,
+                userId: $user->id,
+            )
+        );
+
+        return [$gameInstance, $gameEntry];
+    }
+
+    public function finishSession(
+        GameInstance $gameInstance,
+        GameEntry $gameEntry,
+        bool $isWon,
+        int $correctCount,
+        int $totalItems,
+        int $durationSeconds,
+        mixed $difficulty,
+        int $rank = 1,
+        ?int $calculatedScore = null
+    ): GameResult {
+        return DB::transaction(function () use ($gameInstance, $gameEntry, $isWon, $correctCount, $totalItems, $durationSeconds, $difficulty, $rank, $calculatedScore) {
+            if ($gameInstance->status === GameStatus::FINISHED) {
+                return GameResult::where('game_entry_id', $gameEntry->id)->firstOrFail();
+            }
+
+            // 1. Calculate Rewards & Score via GameResultService
+            [$earnedXp, $earnedCoins, $earnedPoints, $score] = $this->gameResultService->calculateRewards(
+                game: $gameInstance->game,
+                isWon: $isWon,
+                durationSeconds: $durationSeconds,
+                correctCount: $correctCount,
+                totalItems: $totalItems,
+                difficulty: $difficulty
+            );
+
+            // 2. Mark GameInstance session as finished
+            $gameInstance->update([
+                'status' => GameStatus::FINISHED->value,
+                'end_at' => now(),
+            ]);
+
+            // 3. Create the historical GameResult record
+            $status = $isWon ? GameResultStatus::WON : GameResultStatus::LOST;
+
+            $resultDto = new GameResultDTO(
+                gameEntryId: $gameEntry->id,
+                status: $status,
+                score: $score,
+                isWinner: $isWon,
+                rank: $rank,
+                durationSeconds: $durationSeconds,
+                earnedXp: $earnedXp,
+                earnedCoins: $earnedCoins,
+                earnedPoints: $earnedPoints,
+            );
+
+            $gameResult = $this->gameResultService->create($resultDto);
+
+            // 4. Update Player Wallet & Level Progress
+            if ($earnedXp > 0 || $earnedCoins > 0 || $earnedPoints > 0) {
+                $this->playerProgressService->rewardPlayer(
+                    $gameEntry->user,
+                    $earnedXp,
+                    $earnedCoins,
+                    $earnedPoints
+                );
+            }
+
+            return $gameResult;
+        });
+    }
+
 }

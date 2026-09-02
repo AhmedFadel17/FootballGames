@@ -7,28 +7,24 @@ use App\Models\Core\Player;
 use App\Models\GameEngine\GameInstance;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CareerGame extends Model
 {
     protected $fillable = [
-        'game_instance_id',
         'player_id',
         'total_steps',
-        'revealed_steps',
-        'attempts_left',
         'difficulty',
     ];
 
     protected $casts = [
         'total_steps' => 'integer',
-        'revealed_steps' => 'integer',
-        'attempts_left' => 'integer',
         'difficulty' => GameDifficulty::class,
     ];
 
-    public function instance(): BelongsTo
+    public function careerInstances(): HasMany
     {
-        return $this->belongsTo(GameInstance::class, 'game_instance_id');
+        return $this->hasMany(CareerGameInstance::class, 'career_game_id');
     }
 
     public function player(): BelongsTo
