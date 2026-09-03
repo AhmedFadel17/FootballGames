@@ -8,6 +8,7 @@ use App\Models\Core\Competition;
 use App\Models\Core\Team;
 use App\Services\Pagination\IPaginationService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class CompetitionService implements ICompetitionService
 {
@@ -23,6 +24,21 @@ class CompetitionService implements ICompetitionService
             ->allowSorts(['id', 'name', 'abbr', 'country_id', 'popularity', 'api_id', 'type', 'tier', 'is_active'])
             ->searchable(['name', 'abbr'])
             ->paginate();
+    }
+
+    public function getOptions(?string $query = null, ?int $limit = 10): Collection
+    {
+        $term = trim($query);
+        $searchable = strlen($term) >= 2;
+
+        return Competition::query()
+            ->select(['id', 'name', 'img_src', 'popularity'])
+            ->when($searchable, function ($query) use ($term) {
+                $query->where('name', 'ILIKE', "%{$term}%");
+            })
+            ->orderBy('popularity', 'desc')
+            ->limit($limit)
+            ->get();
     }
 
     public function getById($id): Competition

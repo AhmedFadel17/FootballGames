@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useCreateTeamMutation, useGetCountriesLookupQuery } from "@/store/apis";
+import { useCreateTeamMutation, useGetCountriesLookupQuery, useGetCompetitionsLookupQuery } from "@/store/apis";
 import { showToast } from "@/utils/toast";
+import { TeamType } from "@/types";
 
 interface AddTeamModalProps {
     isOpen: boolean;
@@ -17,8 +18,11 @@ export default function AddTeamModal({ isOpen, onClose, onSuccess }: AddTeamModa
         api_id: 0,
         img_src: "",
         country_id: 0,
+        current_competition_id: 0,
+        type: 0,
     });
-    const { data: countries } = useGetCountriesLookupQuery();
+    const { data: countries } = useGetCountriesLookupQuery({ query: '', limit: 1000 });
+    const { data: competitions } = useGetCompetitionsLookupQuery({ query: '', limit: 1000 });
 
     const [createTeam, { isLoading }] = useCreateTeamMutation();
 
@@ -40,10 +44,12 @@ export default function AddTeamModal({ isOpen, onClose, onSuccess }: AddTeamModa
                 api_id: Number(formData.api_id),
                 img_src: formData.img_src,
                 country_id: Number(formData.country_id),
+                current_competition_id: Number(formData.current_competition_id),
+                type: Number(formData.type),
             }).unwrap();
 
             showToast.success("Team Created", "New team has been added successfully.");
-            setFormData({ name: "", slug: "", abbr: "", popularity: 0, api_id: 0, img_src: "", country_id: 0 });
+            setFormData({ name: "", slug: "", abbr: "", popularity: 0, api_id: 0, img_src: "", country_id: 0, current_competition_id: 0, type: 0 });
             onSuccess?.();
             onClose();
         } catch (error: any) {
@@ -151,6 +157,34 @@ export default function AddTeamModal({ isOpen, onClose, onSuccess }: AddTeamModa
                                 className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-colors"
                             />
                         </div>
+                    </div>
+                    <div>
+                        <label className="block text-xs font-medium text-white/70 mb-1.5">
+                            Team Type <span className="text-red-400">*</span>
+                        </label>
+                        <select
+                            required
+                            value={formData.type ?? ''}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    type: Number(e.target.value),
+                                })
+                            }
+                            className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-colors [&>option]:bg-gray-900 [&>option]:text-white"
+                        >
+                            <option value="" disabled>
+                                Select Type
+                            </option>
+
+                            {Object.entries(TeamType)
+                                .filter(([key]) => isNaN(Number(key)))
+                                .map(([key, value]) => (
+                                    <option key={value} value={value}>
+                                        {key}
+                                    </option>
+                                ))}
+                        </select>
                     </div>
 
                     <div className="flex justify-end gap-3 pt-4 border-t border-white/10">

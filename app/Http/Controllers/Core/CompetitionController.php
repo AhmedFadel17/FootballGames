@@ -12,6 +12,7 @@ use App\Http\Requests\Core\Team\TeamFilterRequest;
 use App\Http\Requests\Shared\BaseFilterRequest;
 use App\Resources\Core\CompetitionResource;
 use App\Resources\Core\TeamResource;
+use App\Resources\Shared\LookupResource;
 use App\Services\Core\Competitions\ICompetitionService;
 use App\Traits\ApiResponses;
 use Illuminate\Http\JsonResponse;
@@ -33,6 +34,22 @@ class CompetitionController extends Controller
         $dto = PaginationDTO::fromRequest($request);
         $competitions = $this->_service->getAll($dto);
         return $this->paginatedResponse($competitions, CompetitionResource::class, 'Competitions retrieved successfully');
+    }
+
+    public function getOptions(Request $request): JsonResponse
+    {
+        $query = $request->input('query');
+        $limit = $request->input('limit', 10);
+        $competitions = $this->_service->getOptions($query, $limit);
+        return $this->successResponse(
+            data: LookupResource::collectionWith(
+                resource: $competitions,
+                valueKey: 'id',
+                labelKey: 'name',
+                extraFields: ['img_src']
+            ),
+            message: 'Competitions retrieved successfully'
+        );
     }
 
     public function store(CreateCompetitionRequest $request): JsonResponse

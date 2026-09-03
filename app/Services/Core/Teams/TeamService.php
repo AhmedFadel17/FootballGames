@@ -18,10 +18,10 @@ class TeamService implements ITeamService
     public function getAll(PaginationDTO $dto): LengthAwarePaginator
     {
         return $this->_paginationService
-            ->for(Team::query()->with('country'), $dto)
-            ->allowFilters(['country_id', 'popularity', 'name', 'abbr', 'api_id'])
-            ->allowSorts(['id', 'name', 'country_id', 'popularity', 'name', 'abbr', 'api_id'])
-            ->searchable(['name', 'abbr'])
+            ->for(Team::query()->with('country', 'currentCompetition'), $dto)
+            ->allowFilters(['country_id', 'popularity', 'name', 'abbr', 'api_id', 'current_competition_id', 'slug'])
+            ->allowSorts(['id', 'name', 'country_id', 'popularity', 'abbr', 'api_id', 'current_competition_id', 'slug'])
+            ->searchable(['name', 'abbr', 'slug'])
             ->paginate();
     }
 

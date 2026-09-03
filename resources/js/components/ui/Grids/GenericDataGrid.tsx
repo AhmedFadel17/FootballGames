@@ -18,6 +18,9 @@ export interface FilterGroupConfig {
     label: string;
     type: 'select' | 'date' | 'radio';
     options?: FilterFieldOption[];
+    searchable?: boolean; // Enable inline search inside dropdown
+    onSearch?: (searchTerm: string) => void; // Optional dynamic lookup query handler
+    isLoading?: boolean; // Show loader when dynamic lookup is running
 }
 
 interface FilterConfig {
@@ -70,6 +73,105 @@ interface GenericDataGridProps<T> {
     };
     className?: string;
 }
+
+/* -------------------------------------------------------------------------- */
+/*                       Searchable Select Sub-Component                      */
+/* -------------------------------------------------------------------------- */
+
+interface SearchableSelectProps {
+    field: FilterGroupConfig;
+    selectedValue: any;
+    onChange: (value: any) => void;
+}
+
+function SearchableSelect({ field, selectedValue, onChange }: SearchableSelectProps) {
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+
+        // Only trigger dynamic lookups if empty or >= 2 characters
+        if (field.onSearch && (value.trim().length === 0 || value.trim().length >= 2)) {
+            field.onSearch(value);
+        }
+    };
+
+    const options = field.options || [];
+
+    // Local client-side filtering logic
+    const filteredOptions = field.onSearch
+        ? options
+        : options.filter(opt =>
+            opt.label.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+    return (
+        <div className="space-y-1.5">
+            {field.searchable && (
+                <div className="relative">
+                    <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-white/30 text-sm pointer-events-none">
+                        search
+                    </span>
+                    <input
+                        type="text"
+                        placeholder={`Search ${field.label.toLowerCase()}...`}
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        className="w-full bg-white/5 border border-white/10 focus:border-white/20 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-white/30 focus:outline-none transition-all font-medium"
+                    />
+                    {field.isLoading && (
+                        <span className="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-white/30 text-sm animate-spin">
+                            progress_activity
+                        </span>
+                    )}
+                </div>
+            )}
+
+            {/* Helper message when query is exactly 1 character */}
+            {searchTerm.trim().length === 1 && field.onSearch && (
+                <div className="text-[10px] text-white/40 px-1 italic">
+                    Type at least 2 characters to search...
+                </div>
+            )}
+
+            <div className="grid grid-cols-1 gap-1 max-h-36 overflow-y-auto border border-white/5 p-1 rounded-xl bg-white/[0.02]">
+                {filteredOptions.length === 0 ? (
+                    <div className="text-center py-2 text-xs text-white/30">
+                        No results found
+                    </div>
+                ) : (
+                    filteredOptions.map((opt) => {
+                        const currentVal = selectedValue ?? 'all';
+                        const isSelected = currentVal === opt.value;
+                        return (
+                            <button
+                                key={String(opt.value)}
+                                type="button"
+                                onClick={() => onChange(opt.value)}
+                                className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-between ${isSelected
+                                        ? 'bg-white/10 text-white'
+                                        : 'text-white/40 hover:bg-white/5 hover:text-white/70'
+                                    }`}
+                            >
+                                <span>{opt.label}</span>
+                                {isSelected && (
+                                    <span className="material-symbols-outlined text-xs text-accent-cyan">
+                                        check
+                                    </span>
+                                )}
+                            </button>
+                        );
+                    })
+                )}
+            </div>
+        </div>
+    );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                           Main GenericDataGrid                             */
+/* -------------------------------------------------------------------------- */
 
 export function GenericDataGrid<T>({
     items,
@@ -194,8 +296,6 @@ export function GenericDataGrid<T>({
                     </div>
 
                     <div className="flex items-center gap-3 self-end sm:self-auto">
-
-
                         {sortOption && sortOption.options.length > 0 && (
                             <div className="relative" ref={sortDropdownRef}>
                                 <button
@@ -244,6 +344,7 @@ export function GenericDataGrid<T>({
                                 )}
                             </div>
                         )}
+
                         {filterOptions && (
                             <div className="relative" ref={filterDropdownRef}>
                                 <button
@@ -300,29 +401,12 @@ export function GenericDataGrid<T>({
                                                         </div>
                                                     )}
 
-                                                    {field.type === 'select' && field.options && (
-                                                        <div className="grid grid-cols-1 gap-1 max-h-36 overflow-y-auto border border-white/5 p-1 rounded-xl bg-white/[0.02]">
-                                                            {field.options.map((opt) => {
-                                                                const currentVal = tempFilterValues[field.id] ?? 'all';
-                                                                const isSelected = currentVal === opt.value;
-                                                                return (
-                                                                    <button
-                                                                        key={String(opt.value)}
-                                                                        type="button"
-                                                                        onClick={() => handleFieldChange(field.id, opt.value)}
-                                                                        className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-between ${isSelected
-                                                                            ? 'bg-white/10 text-white'
-                                                                            : 'text-white/40 hover:bg-white/5 hover:text-white/70'
-                                                                            }`}
-                                                                    >
-                                                                        <span>{opt.label}</span>
-                                                                        {isSelected && (
-                                                                            <span className="material-symbols-outlined text-xs text-accent-cyan">check</span>
-                                                                        )}
-                                                                    </button>
-                                                                );
-                                                            })}
-                                                        </div>
+                                                    {field.type === 'select' && (
+                                                        <SearchableSelect
+                                                            field={field}
+                                                            selectedValue={tempFilterValues[field.id]}
+                                                            onChange={(val) => handleFieldChange(field.id, val)}
+                                                        />
                                                     )}
 
                                                     {field.type === 'date' && (

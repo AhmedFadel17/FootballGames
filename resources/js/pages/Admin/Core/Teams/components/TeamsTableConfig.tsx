@@ -22,7 +22,6 @@ export const getTeamTableColumns = (): TableColumn<Team>[] => [
         key: "img_src",
         header: "Logo",
         align: "left",
-        sortable: true,
         render: (team) => <img src={team.img_src} alt={team.name} className="w-10 h-10" />,
         editRender: (team, onChange) => (
             <input
@@ -55,8 +54,20 @@ export const getTeamTableColumns = (): TableColumn<Team>[] => [
         header: "Country",
         align: "left",
         sortable: true,
-        render: (team) => <img src={team.country?.img_src} alt={team.country?.name} className="w-9 h-6" />,
+        render: (team) => team.country ?
+            <img src={team.country?.img_src} alt={team.country?.name} className="w-9 h-6" />
+            : null,
     },
+    {
+        key: "current_competition_id",
+        header: "Compt",
+        align: "left",
+        sortable: true,
+        render: (team) => team.current_competition ?
+            <img src={team.current_competition?.img_src} alt={team.current_competition?.name} className="w-9 h-9" />
+            : null,
+    },
+
     {
         key: "popularity",
         header: "Pop.",

@@ -1,5 +1,5 @@
 import { mainApi, API_URL } from './../mainApi';
-import { ApiResponse, PaginationResponse, PaginationFilter } from '@/types';
+import { ApiResponse, PaginationResponse, PaginationFilter, LookupOption } from '@/types';
 import { Competition, Team } from '@/types';
 
 const BASE_URL = `${API_URL}/competitions`;
@@ -50,6 +50,19 @@ export const competitionsApi = mainApi.injectEndpoints({
                     ]
                     : [{ type: 'Competition', id: 'LIST' }],
         }),
+        getCompetitionsLookup: builder.query<ApiResponse<LookupOption[]>, { query: string, limit?: number }>({
+            query: ({ query, limit = 10 }) => ({
+                url: `${API_URL}/lookups/competitions`,
+                params: { query, limit },
+            }),
+            providesTags: (result) =>
+                result?.data
+                    ? [
+                        ...result.data.map(({ id }) => ({ type: 'Competition' as const, id })),
+                        { type: 'Competition', id: 'LOOKUP' },
+                    ]
+                    : [{ type: 'Competition', id: 'LOOKUP' }],
+        }),
 
         getCompetitionById: builder.query<ApiResponse<Competition>, number>({
             query: (id) => `${BASE_URL}/${id}`,
@@ -99,6 +112,7 @@ export const competitionsApi = mainApi.injectEndpoints({
 
 export const {
     useGetCompetitionsQuery,
+    useGetCompetitionsLookupQuery,
     useGetCompetitionByIdQuery,
     useGetCompetitionTeamsQuery,
     useCreateCompetitionMutation,
