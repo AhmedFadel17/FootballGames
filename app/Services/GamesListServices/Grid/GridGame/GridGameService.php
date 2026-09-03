@@ -63,12 +63,13 @@ class GridGameService implements IGridGameService
         return true;
     }
 
-    public function getRandom(User $user, GameDifficulty $difficulty): ?GridGame
+    public function getRandom(User $user, GameDifficulty $difficulty, int $size): ?GridGame
     {
         return GridGame::with([
             'conditions',
         ])
             ->where('difficulty', $difficulty->value)
+            ->where('size', $size)
             ->whereDoesntHave('gridGameInstances.gameInstance.entries', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })

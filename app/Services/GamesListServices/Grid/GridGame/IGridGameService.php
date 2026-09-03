@@ -13,7 +13,7 @@ interface IGridGameService
 {
     public function getAll(PaginationDTO $dto): LengthAwarePaginator;
     public function getById(int $id): GridGame;
-    public function getRandom(User $user, GameDifficulty $difficulty): ?GridGame;
+    public function getRandom(User $user, GameDifficulty $difficulty, int $size): ?GridGame;
     public function create(GridGameDTO $dto): GridGame;
     public function update(int $id, GridGameDTO $data): GridGame;
     public function delete(int $id): bool;

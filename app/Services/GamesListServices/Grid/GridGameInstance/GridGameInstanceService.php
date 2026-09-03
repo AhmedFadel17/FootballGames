@@ -41,7 +41,7 @@ class GridGameInstanceService implements IGridGameInstanceService
             $difficulty = GameDifficulty::tryFrom($dto->difficulty) ?? GameDifficulty::EASY;
             $game = Game::where('slug', self::SLUG)->firstOrFail();
 
-            $gridGame = $this->gridGameService->getRandom($user, $difficulty);
+            $gridGame = $this->gridGameService->getRandom($user, $difficulty, $dto->size);
             if ($gridGame === null) {
                 $gridGame = $this->gridGameService->create(new GridGameDTO(
                     size: $dto->size,
