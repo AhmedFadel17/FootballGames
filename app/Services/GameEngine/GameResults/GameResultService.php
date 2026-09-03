@@ -88,7 +88,7 @@ class GameResultService implements IGameResultService
         GameDifficulty $difficulty
     ): array {
         if ($correctCount === 0 || $totalItems === 0) {
-            return [0, 0, 0];
+            return [0, 0, 0, 0];
         }
 
         $completionRate = $correctCount / $totalItems;

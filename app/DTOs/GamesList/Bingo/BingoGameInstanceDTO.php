@@ -1,10 +1,10 @@
 <?php
-namespace App\DTOs\GamesList;
+namespace App\DTOs\GamesList\Bingo;
 
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class BingoGameDTO
+class BingoGameInstanceDTO
 {
     public function __construct(
         public ?int $gameInstanceId = null,

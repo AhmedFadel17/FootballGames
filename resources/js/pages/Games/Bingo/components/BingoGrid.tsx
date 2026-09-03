@@ -1,15 +1,30 @@
-import { BingoCondition } from "@/types";
+import { BingoCondition, BingoGuess } from "@/types";
 import BingoCard from "./BingoCard";
 
 interface BingoGridProps {
   width: number;
   height: number;
   conditions: BingoCondition[];
-  onCellClick: (conditionId: number) => Promise<boolean | undefined>;
+  guesses: BingoGuess[];
+  onCellClick: (conditionPos: number) => Promise<boolean>;
 }
 
-export default function BingoGrid({ width, height, conditions, onCellClick }: BingoGridProps) {
+export default function BingoGrid({
+  width,
+  height,
+  conditions,
+  guesses,
+  onCellClick,
+}: BingoGridProps) {
   const totalCells = width * height;
+
+  // Build a lookup map of condition_id -> correct guess
+  const guessMap = new Map<number, BingoGuess>();
+  guesses.forEach((guess) => {
+    if (guess.is_correct) {
+      guessMap.set(guess.bingo_condition_id, guess);
+    }
+  });
 
   return (
     <div
@@ -20,12 +35,20 @@ export default function BingoGrid({ width, height, conditions, onCellClick }: Bi
     >
       {Array.from({ length: totalCells }).map((_, index) => {
         const condition = conditions[index];
+        const guess = condition ? guessMap.get(condition.id) : undefined;
+        const isMarked = guess?.is_correct ?? false;
 
         return (
           <BingoCard
-            key={index}
+            key={condition?.id ?? index}
             bingoCondition={condition}
-            onClick={async () => (condition && !condition.is_marked) && await onCellClick(condition.pos)}
+            guess={guess}
+            onClick={async () => {
+              if (condition && !isMarked) {
+                return await onCellClick(condition.pos);
+              }
+              return false;
+            }}
           />
         );
       })}

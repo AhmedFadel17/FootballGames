@@ -2,20 +2,11 @@
 namespace App\Services\GamesListServices\TopList\TopListGame;
 
 use App\DTOs\GamesList\TopList\TopListGameDTO;
-use App\DTOs\GamesList\TopList\TopListGameInstanceDTO;
 use App\DTOs\Pagination\PaginationDTO;
-use App\Models\GameEngine\Game;
-use App\Models\GameEngine\GameEntry;
-use App\Models\GameEngine\GameInstance;
-use App\Models\GameEngine\GameResult;
 use App\Models\GamesList\TopList\TopListGame;
-use App\Models\GamesList\TopList\TopListGameInstance;
-use App\Models\GamesList\TopList\TopListGuess;
 use App\Models\GamesList\TopList\TopListItem;
 use App\Models\User;
 use App\Enums\GameEngine\GameDifficulty;
-use App\Enums\GameEngine\GameResultStatus;
-use App\Enums\GameEngine\GameStatus;
 use App\Services\Pagination\IPaginationService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;

@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
-import { useCreateBingoGameMutation } from "@/store/apis";
-import { startBingo } from "@/store/slices/bingoSlice";
-import { BingoGame, GameDifficulty } from "@/types";
+import { useStartBingoGameMutation } from "@/store/apis";
+import { startBingo } from "@/store/slices/games/bingoSlice";
+import { BingoGame, BingoGameInstance, GameDifficulty } from "@/types";
 
 
 type ScopeType = "global" | "league";
@@ -12,16 +12,14 @@ type ScopeType = "global" | "league";
 export default function BingoMaker() {
     const [scope, setScope] = useState<ScopeType>("global");
     const [bingoSize, setBingoSize] = useState<number>(3);
-    const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
     const [gameDifficulty, setGameDifficulty] = useState<GameDifficulty>(2); // Default Pro (2)
 
-    const [createBingoGame, { isLoading }] = useCreateBingoGameMutation();
+    const [createBingoGame, { isLoading }] = useStartBingoGameMutation();
     const dispatch = useDispatch();
 
     const handleBingoSubmit = async () => {
         await toast.promise(
             createBingoGame({
-                game_id: selectedGameId ? Number(selectedGameId) : 1,
                 size: bingoSize,
                 difficulty: gameDifficulty,
             }).unwrap(),
@@ -29,7 +27,7 @@ export default function BingoMaker() {
                 loading: "Starting bingo game...",
                 success: (res) => {
                     if (res?.data) {
-                        dispatch(startBingo(res.data as BingoGame));
+                        dispatch(startBingo(res.data as BingoGameInstance));
                     }
                     return "Bingo game created successfully!";
                 },

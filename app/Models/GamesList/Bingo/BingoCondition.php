@@ -4,8 +4,8 @@ namespace App\Models\GamesList\Bingo;
 
 use App\Enums\GamesList\BingoConnectionType;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class BingoCondition extends Model
 {
@@ -14,28 +14,21 @@ class BingoCondition extends Model
         'object_id',
         'object_type',
         'connection_type',
-        'bingo_match_id',
-        'is_marked',
         'pos',
     ];
 
     protected $casts = [
         'connection_type' => BingoConnectionType::class,
-        'is_marked' => 'boolean',
     ];
 
-    public function game()
+    public function game(): BelongsTo
     {
         return $this->belongsTo(BingoGame::class, 'bingo_game_id');
     }
 
-    public function objectable()
+    public function objectable(): MorphTo
     {
         return $this->morphTo(__FUNCTION__, 'object_type', 'object_id');
     }
 
-    public function match()
-    {
-        return $this->belongsTo(BingoMatch::class, 'bingo_match_id');
-    }
 }

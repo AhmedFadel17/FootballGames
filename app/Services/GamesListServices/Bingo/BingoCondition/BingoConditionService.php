@@ -4,6 +4,7 @@ namespace App\Services\GamesListServices\Bingo\BingoCondition;
 
 use App\Models\GamesList\Bingo\BingoCondition;
 use App\Models\GamesList\Bingo\BingoGame;
+use App\Models\GamesList\Bingo\BingoGameInstance;
 use App\Models\GamesList\Bingo\BingoMatch;
 use App\Models\User;
 use App\Resources\GamesList\Bingo\BingoConditionResource;
@@ -14,6 +15,7 @@ use App\Services\Core\Managers\IManagerService;
 use App\Services\Core\Teams\ITeamService;
 use App\Services\GameEngine\ConditionPool\ConditionPoolService;
 use App\Services\Core\Players\IPlayerService;
+use Illuminate\Database\Eloquent\Collection;
 class BingoConditionService implements IBingoConditionService
 {
 
@@ -27,21 +29,13 @@ class BingoConditionService implements IBingoConditionService
     ) {
     }
 
-    public function getByBingoGameId(User $user, int $id): array
+    public function getByBingoGameId(User $user, int $id): Collection
     {
-        $bingoGame = BingoGame::query()->findOrFail($id);
-        if ($bingoGame->instance->status !== GameStatus::ACTIVE)
+        $bingoGame = BingoGameInstance::query()->with(['gameInstance', 'bingoGame'])->findOrFail($id);
+        if ($bingoGame->gameInstance->status !== GameStatus::ACTIVE)
             abort(400, "Game is not Active");
 
-        $conditions = BingoCondition::query()
-            ->with(['objectable', 'match.player'])
-            ->where('bingo_game_id', $id)
-            ->orderBy('pos', 'asc')
-            ->get();
-
-        return $conditions
-            ->map(fn($condition) => new BingoConditionResource($condition))
-            ->all();
+        return $bingoGame->bingoGame->conditions()->orderBy('pos')->with('objectable')->get();
     }
     public static function getByBingoGameIdAndPosition(int $gameId, int $pos): BingoCondition
     {

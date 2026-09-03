@@ -3,29 +3,27 @@
 namespace App\Models\GamesList\Bingo;
 
 use App\Enums\GameEngine\GameDifficulty;
-use App\Models\GameEngine\GameInstance;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BingoGame extends Model
 {
     protected $fillable = [
-        'game_instance_id',
         'size',
-        'remaining_answers',
+        'total_answers',
         'difficulty',
     ];
 
     protected $casts = [
         'size' => 'integer',
-        'remaining_answers' => 'integer',
+        'total_answers' => 'integer',
         'difficulty' => GameDifficulty::class,
     ];
 
-    public function instance(): BelongsTo
+
+    public function bingoInstances(): HasMany
     {
-        return $this->belongsTo(GameInstance::class, 'game_instance_id');
+        return $this->hasMany(BingoGameInstance::class);
     }
     public function conditions(): HasMany
     {

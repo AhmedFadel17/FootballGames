@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import bingoReducer from "./slices/bingoSlice";
+import bingoReducer from "./slices/games/bingoSlice";
 import careerGameReducer from "./slices/games/careerGameSlice";
 import gridGameReducer from "./slices/games/gridGameSlice";
 import topListGameReducer from "./slices/topListGameSlice";

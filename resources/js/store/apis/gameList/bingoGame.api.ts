@@ -1,42 +1,44 @@
 import { mainApi, API_URL } from '../mainApi';
-import { ApiResponse, PaginationResponse, PaginationFilter } from '@/types';
+import { ApiResponse, PaginationResponse, PaginationFilter, BingoGuess, BingoMatch, BingoGameInstance, BingoCondition } from '@/types';
 import { BingoGame } from '@/types';
 
 const BASE_URL = `${API_URL}/games-list/bingo`;
 
 export interface CreateBingoGameRequest {
-    game_id: number;
     difficulty: number;
     size: number;
-    competition_slug?: string;
+}
+export interface SubmitBingoGuessResponse {
+    guess: BingoGuess;
+    is_complete: boolean;
 }
 
+export interface SkipBingoMatchResponse {
+    match: BingoMatch;
+    is_complete: boolean;
+}
 export interface UpdateBingoGameRequest extends Partial<CreateBingoGameRequest> { }
-
-export interface BingoGameFilter extends PaginationFilter {
-    searchQuery?: string;
-}
 
 export const bingoGameApi = mainApi.injectEndpoints({
     endpoints: (builder) => ({
 
-        getBingoGameById: builder.query<ApiResponse<BingoGame>, number>({
+        getBingoGameById: builder.query<ApiResponse<BingoGameInstance>, number>({
             query: (id) => `${BASE_URL}/${id}`,
             providesTags: (_result, _err, id) => [{ type: 'BingoGame', id }],
         }),
 
-        createBingoGame: builder.mutation<ApiResponse<BingoGame>, CreateBingoGameRequest>({
+        startBingoGame: builder.mutation<ApiResponse<BingoGameInstance>, CreateBingoGameRequest>({
             query: (body) => ({ url: BASE_URL, method: 'POST', body }),
             invalidatesTags: [{ type: 'BingoGame', id: 'LIST' }],
         }),
 
-        getBingoConditions: builder.query<any, number>({
+        getBingoConditions: builder.query<ApiResponse<BingoCondition[]>, number>({
             query: (gameId) => ({
                 url: `${BASE_URL}/${gameId}/conditions`,
             }),
             providesTags: ["BingoGame"],
         }),
-        getNextBingoMatch: builder.query<any, number>({
+        getNextBingoMatch: builder.query<ApiResponse<BingoMatch>, number>({
             query: (gameId) => ({
                 url: `${BASE_URL}/${gameId}/next-match`,
             }),
@@ -44,7 +46,7 @@ export const bingoGameApi = mainApi.injectEndpoints({
         }),
 
         // Check a specific condition
-        checkBingoCondition: builder.mutation<any, { gameId: number; pos: number }>({
+        checkBingoCondition: builder.mutation<ApiResponse<SubmitBingoGuessResponse>, { gameId: number; pos: number }>({
             query: ({ gameId, pos }) => ({
                 url: `${BASE_URL}/${gameId}/check/${pos}`,
                 method: "POST",
@@ -54,7 +56,7 @@ export const bingoGameApi = mainApi.injectEndpoints({
 
 
         // Skip a specific match
-        skipBingoMatch: builder.mutation<any, number>({
+        skipBingoMatch: builder.mutation<ApiResponse<SkipBingoMatchResponse>, number>({
             query: (gameId) => ({
                 url: `${BASE_URL}/${gameId}/skip`,
                 method: "POST",
@@ -67,7 +69,7 @@ export const bingoGameApi = mainApi.injectEndpoints({
 
 export const {
     useGetBingoGameByIdQuery,
-    useCreateBingoGameMutation,
+    useStartBingoGameMutation,
     useGetBingoConditionsQuery,
     useGetNextBingoMatchQuery,
     useCheckBingoConditionMutation,

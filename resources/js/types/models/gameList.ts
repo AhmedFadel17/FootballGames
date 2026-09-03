@@ -6,28 +6,48 @@ import { Country, Player, PlayerTeamPeriod, Team } from "./core";
 
 // bingo game models
 export interface BingoGame extends BaseEntity {
-    game_instance_id: number;
     size: number;
+    total_answers: number;
+}
+
+export interface BingoGameInstance extends BaseEntity {
+    game_instance_id: number;
+    bingo_game_id: number;
+    bingo_game?: BingoGame;
+    size?: number;
+    difficulty?: number;
     remaining_answers: number;
+    current_match_pos?: number;
+    conditions?: BingoCondition[];
+    current_match?: BingoMatch | null;
+    guesses?: BingoGuess[];
 }
 
 export interface BingoCondition extends BaseEntity {
-    bingo_game_id: number,
+    bingo_game_id: number;
     object_id: number;
     object: Player | Team | null;
-    object_type: string,
-    match?: BingoMatch | null;
+    object_type: string;
     connection_type: string;
-    bingo_match_id: number;
-    is_marked: boolean;
     pos: number;
 }
 
 export interface BingoMatch extends BaseEntity {
-    bingo_game_id: number,
-    player_id: number,
-    player: Player,
+    bingo_game_id: number;
+    player_id: number;
+    player: Player;
     pos: number;
+}
+
+export interface BingoGuess extends BaseEntity {
+    bingo_game_instance_id?: number;
+    bingo_condition_id: number;
+    bingo_match_id: number;
+    bingo_match?: BingoMatch;
+    next_match?: BingoMatch | null;
+    remaining_answers?: number | null;
+    guessed_at?: string;
+    is_correct: boolean;
 }
 
 // career game models

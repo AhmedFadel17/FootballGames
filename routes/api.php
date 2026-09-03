@@ -85,9 +85,9 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
 
         Route::prefix('games-list')->group(function () {
             Route::prefix('bingo')->group(function () {
-                Route::get('', [BingoGameController::class, 'show']);
+                Route::get('{id}', [BingoGameController::class, 'getGameInstance']);
                 Route::get('{id}/conditions', [BingoGameController::class, 'getConditions']);
-                Route::post('', [BingoGameController::class, 'store']);
+                Route::post('', [BingoGameController::class, 'startGame']);
                 Route::post('{id}/skip', [BingoGameController::class, 'skip']);
                 Route::post('{id}/check/{pos}', [BingoGameController::class, 'check']);
                 Route::get('{id}/next-match', [BingoGameController::class, 'nextMatch']);
@@ -131,6 +131,7 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
     Route::middleware(['role:admin'])->group(function () {
         Route::apiResource('games', GameController::class)->except('index');
         Route::prefix('admin/games-list')->group(function () {
+            Route::apiResource('bingo', BingoGameController::class);
             Route::apiResource('top-list', TopListGameController::class);
             Route::apiResource('football-grid', GridGameController::class);
             Route::apiResource('player-career', CareerGameController::class);

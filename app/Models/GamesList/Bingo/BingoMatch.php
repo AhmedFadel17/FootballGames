@@ -4,7 +4,6 @@ namespace App\Models\GamesList\Bingo;
 
 use App\Models\Core\Player;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BingoMatch extends Model
@@ -15,12 +14,12 @@ class BingoMatch extends Model
         'pos',
     ];
 
-    public function game()
+    public function game(): BelongsTo
     {
         return $this->belongsTo(BingoGame::class, 'bingo_game_id');
     }
 
-    public function player()
+    public function player(): BelongsTo
     {
         return $this->belongsTo(Player::class, 'player_id');
     }

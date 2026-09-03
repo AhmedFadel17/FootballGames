@@ -7,6 +7,8 @@ use App\Services\Core\CompetitionSeasons\CompetitionSeasonService;
 use App\Services\Core\CompetitionSeasons\ICompetitionSeasonService;
 use App\Services\GameEngine\ConditionPool\ConditionPoolService;
 use App\Services\GameEngine\ConditionPool\IConditionPoolService;
+use App\Services\GamesListServices\Bingo\BingoGameInstance\BingoGameInstanceService;
+use App\Services\GamesListServices\Bingo\BingoGameInstance\IBingoGameInstanceService;
 use App\Services\GamesListServices\Career\CareerGame\CareerGameService;
 use App\Services\GamesListServices\Career\CareerGame\ICareerGameService;
 
@@ -106,6 +108,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Games Services
         $this->app->scoped(IBingoGameService::class, BingoGameService::class);
+        $this->app->scoped(IBingoGameInstanceService::class, BingoGameInstanceService::class);
         $this->app->scoped(IBingoConditionService::class, BingoConditionService::class);
         $this->app->scoped(IBingoMatchService::class, BingoMatchService::class);
 

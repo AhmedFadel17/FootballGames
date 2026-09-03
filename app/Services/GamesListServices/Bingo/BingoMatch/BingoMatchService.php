@@ -5,8 +5,10 @@ namespace App\Services\GamesListServices\Bingo\BingoMatch;
 use App\Enums\GameEngine\GameDifficulty;
 use App\Models\Core\Player;
 use App\Models\GamesList\Bingo\BingoGame;
+use App\Models\GamesList\Bingo\BingoGameInstance;
 use App\Models\GamesList\Bingo\BingoMatch;
 use App\Services\Core\Players\IPlayerService;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 
 class BingoMatchService implements IBingoMatchService
@@ -34,30 +36,21 @@ class BingoMatchService implements IBingoMatchService
         BingoMatch::insert($matches);
     }
 
-    public function getCurrentMatch(BingoGame $game): BingoMatch
+    public function getCurrentMatch(BingoGameInstance $bingoGameInstance): ?BingoMatch
     {
-        $pos = $this->calculateMatchPosition($game);
-
-        return BingoMatch::where('bingo_game_id', $game->id)
+        $pos = $bingoGameInstance->current_match_pos;
+        $game = $bingoGameInstance->bingoGame;
+        return $game->matches()->with('player')
             ->where('pos', $pos)
-            ->firstOrFail();
+            ->first();
     }
 
-    public function getNextMatch(BingoGame $game): BingoMatch
+    public function getNextMatch(BingoGameInstance $bingoGameInstance): ?BingoMatch
     {
-        $nextPos = $this->calculateMatchPosition($game) + 1;
-
-        return BingoMatch::with('player')
-            ->where('bingo_game_id', $game->id)
+        $nextPos = $bingoGameInstance->current_match_pos + 1;
+        $game = $bingoGameInstance->bingoGame;
+        return $game->matches()->with('player')
             ->where('pos', $nextPos)
-            ->firstOrFail();
-    }
-
-    private function calculateMatchPosition(BingoGame $game): int
-    {
-        $totalAnswers = $game->matches()->count();
-        $remaining = $game->remaining_answers + 1;
-
-        return $totalAnswers - $remaining;
+            ->first();
     }
 }

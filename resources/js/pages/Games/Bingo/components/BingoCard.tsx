@@ -1,37 +1,44 @@
-import { BingoCondition } from "@/types";
-import { motion } from "framer-motion";
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { BingoCondition, BingoGuess } from "@/types";
 
 interface BingoCardProps {
-    bingoCondition: BingoCondition;
-    onClick?: (pos: number) => Promise<boolean | undefined>;
+    bingoCondition?: BingoCondition;
+    guess?: BingoGuess;
+    onClick?: () => Promise<boolean>;
 }
 
-export default function BingoCard({ bingoCondition, onClick }: BingoCardProps) {
+export default function BingoCard({
+    bingoCondition,
+    guess,
+    onClick,
+}: BingoCardProps) {
     const [isWrong, setIsWrong] = useState(false);
 
     if (!bingoCondition) return null;
 
-    const { pos, is_marked, object, connection_type, match } = bingoCondition;
+    const isMarked = guess?.is_correct ?? false;
+    const { object, connection_type } = bingoCondition;
 
     const imgSrc =
-        object && "img_src" in object
+        object && "img_src" in object && object.img_src
             ? object.img_src
             : "https://via.placeholder.com/40";
     const name = object && "name" in object ? object.name : "Unknown";
 
+    const matchedPlayer = guess?.bingo_match?.player;
     const answerImg =
-        match?.player && "img_src" in match.player
-            ? match.player.img_src
+        matchedPlayer && "img_src" in matchedPlayer && matchedPlayer.img_src
+            ? matchedPlayer.img_src
             : "https://via.placeholder.com/40";
-    const answerName = match?.player?.name ?? "";
+    const answerName = matchedPlayer?.name ?? "";
 
     const handleCardClick = async () => {
-        if (!onClick || is_marked) return;
-        const res = await onClick(pos);
-        if (res === undefined) return;
+        if (!onClick || isMarked) return;
 
-        if (res === false) {
+        const isCorrect = await onClick();
+
+        if (!isCorrect) {
             setIsWrong(true);
             setTimeout(() => setIsWrong(false), 500);
         }
@@ -48,7 +55,7 @@ export default function BingoCard({ bingoCondition, onClick }: BingoCardProps) {
                         borderColor: "#FF4D4D",
                         boxShadow: "0px 0px 12px rgba(255, 77, 77, 0.6)",
                     }
-                    : is_marked
+                    : isMarked
                         ? {
                             scale: [1, 1.08, 1],
                             borderColor: "#CCFF00",
@@ -61,7 +68,7 @@ export default function BingoCard({ bingoCondition, onClick }: BingoCardProps) {
                         }
             }
             whileHover={
-                !is_marked && !isWrong
+                !isMarked && !isWrong
                     ? {
                         scale: 1.04,
                         borderColor: "#00F2FF",
@@ -71,21 +78,21 @@ export default function BingoCard({ bingoCondition, onClick }: BingoCardProps) {
             }
             transition={{ duration: 0.2 }}
             onClick={handleCardClick}
-            className={`group relative flex flex-col items-center justify-between w-full h-28 sm:h-32 p-2 rounded-xl cursor-pointer overflow-hidden border transition-all duration-300 ${is_marked
+            className={`group relative flex flex-col items-center justify-between w-full h-28 sm:h-32 p-2 rounded-xl cursor-pointer overflow-hidden border transition-all duration-300 ${isMarked
                     ? "bg-gradient-to-b from-secondary-container/40 to-surface-container-high/90"
                     : "bg-surface-container/90 hover:bg-surface-bright/50 backdrop-blur-md"
                 }`}
         >
             {/* Background Micro Glow */}
             <div
-                className={`absolute inset-0 opacity-20 pointer-events-none transition-opacity duration-300 ${is_marked
+                className={`absolute inset-0 opacity-20 pointer-events-none transition-opacity duration-300 ${isMarked
                         ? "bg-[radial-gradient(circle_at_center,#CCFF00_0%,transparent_70%)] opacity-40"
                         : "group-hover:opacity-100 bg-[radial-gradient(circle_at_center,#00F2FF_0%,transparent_70%)] opacity-0"
                     }`}
             />
 
-            {is_marked && match?.player ? (
-                /* --- MARKED (SUCCESS) COMPACT DISPLAY --- */
+            {isMarked && matchedPlayer ? (
+                /* --- MARKED (SUCCESS) DISPLAY --- */
                 <>
                     {/* Top Target Icon + Connection Tag */}
                     <div className="z-10 flex items-center gap-1.5 w-full">
@@ -124,7 +131,7 @@ export default function BingoCard({ bingoCondition, onClick }: BingoCardProps) {
                     </div>
                 </>
             ) : (
-                /* --- UNMARKED COMPACT DISPLAY --- */
+                /* --- UNMARKED DISPLAY --- */
                 <>
                     {/* Top Connection Tag */}
                     <div className="z-10 w-full flex justify-between items-center">

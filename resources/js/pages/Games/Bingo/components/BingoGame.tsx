@@ -1,24 +1,24 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   useGetBingoConditionsQuery,
   useGetNextBingoMatchQuery,
   useCheckBingoConditionMutation,
+  useSkipBingoMatchMutation,
   useGameInstanceResultsMutation,
 } from "@/store/apis";
-import BingoGrid from "./BingoGrid";
-import BingoSelector from "./BingoSelector";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useEffect } from "react";
 import {
   finishGame,
+  recordGuess,
   resetBingo,
   setConditions,
-  setMatcher,
-  updateCondition,
-} from "@/store/slices/bingoSlice";
-import { motion, AnimatePresence } from "framer-motion";
-import { store } from "@/store";
+  setCurrentMatch,
+  setIsFinished,
+} from "@/store/slices/games/bingoSlice";
+import BingoGrid from "./BingoGrid";
+import BingoSelector from "./BingoSelector";
 import BingoResultModal from "@/components/ui/Modals/BingoResultModal";
-import { useNavigate } from "react-router-dom";
 
 interface BingoGameProps {
   isActive: boolean;
@@ -27,80 +27,97 @@ interface BingoGameProps {
 export default function BingoGame({ isActive }: BingoGameProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { bingoGame, conditions, matcher } = useAppSelector((state) => state.bingo);
-  const remainingAnswers = useAppSelector(
-    (state) => state.bingo.bingoGame?.remaining_answers
-  );
-  const isFinished = useAppSelector(
-    (state) => state.bingo.isFinished
-  );
-  const gameId = bingoGame?.id;
 
+  const { bingoInstance, conditions, guesses, currentMatch, isFinished } = useAppSelector(
+    (state) => state.bingo
+  );
+
+  const instanceId = bingoInstance?.id;
+  const gameInstanceId = bingoInstance?.game_instance_id;
+  const remainingAnswers = bingoInstance?.remaining_answers;
+
+  // RTK Query Hooks synced with the updated bingoInstance ID
   const { data: fetchedConditions, isLoading: isConditionsLoading } =
-    useGetBingoConditionsQuery(gameId!, { skip: !gameId });
+    useGetBingoConditionsQuery(instanceId!, { skip: !instanceId || conditions.length > 0 });
 
   const {
-    data: currentMatch,
+    data: nextMatchData,
     isLoading: isMatchLoading,
-    refetch: refetchMatch,
-  } = useGetNextBingoMatchQuery(gameId!, { skip: !gameId });
+  } = useGetNextBingoMatchQuery(instanceId!, { skip: !instanceId || isFinished });
 
   const [checkCondition] = useCheckBingoConditionMutation();
+  const [skipMatch] = useSkipBingoMatchMutation();
   const [getResults, { data: results, isLoading: isResultsLoading, error: resultsError }] =
     useGameInstanceResultsMutation();
 
+  // Fetch results when game finishes
   useEffect(() => {
-    if (isFinished && bingoGame?.game_instance_id) {
-      getResults(bingoGame?.game_instance_id);
+    if (isFinished && (gameInstanceId || instanceId)) {
+      getResults(gameInstanceId || instanceId!);
     }
-  }, [isFinished, bingoGame?.game_instance_id, getResults]);
-  // Set conditions
+  }, [isFinished, gameInstanceId, instanceId, getResults]);
+
+  // Synchronize conditions into Redux state
   useEffect(() => {
-    if (fetchedConditions?.data) {
+    if (fetchedConditions?.data && conditions.length === 0) {
       dispatch(setConditions(fetchedConditions.data));
     }
-  }, [fetchedConditions]);
+  }, [fetchedConditions, conditions.length, dispatch]);
 
-  // Set matcher
+  // Synchronize current match into Redux state
   useEffect(() => {
-    if (currentMatch) {
-      dispatch(setMatcher(currentMatch.data));
+    if (nextMatchData?.data) {
+      dispatch(setCurrentMatch(nextMatchData.data));
     }
-  }, [currentMatch]);
+  }, [nextMatchData, dispatch]);
 
-  const handleCellClick = async (pos: number): Promise<boolean | undefined> => {
-    if (!gameId || isFinished || remainingAnswers === undefined) return;
-    let res: boolean = false;
+  // Handle clicking a grid cell / submitting a guess
+  const handleCellClick = async (pos: number): Promise<boolean> => {
+    if (!instanceId || isFinished || remainingAnswers === undefined) {
+      return false;
+    }
+
+    if (remainingAnswers <= 0) {
+      dispatch(finishGame());
+      return false;
+    }
+
     try {
-      if (remainingAnswers > 0) {
+      const response = await checkCondition({
+        gameId: instanceId,
+        pos: pos,
+      }).unwrap();
 
-        const condition = await checkCondition({ gameId, pos }).unwrap();
-        dispatch(updateCondition(condition.data));
-        const f = store.getState().bingo.isFinished;
-        res = condition.data.is_marked;
-        if (!f) {
-          await refetchMatch();
-        }
-      } else {
-        dispatch(finishGame())
-      }
+      const guessResult = response.data;
+      dispatch(recordGuess(guessResult.guess));
+      dispatch(setIsFinished(guessResult.is_complete));
+      return guessResult.guess.is_correct;
     } catch (error) {
-      console.error("Condition check failed:", error);
+      console.error("Failed to submit bingo condition check:", error);
+      return false;
     }
-    return res;
   };
 
+  // Handle skipping the current match
   const handleSkipClick = async () => {
-    if (!gameId || remainingAnswers === undefined) return;
-    if (remainingAnswers > 0) {
-      await refetchMatch();
-    } else {
-      dispatch(finishGame())
-    }
+    if (!instanceId || remainingAnswers === undefined) return;
 
+    if (remainingAnswers > 0) {
+      try {
+        const res = await skipMatch(instanceId).unwrap();
+        if (res?.data) {
+          dispatch(setCurrentMatch(res.data.match));
+          dispatch(setIsFinished(res.data.is_complete));
+        }
+      } catch (error) {
+        console.error("Failed to skip match:", error);
+      }
+    } else {
+      dispatch(finishGame());
+    }
   };
 
-  if (!isActive || !bingoGame) {
+  if (!isActive || !bingoInstance) {
     return (
       <div className="flex items-center justify-center text-center p-4 border-2 border-purple-200 min-h-[20rem] rounded">
         <p className="text-xl font-[900]">Bingo</p>
@@ -108,42 +125,45 @@ export default function BingoGame({ isActive }: BingoGameProps) {
     );
   }
 
-
   return (
     <>
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-20 py-6">
         <div className="mb-8">
-          {!isFinished && !isMatchLoading && matcher?.player && (
+          {!isFinished && !isMatchLoading && currentMatch?.player && (
             <BingoSelector
-              matcher={matcher}
-              remainingAnswers={remainingAnswers || 0}
+              matcher={currentMatch}
+              remainingAnswers={remainingAnswers ?? 0}
               onSkip={handleSkipClick}
             />
           )}
         </div>
 
-        {isConditionsLoading ? (
+        {isConditionsLoading && conditions.length === 0 ? (
           <div className="text-center p-8 text-on-surface-variant font-medium">
             Loading grid...
           </div>
         ) : (
           <BingoGrid
-            width={bingoGame.size}
-            height={bingoGame.size}
+            width={bingoInstance.bingo_game?.size ?? bingoInstance.size ?? 3}
+            height={bingoInstance.bingo_game?.size ?? bingoInstance.size ?? 3}
             conditions={conditions}
+            guesses={guesses}
             onCellClick={handleCellClick}
           />
         )}
       </div>
+
       <BingoResultModal
         isOpen={isFinished}
         isLoading={isResultsLoading}
         error={resultsError}
         results={results?.data}
         onPlayAgain={() => dispatch(resetBingo())}
-        onExploreGames={() => { dispatch(resetBingo()); navigate("/dashboard") }}
+        onExploreGames={() => {
+          dispatch(resetBingo());
+          navigate("/dashboard");
+        }}
       />
     </>
-
   );
 }
