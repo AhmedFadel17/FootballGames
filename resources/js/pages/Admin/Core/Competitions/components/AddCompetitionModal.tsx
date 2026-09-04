@@ -25,7 +25,7 @@ export default function AddCompetitionModal({ isOpen, onClose, onSuccess }: AddC
     });
 
     const [createCompetition, { isLoading }] = useCreateCompetitionMutation();
-    const { data: countries } = useGetCountriesLookupQuery();
+    const { data: countries } = useGetCountriesLookupQuery({ query: '', limit: 1000 });
 
     if (!isOpen) return null;
 

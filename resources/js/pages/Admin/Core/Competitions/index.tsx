@@ -7,11 +7,12 @@ import ConfirmationDialog from "@/components/ui/Feedback/ConfirmationDialog";
 import { GenericTable } from "@/components/ui/Tables/GenericTable";
 import { ErrorScreen, LoadingScreen } from "@/components/ui/Feedback/StatusScreens";
 import { Competition } from "@/types";
-import { useDeleteCompetitionMutation, useGetCompetitionsQuery, useUpdateCompetitionMutation } from "@/store/apis";
+import { useDeleteCompetitionMutation, useGetCompetitionsQuery, useGetCountriesLookupQuery, useUpdateCompetitionMutation } from "@/store/apis";
 import { showToast } from "@/utils/toast";
 
 import AddCompetitionModal from "./components/AddCompetitionModal";
 import { getCompetitionTableColumns, getCompetitionTableActions } from "./components/CompetitionsTableConfig";
+import { FilterGroupConfig } from "@/components/ui/Grids/GenericDataGrid";
 
 export default function CompetitionsPage() {
   const [page, setPage] = useState(1);
@@ -20,13 +21,18 @@ export default function CompetitionsPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number>();
+  const [countrySearch, setCountrySearch] = useState("");
 
   const [queryState, setQueryState] = useState({
     filters: {} as Record<string, any>,
     orderBy: 'created_at' as string | undefined,
     sortOrder: 'desc' as 'asc' | 'desc' | undefined,
   });
-
+  const { data: countriesLookup, isLoading: isCountriesLoading } =
+    useGetCountriesLookupQuery({
+      query: countrySearch,
+      limit: 100,
+    });
   const { data: response, isLoading, isError, refetch } = useGetCompetitionsQuery({
     page,
     per_page: pageSize,
@@ -34,6 +40,10 @@ export default function CompetitionsPage() {
     sort_by: queryState.orderBy,
     sort_order: queryState.sortOrder,
     search: searchTerm,
+    country_id:
+      queryState.filters.country_id !== "all"
+        ? queryState.filters.country_id
+        : undefined,
   });
 
   const [deleteCompetition, { isLoading: isDeleting }] = useDeleteCompetitionMutation();
@@ -81,6 +91,25 @@ export default function CompetitionsPage() {
       setIsDeleteDialogOpen(false);
     }
   };
+
+  const filterFields: FilterGroupConfig[] = [
+    {
+      id: "country_id",
+      label: "Country",
+      type: "select",
+      searchable: true,
+      isLoading: isCountriesLoading,
+      onSearch: (searchTerm) => {
+        if (searchTerm.trim().length === 0 || searchTerm.trim().length >= 2) {
+          setCountrySearch(searchTerm.trim());
+        }
+      },
+      options: [
+        { label: "All Countries", value: "all" },
+        ...(countriesLookup?.data || []),
+      ],
+    },
+  ];
 
   if (isLoading) return <LoadingScreen message="Loading competitions..." />;
   if (isError) return <ErrorScreen title="Failed to fetch competitions" message="Please try again." />;
@@ -134,7 +163,7 @@ export default function CompetitionsPage() {
           onPageChange={setPage}
           onPageSizeChange={(size) => { setPageSize(size); setPage(1); }}
           filterOptions={{
-            fields: [],
+            fields: filterFields,
             values: queryState.filters,
             onChange: (nextFilters) => {
               setQueryState(prev => ({ ...prev, filters: nextFilters }));

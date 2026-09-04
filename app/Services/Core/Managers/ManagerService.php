@@ -18,10 +18,10 @@ class ManagerService implements IManagerService
     public function getAll(PaginationDTO $dto): LengthAwarePaginator
     {
         return $this->_paginationService
-            ->for(Manager::query()->with('country'), $dto)
-            ->allowFilters(['country_id', 'popularity'])
-            ->allowSorts(['id', 'name', 'country_id', 'popularity'])
-            ->searchable(['name'])
+            ->for(Manager::query()->with(['country', 'currentTeam']), $dto)
+            ->allowFilters(['country_id', 'popularity', 'name', 'slug', 'current_team_id', 'country_id', 'is_retired', 'api_id'])
+            ->allowSorts(['id', 'name', 'slug', 'country_id', 'popularity', 'current_team_id', 'country_id', 'is_retired', 'api_id', 'created_at'])
+            ->searchable(['name', 'slug'])
             ->paginate();
     }
 

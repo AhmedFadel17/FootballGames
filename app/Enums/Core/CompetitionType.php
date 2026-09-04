@@ -7,7 +7,8 @@ enum CompetitionType: int
     case DOMESTIC_CUP = 2;
     case CONTINENTAL = 3;
     case INTERCONTINENTAL = 4;
-
+    case PLAYOFFS = 5;
+    case YOUTH = 6;
 
     public function label(): string
     {
@@ -16,6 +17,8 @@ enum CompetitionType: int
             self::DOMESTIC_CUP => 'Domestic Cup',
             self::CONTINENTAL => 'Continental',
             self::INTERCONTINENTAL => 'Intercontinental',
+            self::PLAYOFFS => 'Playoffs',
+            self::YOUTH => 'Youth',
         };
     }
 }

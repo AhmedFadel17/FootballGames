@@ -38,7 +38,6 @@ export const getPlayerTableColumns = (): TableColumn<Player>[] => [
         key: "img_src",
         header: "Image",
         align: "left",
-        sortable: true,
         render: (player) => <img src={player.img_src} alt={player.name} className="w-10 h-10" />,
         editRender: (manager, onChange) => (
             <input
@@ -62,7 +61,23 @@ export const getPlayerTableColumns = (): TableColumn<Player>[] => [
         },
     },
     {
-        key: "birth_date",
+        key: "popularity",
+        header: "Pop.",
+        align: "left",
+        sortable: true,
+        render: (player) => <span className="font-medium text-white/80">{player.popularity}</span>,
+        editRender: (player, onChange) => (
+            <input
+                type="number"
+                value={player.popularity || ''}
+                onChange={(e) => onChange({ popularity: Number(e.target.value) })}
+                placeholder="Weight"
+                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/40 rounded px-2 py-1.5 text-xs text-white placeholder-white/20 focus:outline-none transition-colors"
+            />
+        ),
+    },
+    {
+        key: "date_of_birth",
         header: "Birth Date",
         align: "left",
         sortable: true,
@@ -149,22 +164,6 @@ export const getPlayerTableColumns = (): TableColumn<Player>[] => [
         ),
     },
     {
-        key: "popularity",
-        header: "Pop.",
-        align: "left",
-        sortable: true,
-        render: (player) => <span className="font-medium text-white/80">{player.popularity}</span>,
-        editRender: (player, onChange) => (
-            <input
-                type="number"
-                value={player.popularity || ''}
-                onChange={(e) => onChange({ popularity: Number(e.target.value) })}
-                placeholder="Weight"
-                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/40 rounded px-2 py-1.5 text-xs text-white placeholder-white/20 focus:outline-none transition-colors"
-            />
-        ),
-    },
-    {
         key: "position",
         header: "Position",
         align: "left",
@@ -246,7 +245,7 @@ export const getPlayerTableColumns = (): TableColumn<Player>[] => [
         key: "is_retired",
         header: "Retired",
         align: "left",
-        render: (player) => player.is_retired ? "Yes" : "No",
+        render: (player) => player.is_retired ? <span className="font-medium text-green-500">Yes</span> : <span className="font-medium text-red-500">No</span>,
         editRender: (player, onChange) => (
             <input
                 type="checkbox"

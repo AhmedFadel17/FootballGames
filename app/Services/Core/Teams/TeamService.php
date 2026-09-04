@@ -25,17 +25,18 @@ class TeamService implements ITeamService
             ->paginate();
     }
 
-    public function getOptions(string $query, int $limit = 10): Collection
+    public function getOptions(?string $query = null, ?int $limit = 10): Collection
     {
+
         $term = trim($query);
 
-        if (strlen($term) < 2) {
-            return collect();
-        }
+        $searchable = strlen($term) >= 2;
 
         return Team::query()
             ->select(['id', 'name', 'img_src', 'popularity'])
-            ->where('name', 'ILIKE', "%{$term}%")
+            ->when($searchable, function ($query) use ($term) {
+                $query->where('name', 'ILIKE', "%{$term}%");
+            })
             ->orderBy('popularity', 'desc')
             ->limit($limit)
             ->get();

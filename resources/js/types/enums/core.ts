@@ -3,6 +3,8 @@ export enum CompetitionType {
     DomesticCup = 2,
     Continental = 3,
     Intercontinental = 4,
+    Playoffs = 5,
+    Youth = 6,
 }
 
 export enum PlayerPosition {

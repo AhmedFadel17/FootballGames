@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useCreateManagerMutation, useGetCountriesLookupQuery } from "@/store/apis";
+import { useCreateManagerMutation, useGetCountriesLookupQuery, useGetTeamsLookupQuery } from "@/store/apis";
 import { showToast } from "@/utils/toast";
 
 interface AddManagerModalProps {
@@ -15,9 +15,12 @@ export default function AddManagerModal({ isOpen, onClose, onSuccess }: AddManag
         img_src: '',
         slug: '',
         api_id: 0,
-        country_id: 0
+        country_id: 0,
+        current_team_id: 0,
+        is_retired: false
     });
-    const { data: countries } = useGetCountriesLookupQuery();
+    const { data: countries } = useGetCountriesLookupQuery({ query: "", limit: 100 });
+    const { data: teams } = useGetTeamsLookupQuery({ query: "", limit: 100 });
 
     const [createManager, { isLoading }] = useCreateManagerMutation();
 
@@ -38,10 +41,12 @@ export default function AddManagerModal({ isOpen, onClose, onSuccess }: AddManag
                 slug: formData.slug,
                 api_id: Number(formData.api_id),
                 country_id: Number(formData.country_id),
+                current_team_id: Number(formData.current_team_id),
+                is_retired: formData.is_retired
             }).unwrap();
 
             showToast.success("Manager Created", "New manager has been added successfully.");
-            setFormData({ name: "", popularity: 0, img_src: '', slug: '', api_id: 0, country_id: 0 });
+            setFormData({ name: "", popularity: 0, img_src: '', slug: '', api_id: 0, country_id: 0, current_team_id: 0, is_retired: false });
             onSuccess?.();
             onClose();
         } catch (error: any) {
@@ -122,20 +127,49 @@ export default function AddManagerModal({ isOpen, onClose, onSuccess }: AddManag
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-xs font-medium text-white/70 mb-1.5">Country</label>
-                        <select
-                            value={formData.country_id}
-                            onChange={(e) => setFormData({ ...formData, country_id: Number(e.target.value) })}
-                            className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-colors [&>option]:bg-gray-900 [&>option]:text-white"
-                        >
-                            <option value="" selected>Select Country</option>
-                            {countries?.data.map((country) => (
-                                <option key={country.value} value={country.value}>
-                                    {country.label}
-                                </option>
-                            ))}
-                        </select>
+                    <div className="grid grid-cols-2 gap-3">
+                        <div>
+                            <label className="block text-xs font-medium text-white/70 mb-1.5">Country</label>
+                            <select
+                                value={formData.country_id}
+                                onChange={(e) => setFormData({ ...formData, country_id: Number(e.target.value) })}
+                                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-colors [&>option]:bg-gray-900 [&>option]:text-white"
+                            >
+                                <option value="" selected>Select Country</option>
+                                {countries?.data.map((country) => (
+                                    <option key={country.value} value={country.value}>
+                                        {country.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-white/70 mb-1.5">Country</label>
+                            <select
+                                value={formData.current_team_id}
+                                onChange={(e) => setFormData({ ...formData, current_team_id: Number(e.target.value) })}
+                                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-colors [&>option]:bg-gray-900 [&>option]:text-white"
+                            >
+                                <option value="" selected>Select Current Team</option>
+                                {teams?.data.map((team) => (
+                                    <option key={team.value} value={team.value}>
+                                        {team.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2 mt-2">
+                        <input
+                            type="checkbox"
+                            id="is_retired"
+                            checked={formData.is_retired}
+                            onChange={(e) => setFormData({ ...formData, is_retired: e.target.checked })}
+                            className="w-4 h-4 text-cyan-500 bg-white/5 border-white/10 rounded focus:ring-cyan-500"
+                        />
+                        <label htmlFor="is_retired" className="text-sm font-medium text-white/70">
+                            Is Retired
+                        </label>
                     </div>
 
                     <div className="flex justify-end gap-3 pt-4 border-t border-white/10">

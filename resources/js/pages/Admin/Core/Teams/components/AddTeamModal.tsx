@@ -109,20 +109,38 @@ export default function AddTeamModal({ isOpen, onClose, onSuccess }: AddTeamModa
                             />
                         </div>
                     </div>
-                    <div>
-                        <label className="block text-xs font-medium text-white/70 mb-1.5">Country</label>
-                        <select
-                            value={formData.country_id}
-                            onChange={(e) => setFormData({ ...formData, country_id: Number(e.target.value) })}
-                            className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-colors [&>option]:bg-gray-900 [&>option]:text-white"
-                        >
-                            <option value="" selected>Select Country</option>
-                            {countries?.data.map((country) => (
-                                <option key={country.value} value={country.value}>
-                                    {country.label}
-                                </option>
-                            ))}
-                        </select>
+                    <div className="grid grid-cols-2 gap-3">
+
+                        <div>
+                            <label className="block text-xs font-medium text-white/70 mb-1.5">Country</label>
+                            <select
+                                value={formData.country_id}
+                                onChange={(e) => setFormData({ ...formData, country_id: Number(e.target.value) })}
+                                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-colors [&>option]:bg-gray-900 [&>option]:text-white"
+                            >
+                                <option value="" selected>Select Country</option>
+                                {countries?.data.map((country) => (
+                                    <option key={country.value} value={country.value}>
+                                        {country.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-white/70 mb-1.5">Country</label>
+                            <select
+                                value={formData.country_id}
+                                onChange={(e) => setFormData({ ...formData, country_id: Number(e.target.value) })}
+                                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-colors [&>option]:bg-gray-900 [&>option]:text-white"
+                            >
+                                <option value="" selected>Select Competition</option>
+                                {competitions?.data.map((competition) => (
+                                    <option key={competition.value} value={competition.value}>
+                                        {competition.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
                     <div>
                         <label className="block text-xs font-medium text-white/70 mb-1.5">Image Src</label>

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useCreatePlayerMutation, useGetCountriesLookupQuery } from "@/store/apis";
+import { useCreatePlayerMutation, useGetCountriesLookupQuery, useGetTeamsLookupQuery } from "@/store/apis";
 import { showToast } from "@/utils/toast";
-import { PlayerPosition, PlayerPreferredFoot } from "@/types";
+import { PlayerPosition, PlayerPreferredFoot, PlayerSubPosition } from "@/types";
 
 interface AddPlayerModalProps {
     isOpen: boolean;
@@ -14,6 +14,7 @@ export default function AddPlayerModal({ isOpen, onClose, onSuccess }: AddPlayer
         name: "",
         fullname: "",
         position: 0,
+        sub_position: 0,
         date_of_birth: "",
         height_cm: 0,
         weight_kg: 0,
@@ -25,9 +26,12 @@ export default function AddPlayerModal({ isOpen, onClose, onSuccess }: AddPlayer
         api_id: 0,
         img_src: "",
         country_id: 0,
+        current_team_id: 0,
+        is_retired: false,
     });
 
-    const { data: countries } = useGetCountriesLookupQuery();
+    const { data: countries } = useGetCountriesLookupQuery({ query: "", limit: 100 });
+    const { data: teams } = useGetTeamsLookupQuery({ query: "", limit: 100 });
 
     const [createPlayer, { isLoading }] = useCreatePlayerMutation();
 
@@ -45,6 +49,7 @@ export default function AddPlayerModal({ isOpen, onClose, onSuccess }: AddPlayer
                 name: formData.name,
                 fullname: formData.fullname,
                 position: Number(formData.position),
+                sub_position: Number(formData.sub_position),
                 date_of_birth: formData.date_of_birth,
                 height_cm: Number(formData.height_cm),
                 weight_kg: Number(formData.weight_kg),
@@ -56,10 +61,12 @@ export default function AddPlayerModal({ isOpen, onClose, onSuccess }: AddPlayer
                 api_id: Number(formData.api_id),
                 img_src: formData.img_src,
                 country_id: Number(formData.country_id),
+                current_team_id: Number(formData.current_team_id),
+                is_retired: formData.is_retired,
             }).unwrap();
 
             showToast.success("Player Created", "New player has been added successfully.");
-            setFormData({ name: "", fullname: "", position: 0, date_of_birth: "", height_cm: 0, weight_kg: 0, popularity: 0, rating: 0, market_value: 0, preferred_foot: 0, slug: "", api_id: 0, img_src: "", country_id: 0 });
+            setFormData({ name: "", fullname: "", position: 0, sub_position: 0, date_of_birth: "", height_cm: 0, weight_kg: 0, popularity: 0, rating: 0, market_value: 0, preferred_foot: 0, slug: "", api_id: 0, img_src: "", country_id: 0, current_team_id: 0, is_retired: false });
             onSuccess?.();
             onClose();
         } catch (error: any) {
@@ -81,21 +88,20 @@ export default function AddPlayerModal({ isOpen, onClose, onSuccess }: AddPlayer
                 </div>
 
                 <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-                    <div>
-                        <label className="block text-xs font-medium text-white/70 mb-1.5">
-                            Player Name <span className="text-red-400">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            required
-                            placeholder="e.g. Player Name"
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/50 rounded-lg px-3 py-2 text-sm text-white placeholder-white/20 focus:outline-none transition-colors"
-                        />
-                    </div>
-
                     <div className="grid grid-cols-2 gap-3">
+                        <div>
+                            <label className="block text-xs font-medium text-white/70 mb-1.5">
+                                Player Name <span className="text-red-400">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                required
+                                placeholder="e.g. Player Name"
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/50 rounded-lg px-3 py-2 text-sm text-white placeholder-white/20 focus:outline-none transition-colors"
+                            />
+                        </div>
                         <div>
                             <label className="block text-xs font-medium text-white/70 mb-1.5">Full Name</label>
                             <input
@@ -106,6 +112,11 @@ export default function AddPlayerModal({ isOpen, onClose, onSuccess }: AddPlayer
                                 className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-colors"
                             />
                         </div>
+
+                    </div>
+
+
+                    <div className="grid grid-cols-2 gap-3">
                         <div>
                             <label className="block text-xs font-medium text-white/70 mb-1.5">
                                 Position <span className="text-red-400">*</span>
@@ -134,6 +145,35 @@ export default function AddPlayerModal({ isOpen, onClose, onSuccess }: AddPlayer
                                     ))}
                             </select>
                         </div>
+                        <div>
+                            <label className="block text-xs font-medium text-white/70 mb-1.5">
+                                Sub Position <span className="text-red-400">*</span>
+                            </label>
+                            <select
+                                required
+                                value={formData.sub_position ?? ''}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        sub_position: Number(e.target.value),
+                                    })
+                                }
+                                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-colors [&>option]:bg-gray-900 [&>option]:text-white"
+                            >
+                                <option value="" disabled>
+                                    Select Sub Position
+                                </option>
+
+                                {Object.entries(PlayerSubPosition)
+                                    .filter(([key]) => isNaN(Number(key)))
+                                    .map(([key, value]) => (
+                                        <option key={value} value={value}>
+                                            {key}
+                                        </option>
+                                    ))}
+                            </select>
+                        </div>
+
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                         <div>
@@ -279,6 +319,33 @@ export default function AddPlayerModal({ isOpen, onClose, onSuccess }: AddPlayer
                                 ))}
                             </select>
                         </div>
+                        <div>
+                            <label className="block text-xs font-medium text-white/70 mb-1.5">Country</label>
+                            <select
+                                value={formData.current_team_id}
+                                onChange={(e) => setFormData({ ...formData, current_team_id: Number(e.target.value) })}
+                                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-colors [&>option]:bg-gray-900 [&>option]:text-white"
+                            >
+                                <option value="" selected>Select Current Team</option>
+                                {teams?.data.map((team) => (
+                                    <option key={team.value} value={team.value}>
+                                        {team.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2 mt-2">
+                        <input
+                            type="checkbox"
+                            id="is_retired"
+                            checked={formData.is_retired}
+                            onChange={(e) => setFormData({ ...formData, is_retired: e.target.checked })}
+                            className="w-4 h-4 text-cyan-500 bg-white/5 border-white/10 rounded focus:ring-cyan-500"
+                        />
+                        <label htmlFor="is_retired" className="text-sm font-medium text-white/70">
+                            Is Retired
+                        </label>
                     </div>
 
 

@@ -7,6 +7,7 @@ export interface CreatePlayerRequest {
     name: string;
     fullname: string;
     position: number;
+    sub_position: number;
     date_of_birth: string;
     height_cm: number;
     weight_kg: number;
@@ -26,6 +27,7 @@ export interface UpdatePlayerRequest extends Partial<CreatePlayerRequest> { }
 
 export interface PlayerFilter extends PaginationFilter {
     country_id?: number;
+    current_team_id?: number;
     searchQuery?: string;
 }
 

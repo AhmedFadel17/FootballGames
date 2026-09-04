@@ -7,12 +7,13 @@ import ConfirmationDialog from "@/components/ui/Feedback/ConfirmationDialog";
 import { GenericTable } from "@/components/ui/Tables/GenericTable";
 import { ErrorScreen, LoadingScreen } from "@/components/ui/Feedback/StatusScreens";
 import { Player, Season } from "@/types";
-import { useDeletePlayerMutation, useGetPlayersQuery, useUpdatePlayerMutation } from "@/store/apis";
+import { useDeletePlayerMutation, useGetCountriesLookupQuery, useGetPlayersQuery, useGetTeamsLookupQuery, useUpdatePlayerMutation } from "@/store/apis";
 import { showToast } from "@/utils/toast";
 import AddPlayerModal from "./components/AddPlayerModal";
 import { getPlayerTableColumns, getPlayerTableActions } from "./components/PlayersTableConfig";
 
 import { useNavigate } from "react-router-dom";
+import { FilterGroupConfig } from "@/components/ui/Grids/GenericDataGrid";
 
 export default function PlayersPage() {
   const navigate = useNavigate();
@@ -28,6 +29,18 @@ export default function PlayersPage() {
     orderBy: 'created_at' as string | undefined,
     sortOrder: 'desc' as 'asc' | 'desc' | undefined,
   });
+  const [teamsSearch, setTeamsSearch] = useState("");
+  const [countrySearch, setCountrySearch] = useState("");
+  const { data: teamssLookup, isLoading: isTeamsLoading } =
+    useGetTeamsLookupQuery({
+      query: teamsSearch,
+      limit: 100,
+    });
+  const { data: countriesLookup, isLoading: isCountriesLoading } =
+    useGetCountriesLookupQuery({
+      query: countrySearch,
+      limit: 100,
+    });
 
   const { data: response, isLoading, isError, refetch } = useGetPlayersQuery({
     page,
@@ -36,6 +49,14 @@ export default function PlayersPage() {
     sort_by: queryState.orderBy,
     sort_order: queryState.sortOrder,
     search: searchTerm,
+    current_team_id:
+      queryState.filters.current_team_id !== "all"
+        ? queryState.filters.current_team_id
+        : undefined,
+    country_id:
+      queryState.filters.country_id !== "all"
+        ? queryState.filters.country_id
+        : undefined,
   });
 
   const [deletePlayer, { isLoading: isDeleting }] = useDeletePlayerMutation();
@@ -83,6 +104,41 @@ export default function PlayersPage() {
       setIsDeleteDialogOpen(false);
     }
   };
+
+  const filterFields: FilterGroupConfig[] = [
+    {
+      id: "current_team_id",
+      label: "Team",
+      type: "select",
+      searchable: true,
+      isLoading: isTeamsLoading,
+      onSearch: (searchTerm) => {
+        if (searchTerm.trim().length === 0 || searchTerm.trim().length >= 2) {
+          setTeamsSearch(searchTerm.trim());
+        }
+      },
+      options: [
+        { label: "All Teams", value: "all" },
+        ...(teamssLookup?.data || []),
+      ],
+    },
+    {
+      id: "country_id",
+      label: "Country",
+      type: "select",
+      searchable: true,
+      isLoading: isCountriesLoading,
+      onSearch: (searchTerm) => {
+        if (searchTerm.trim().length === 0 || searchTerm.trim().length >= 2) {
+          setCountrySearch(searchTerm.trim());
+        }
+      },
+      options: [
+        { label: "All Countries", value: "all" },
+        ...(countriesLookup?.data || []),
+      ],
+    },
+  ];
 
   if (isLoading) return <LoadingScreen message="Loading players..." />;
   if (isError) return <ErrorScreen title="Failed to fetch players" message="Please try again." />;
@@ -139,7 +195,7 @@ export default function PlayersPage() {
           onPageChange={setPage}
           onPageSizeChange={(size) => { setPageSize(size); setPage(1); }}
           filterOptions={{
-            fields: [],
+            fields: filterFields,
             values: queryState.filters,
             onChange: (nextFilters) => {
               setQueryState(prev => ({ ...prev, filters: nextFilters }));

@@ -3,6 +3,7 @@ namespace App\Enums\Core;
 
 enum PlayerPosition: int
 {
+    case UNKNOWN = 0;
     case GOALKEEPER = 1;
     case DEFENDER = 2;
     case MIDFIELDER = 3;
@@ -12,6 +13,7 @@ enum PlayerPosition: int
     public function label(): string
     {
         return match ($this) {
+            self::UNKNOWN => 'Unknown',
             self::GOALKEEPER => 'Goalkeeper',
             self::DEFENDER => 'Defender',
             self::MIDFIELDER => 'Midfielder',
@@ -22,6 +24,7 @@ enum PlayerPosition: int
     public function code(): string
     {
         return match ($this) {
+            self::UNKNOWN => 'UN',
             self::GOALKEEPER => 'GK',
             self::DEFENDER => 'DF',
             self::MIDFIELDER => 'MF',

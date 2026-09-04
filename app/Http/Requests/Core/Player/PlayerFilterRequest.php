@@ -17,7 +17,10 @@ class PlayerFilterRequest extends BaseFilterRequest
             'fullname',
             'height_cm',
             'weight_kg',
+            'market_value',
+            'rating',
             'country_id',
+            'current_team_id',
             'popularity',
             'created_at'
         ];
@@ -28,12 +31,15 @@ class PlayerFilterRequest extends BaseFilterRequest
         return [
             'name' => ['nullable', 'string', 'max:255'],
             'fullname' => ['nullable', 'string', 'max:255'],
-            'position' => ['nullable', 'string', 'max:50'],
-            'sub_position' => ['nullable', 'string', 'max:50'],
+            'position' => ['nullable', 'integer', 'max:50'],
+            'sub_position' => ['nullable', 'integer', 'max:50'],
             'country_id' => ['nullable', 'exists:countries,id'],
+            'current_team_id' => ['nullable', 'exists:teams,id'],
             'date_of_birth' => ['nullable', 'date'],
             'height_cm' => ['nullable', 'integer', 'min:0', 'max:250'],
             'weight_kg' => ['nullable', 'integer', 'min:0', 'max:250'],
+            'market_value' => ['nullable', 'integer', 'min:0'],
+            'rating' => ['nullable', 'integer', 'min:0', 'max:100'],
             'popularity' => ['nullable', 'integer', 'min:0', 'max:100'],
         ];
     }

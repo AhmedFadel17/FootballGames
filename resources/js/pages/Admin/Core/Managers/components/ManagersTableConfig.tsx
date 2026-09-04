@@ -19,6 +19,32 @@ export const getManagerTableColumns = (): TableColumn<Manager>[] => [
         ),
     },
     {
+        key: "img_src",
+        header: "Image",
+        align: "left",
+        render: (manager) => <img src={manager.img_src} alt={manager.name} className="w-10 h-10" />,
+        editRender: (manager, onChange) => (
+            <input
+                type="text"
+                value={manager.img_src || ''}
+                onChange={(e) => onChange({ img_src: e.target.value })}
+                placeholder="Logo"
+                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/40 rounded px-2 py-1.5 text-xs text-white placeholder-white/20 focus:outline-none transition-colors"
+            />
+        ),
+    },
+    {
+        key: "current_team_id",
+        header: "Team",
+        align: "left",
+        render: (manager) => {
+            if (!manager?.current_team) {
+                return <span className="font-medium text-white/80">N/A</span>;
+            }
+            return <img src={manager.current_team.img_src} alt={manager.current_team.name} className="w-10" />;
+        },
+    },
+    {
         key: "popularity",
         header: "Popularity",
         align: "left",
@@ -57,22 +83,7 @@ export const getManagerTableColumns = (): TableColumn<Manager>[] => [
         sortable: true,
         render: (manager) => <img src={manager.country?.img_src} alt={manager.country?.name} className="w-9 h-6" />,
     },
-    {
-        key: "img_src",
-        header: "Image",
-        align: "left",
-        sortable: true,
-        render: (manager) => <img src={manager.img_src} alt={manager.name} className="w-10 h-10" />,
-        editRender: (manager, onChange) => (
-            <input
-                type="text"
-                value={manager.img_src || ''}
-                onChange={(e) => onChange({ img_src: e.target.value })}
-                placeholder="Logo"
-                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/40 rounded px-2 py-1.5 text-xs text-white placeholder-white/20 focus:outline-none transition-colors"
-            />
-        ),
-    },
+
     {
         key: "slug",
         header: "Slug",
@@ -86,6 +97,20 @@ export const getManagerTableColumns = (): TableColumn<Manager>[] => [
                 onChange={(e) => onChange({ slug: e.target.value })}
                 placeholder="Slug"
                 className="w-full bg-white/5 border border-white/10 focus:border-cyan-500/40 rounded px-2 py-1.5 text-xs text-white placeholder-white/20 focus:outline-none transition-colors"
+            />
+        ),
+    },
+    {
+        key: "is_retired",
+        header: "Retired",
+        align: "left",
+        render: (player) => player.is_retired ? <span className="font-medium text-green-500">Yes</span> : <span className="font-medium text-red-500">No</span>,
+        editRender: (player, onChange) => (
+            <input
+                type="checkbox"
+                checked={player.is_retired || false}
+                onChange={(e) => onChange({ is_retired: e.target.checked })}
+                className="w-4 h-4 bg-white/5 border border-white/10 focus:border-cyan-500/40 rounded px-2 py-1.5 text-xs text-white placeholder-white/20 focus:outline-none transition-colors"
             />
         ),
     },

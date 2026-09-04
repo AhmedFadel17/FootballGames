@@ -23,8 +23,8 @@ class PlayerService implements IPlayerService
     {
         return $this->_paginationService
             ->for(Player::query()->with(['country', 'currentTeam']), $dto)
-            ->allowFilters(['country_id', 'popularity', 'date_of_birth', 'position', 'name', 'fullname', 'height_cm', 'weight_kg', 'market_value', 'preferred_foot', 'rating'])
-            ->allowSorts(['id', 'name', 'country_id', 'popularity', 'date_of_birth', 'position', 'name', 'fullname', 'height_cm', 'weight_kg', 'market_value', 'preferred_foot', 'rating'])
+            ->allowFilters(['country_id', 'current_team_id', 'popularity', 'date_of_birth', 'position', 'name', 'fullname', 'height_cm', 'weight_kg', 'market_value', 'preferred_foot', 'rating'])
+            ->allowSorts(['id', 'name', 'country_id', 'current_team_id', 'popularity', 'date_of_birth', 'position', 'name', 'fullname', 'height_cm', 'weight_kg', 'market_value', 'preferred_foot', 'rating'])
             ->searchable(['name', 'fullname'])
             ->paginate();
     }
