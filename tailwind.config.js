@@ -18,60 +18,70 @@ export default {
     theme: {
         extend: {
             colors: {
-                "on-error": "#690005",
-                "on-tertiary": "#263143",
-                "background": "#0b1326",
-                "on-surface": "#dbe2fd",
-                "error": "#ffb4ab",
-                "surface-variant": "#2d3449",
-                "on-secondary": "#68000a",
-                "inverse-primary": "#005ac2",
-                "surface-dim": "#0b1326",
-                "on-secondary-container": "#ffaea8",
-                "on-tertiary-container": "#1f2a3c",
-                "primary-fixed-dim": "#adc6ff",
-                "surface-container-lowest": "#060d20",
-                "on-tertiary-fixed-variant": "#3c475a",
-                "tertiary-container": "#8691a7",
-                "primary-fixed": "#d8e2ff",
-                "tertiary": "#bcc7de",
-                "surface-container-high": "#222a3e",
-                "surface": "#0b1326",
-                "tertiary-fixed-dim": "#bcc7de",
-                "on-error-container": "#ffdad6",
-                "on-surface-variant": "#c2c6d6",
-                "secondary": "#ffb3ad",
-                "inverse-on-surface": "#283044",
-                "on-primary-container": "#00285d",
-                "on-secondary-fixed": "#410004",
-                "on-primary-fixed-variant": "#004395",
-                "on-tertiary-fixed": "#111c2d",
-                "surface-container-low": "#131b2e",
-                "secondary-fixed-dim": "#ffb3ad",
-                "surface-container": "#171f33",
-                "on-background": "#dbe2fd",
-                "secondary-fixed": "#ffdad7",
-                "primary": "#adc6ff",
-                "primary-container": "#4d8eff",
-                "outline-variant": "#424754",
-                "on-primary-fixed": "#001a42",
-                "surface-tint": "#adc6ff",
-                "surface-bright": "#31394e",
-                "tertiary-fixed": "#d8e3fb",
-                "secondary-container": "#a40217",
-                "on-secondary-fixed-variant": "#930013",
-                "surface-container-highest": "#2d3449",
-                "outline": "#8c909f",
-                "error-container": "#93000a",
-                "inverse-surface": "#dbe2fd",
-                "on-primary": "#002e6a",
+                // --- Material 3 Core Tokens (Derived from Logo) ---
+                "primary": "#FF7700",                     // Bright vibrant orange
+                "on-primary": "#3B1000",                  // Dark contrast text on primary
+                "primary-container": "#FF5500",           // Vivid fiery orange
+                "on-primary-container": "#FFEAE0",        // Light contrast text on primary container
+                "primary-fixed": "#FFD700",               // Gold/yellow highlight from logo
+                "primary-fixed-dim": "#FFCC00",           // Slightly muted yellow highlight
+                "on-primary-fixed": "#332B00",            // Text on primary fixed
+                "on-primary-fixed-variant": "#806B00",    // Muted text on primary fixed
 
-                // Legacy fallback tokens
+                "secondary": "#E60023",                   // Crimson/Red border ring from logo
+                "on-secondary": "#FFFFFF",                 // Text on secondary
+                "secondary-container": "#900014",         // Deep crimson container
+                "on-secondary-container": "#FFDADA",      // Light text on secondary container
+                "secondary-fixed": "#FFDADA",             // Fixed light red tint
+                "secondary-fixed-dim": "#FFB4B4",         // Muted red tint
+                "on-secondary-fixed": "#410007",          // Dark text on secondary fixed
+                "on-secondary-fixed-variant": "#8B0011",  // Variant text on secondary fixed
+
+                "tertiary": "#FFD700",                    // Energetic yellow text fill from logo
+                "on-tertiary": "#3A2E00",                 // Contrast text on tertiary
+                "tertiary-container": "#594800",          // Deep dark yellow/amber container
+                "on-tertiary-container": "#FFEBA3",       // Light text on tertiary container
+                "tertiary-fixed": "#FFF0B3",              // Soft yellow tint
+                "tertiary-fixed-dim": "#FFE066",          // Fixed dim yellow
+                "on-tertiary-fixed": "#241D00",           // Text on tertiary fixed
+                "on-tertiary-fixed-variant": "#594800",   // Variant text on tertiary fixed
+
+                // --- Backgrounds & Surfaces (Preserved Deep Navy Tone) ---
+                "background": "#0b1326",
+                "on-background": "#F5F5F7",
+                "surface": "#0b1326",
+                "on-surface": "#F5F5F7",
+                "surface-dim": "#0b1326",
+                "surface-bright": "#31394e",
+                "surface-tint": "#FF7700",
+                "surface-variant": "#2d3449",
+                "on-surface-variant": "#c2c6d6",
+                "surface-container-lowest": "#060d20",
+                "surface-container-low": "#131b2e",
+                "surface-container": "#171f33",
+                "surface-container-high": "#222a3e",
+                "surface-container-highest": "#2d3449",
+                "inverse-surface": "#F5F5F7",
+                "inverse-on-surface": "#171f33",
+                "inverse-primary": "#FF5500",
+
+                // --- Outlines & Borders ---
+                "outline": "#8c909f",
+                "outline-variant": "#424754",
+
+                // --- Feedback / Error States ---
+                "error": "#ffb4ab",
+                "on-error": "#690005",
+                "error-container": "#93000a",
+                "on-error-container": "#ffdad6",
+
+                // --- Legacy Fallback Tokens (Updated to match logo accents) ---
                 "pitch-green": "#CCFF00",
                 "accent-cyan": "#00F2FF",
-                "accent-pink": "#FF007F",
+                "accent-pink": "#E60023",                 // Updated to logo crimson red
                 "accent-purple": "#8A2BE2",
-                "accent-orange": "#FF5500",
+                "accent-orange": "#FF5500",               // Updated to logo fiery orange
+                "accent-yellow": "#FFD700",               // Added logo vivid yellow
                 "dashboard-bg": "#0b1326",
                 "card-bg": "rgba(30, 41, 59, 0.6)",
             },

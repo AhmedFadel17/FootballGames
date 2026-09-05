@@ -127,7 +127,6 @@ export default function CosmeticsPage() {
           items={cosmetics}
           columns={getCosmeticTableColumns()}
           actions={getCosmeticTableActions(
-            (cosmetic) => navigate(`/dashboard/admin/cosmetics/${cosmetic.id}`),
             (cosmetic) => {
               setSelectedId(cosmetic.id);
               setIsDeleteDialogOpen(true);

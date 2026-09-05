@@ -4,6 +4,7 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import Button from '@/components/ui/Buttons/Button'
 import { useAuth } from 'react-oidc-context'
 import { showToast } from "@/utils/toast"
+import { NavbarUserMenu } from '../Shared/NavbarUserMenu'
 
 export default function TopNavBar() {
   const auth = useAuth();
@@ -12,6 +13,7 @@ export default function TopNavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileGamesOpen, setIsMobileGamesOpen] = useState(false);
+  const appName = import.meta.env.VITE_APP_NAME;
 
   const handleDashboard = () => {
     const role = auth.user?.profile?.role as string | undefined;
@@ -49,8 +51,8 @@ export default function TopNavBar() {
     <header className="fixed top-0 left-0 w-full flex justify-between items-center px-4 md:px-8 h-20 bg-surface/80 backdrop-blur-xl border-b border-white/10 shadow-[0_0_15px_rgba(77,142,255,0.1)] z-50">
       {/* Logo Section */}
       <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
-        <span className="material-symbols-outlined text-primary text-3xl">sports_soccer</span>
-        <span className="font-headline font-black italic tracking-tighter text-xl md:text-2xl text-primary">FOOTBALL ARENA</span>
+        <img src="/images/logo/fotfun.png" alt="Logo" className="rounded-xl w-10 h-10 object-contain" />
+        <span className="font-headline font-black italic tracking-tighter text-xl md:text-2xl text-primary uppercase">{appName}</span>
       </div>
 
       {/* Desktop Navigation Links */}
@@ -134,14 +136,7 @@ export default function TopNavBar() {
       {/* Desktop Right Side */}
       <div className="hidden lg:flex items-center gap-4">
         {auth.isAuthenticated ? (
-          <>
-            <Button variant="primary" onClick={handleDashboard}>
-              Dashboard
-            </Button>
-            <Button variant="outline" onClick={handleLogout}>
-              Logout
-            </Button>
-          </>
+          <NavbarUserMenu user={auth.user?.profile as any} onLogout={handleLogout} />
         ) : (
           <>
             <button
@@ -238,7 +233,7 @@ export default function TopNavBar() {
           <div className="flex flex-col gap-3">
             {auth.isAuthenticated ? (
               <>
-                <Button variant="primary" className="w-full" onClick={() => { handleDashboard(); setIsOpen(false); }}>
+                <Button variant="outline" className="w-full" onClick={() => { handleDashboard(); setIsOpen(false); }}>
                   Dashboard
                 </Button>
                 <Button variant="outline" className="w-full" onClick={() => { handleLogout(); setIsOpen(false); }}>

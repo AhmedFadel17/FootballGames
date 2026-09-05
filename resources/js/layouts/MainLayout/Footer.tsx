@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 
 export default function Footer() {
+  const appName = import.meta.env.VITE_APP_NAME;
+
   return (
     <footer className="bg-surface-container-lowest border-t border-white/10 pt-16 pb-24 md:pb-12 relative overflow-hidden md:pl-20">
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-primary/20 blur-[100px] pointer-events-none"></div>
@@ -19,10 +21,10 @@ export default function Footer() {
         </Link>
         <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-on-surface-variant/60 font-label-sm text-label-sm">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-lg text-primary">sports_soccer</span>
-            <span className="font-bold italic text-white/70 tracking-wider">FOOTBALL ARENA</span>
+            <img src="/images/logo/fotfun.png" alt="Logo" className="rounded-xl w-10 h-10 object-contain" />
+            <span className="font-bold italic text-white/70 tracking-wider">{appName}</span>
           </div>
-          <div>© {new Date().getFullYear()} Football Arena. All rights reserved.</div>
+          <div>© {new Date().getFullYear()} {appName}. All rights reserved.</div>
           <div className="flex gap-6">
             <Link className="hover:text-primary transition-colors" to="/terms">Terms</Link>
             <Link className="hover:text-primary transition-colors" to="/privacy">Privacy</Link>

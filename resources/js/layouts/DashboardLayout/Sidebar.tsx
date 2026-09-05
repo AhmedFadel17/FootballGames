@@ -32,6 +32,7 @@ export default function Sidebar({ isCollapsed, isAdmin }: SidebarProps) {
     const [isHovered, setIsHovered] = useState(false);
     const { pathname } = useLocation();
     const navigate = useNavigate();
+    const appName = import.meta.env.VITE_APP_NAME;
 
     // Sidebar expands when not collapsed OR when mouse hovers over it
     const isExpanded = !isCollapsed || isHovered;
@@ -236,13 +237,13 @@ export default function Sidebar({ isCollapsed, isAdmin }: SidebarProps) {
                         }`}
                     onClick={() => navigate('/')}
                 >
-                    <span className="material-symbols-outlined text-primary text-3xl">sports_soccer</span>
+                    <img src="/images/logo/fotfun.png" alt="Logo" className="rounded-xl w-10 h-10 object-contain" />
 
                     <div
                         className={`flex font-headline gap-x-2 font-bold text-xl transition-all duration-300 overflow-hidden ${!isExpanded ? 'w-0 opacity-0 hidden' : 'w-auto opacity-100'
                             }`}
                     >
-                        <span className="font-headline font-black italic tracking-tighter text-xl md:text-2xl text-primary">FOOTBALL ARENA</span>
+                        <span className="font-headline font-black italic tracking-tighter text-xl md:text-2xl pr-1 text-primary uppercase">{appName}</span>
 
                     </div>
                 </div>

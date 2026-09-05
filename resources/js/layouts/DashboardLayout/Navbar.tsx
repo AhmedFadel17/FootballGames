@@ -26,6 +26,7 @@ export default function DashboardNavbar({
     const { pathname } = useLocation();
     const { data: userProgressData } = useGetMyProgressQuery();
     const userProgress = userProgressData?.data;
+    const appName = import.meta.env.VITE_APP_NAME;
 
     const [isMobile, setIsMobile] = useState(false);
     const routes = isAdmin ? SidebarAdminRoutes : SidebarUserRoutes;
@@ -75,8 +76,8 @@ export default function DashboardNavbar({
                     {/* Logo visible only on mobile/tablet because sidebar is hidden */}
                     <div className="lg:hidden text-xl font-headline font-bold text-white tracking-tight flex items-center">
                         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
-                            <span className="material-symbols-outlined text-primary text-3xl">sports_soccer</span>
-                            <span className="font-headline font-black italic tracking-tighter text-xl md:text-2xl text-primary">FOOTBALL ARENA</span>
+                            <img src="/images/logo/fotfun.png" alt="Logo" className="rounded-xl w-10 h-10 object-contain" />
+                            <span className="font-headline font-black italic tracking-tighter text-xl md:text-2xl text-primary uppercase">{appName}</span>
                         </div>
                     </div>
                 </div>
