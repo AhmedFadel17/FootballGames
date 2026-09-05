@@ -17,6 +17,8 @@ use App\Http\Controllers\GamesList\CareerGameController;
 use App\Http\Controllers\GamesList\GridGameController;
 use App\Http\Controllers\GamesList\GuessThePlayerController;
 use App\Http\Controllers\GamesList\TopListGameController;
+use App\Http\Controllers\Packs\CosmeticController;
+use App\Http\Controllers\Packs\PowerupController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
@@ -140,6 +142,9 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::apiResource('players', PlayerController::class);
         Route::apiResource('seasons', SeasonController::class);
         Route::apiResource('teams', TeamController::class);
+
+        Route::apiResource('powerups', PowerupController::class);
+        Route::apiResource('cosmetics', CosmeticController::class);
 
 
 

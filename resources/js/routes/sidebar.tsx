@@ -9,7 +9,9 @@ import {
   FaMagic,
   FaFlag,
   FaGlobeAfrica,
-  FaHome
+  FaHome,
+  FaFlask,
+  FaBox
 } from "react-icons/fa";
 import { BiWorld } from "react-icons/bi";
 import { SiSecurityscorecard } from "react-icons/si";
@@ -119,6 +121,23 @@ export const SidebarAdminRoutes: SidebarRoute[] = [
         path: "dashboard/admin/countries",
         label: "Countries",
         icon: <FaFlag size={18} />,
+      }
+    ]
+  },
+  {
+    path: "#",
+    label: "Packs",
+    icon: <FaBox size={18} />,
+    subItems: [
+      {
+        path: "dashboard/admin/powerups",
+        label: "Powerups",
+        icon: <FaFlask size={18} />,
+      },
+      {
+        path: "dashboard/admin/cosmetics",
+        label: "Cosmetics",
+        icon: <FaMagic size={18} />,
       }
     ]
   },

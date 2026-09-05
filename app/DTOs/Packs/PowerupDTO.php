@@ -9,7 +9,11 @@ class PowerupDTO
         public ?string $slug = null,
         public ?string $name = null,
         public ?string $description = null,
-        public ?string $iconSrc = null,
+        public ?string $imgSrc = null,
+        public ?int $type = null,
+        public ?int $rarity = null,
+        public ?int $duration = null,
+        public ?float $multiplier = null,
     ) {
     }
 
@@ -24,7 +28,11 @@ class PowerupDTO
             slug: $data['slug'] ?? null,
             name: $data['name'] ?? null,
             description: $data['description'] ?? null,
-            iconSrc: $data['icon_src'] ?? null,
+            imgSrc: $data['img_src'] ?? null,
+            type: $data['type'] ?? null,
+            rarity: $data['rarity'] ?? null,
+            duration: $data['duration'] ?? null,
+            multiplier: $data['multiplier'] ?? null,
         );
     }
 
@@ -34,7 +42,11 @@ class PowerupDTO
             'slug' => $this->slug,
             'name' => $this->name,
             'description' => $this->description,
-            'icon_src' => $this->iconSrc,
+            'img_src' => $this->imgSrc,
+            'type' => $this->type,
+            'rarity' => $this->rarity,
+            'duration' => $this->duration,
+            'multiplier' => $this->multiplier,
         ];
     }
 

@@ -13,7 +13,7 @@ class PackDTO
         public ?int $cardsCount = null,
         public ?int $requiredLevel = null,
         public ?int $userLimit = null,
-        public ?string $limitType = null,
+        public ?int $limitType = null,
         public ?string $imgSrc = null,
         public ?bool $isActive = null,
     ) {
@@ -34,7 +34,7 @@ class PackDTO
             cardsCount: isset($data['cards_count']) ? (int) $data['cards_count'] : null,
             requiredLevel: isset($data['required_level']) ? (int) $data['required_level'] : null,
             userLimit: isset($data['user_limit']) ? (int) $data['user_limit'] : null,
-            limitType: $data['limit_type'] ?? null,
+            limitType: isset($data['limit_type']) ? (int) $data['limit_type'] : null,
             imgSrc: $data['img_src'] ?? null,
             isActive: isset($data['is_active']) ? (bool) $data['is_active'] : null,
         );

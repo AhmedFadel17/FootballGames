@@ -43,21 +43,22 @@ export interface PlayerCard extends BaseEntity {
 export interface Powerup extends BaseEntity {
     name: string;
     slug: string;
-    type: PowerupType | string;
-    rarity: CardRarity | string;
-    description?: string | null;
-    icon_src?: string | null;
-    multiplier?: number | null;
-    duration?: number | null;
+    type: PowerupType;
+    rarity: CardRarity;
+    description: string;
+    img_src: string;
+    multiplier: number;
+    duration: number;
 }
 
 // Cosmetic Models
 export interface Cosmetic extends BaseEntity {
     name: string;
-    type: CosmeticType | string;
-    rarity: CardRarity | string;
-    description?: string | null;
-    img_src?: string | null;
+    slug: string;
+    description: string;
+    type: CosmeticType;
+    rarity: CardRarity;
+    img_src: string;
     is_active: boolean;
 }
 

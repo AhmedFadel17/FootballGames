@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Packs\Cosmetic;
+namespace App\Http\Controllers\Packs;
 
 use App\DTOs\Packs\CosmeticDTO;
 use App\DTOs\Pagination\PaginationDTO;

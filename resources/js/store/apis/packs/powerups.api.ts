@@ -7,10 +7,10 @@ const BASE_URL = `${API_URL}/powerups`;
 export interface CreatePowerupRequest {
     name: string;
     slug: string;
-    type: string;
-    rarity: string;
+    type: number;
+    rarity: number;
     description?: string;
-    icon_src?: string;
+    img_src?: string;
     multiplier?: number;
     duration?: number;
 }

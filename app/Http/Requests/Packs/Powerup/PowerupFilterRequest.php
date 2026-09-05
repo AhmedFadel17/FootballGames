@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\Packs\Powerup;
 
+use App\Enums\Packs\CardRarity;
+use App\Enums\Packs\PowerupType;
 use App\Http\Requests\Shared\BaseFilterRequest;
+use Illuminate\Validation\Rule;
 
 class PowerupFilterRequest extends BaseFilterRequest
 {
@@ -12,6 +15,8 @@ class PowerupFilterRequest extends BaseFilterRequest
             'id',
             'slug',
             'name',
+            'type',
+            'rarity',
             'created_at',
         ];
     }
@@ -21,6 +26,8 @@ class PowerupFilterRequest extends BaseFilterRequest
         return [
             'slug' => ['nullable', 'string', 'max:50'],
             'name' => ['nullable', 'string', 'max:100'],
+            'type' => ['nullable', Rule::enum(PowerupType::class)],
+            'rarity' => ['nullable', Rule::enum(CardRarity::class)],
         ];
     }
 }

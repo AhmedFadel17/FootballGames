@@ -24,6 +24,10 @@ use App\Services\GamesListServices\Grid\GridGameInstance\GridGameInstanceService
 use App\Services\GamesListServices\Grid\GridGameInstance\IGridGameInstanceService;
 use App\Services\Infra\PlayerProgress\IPlayerProgressService;
 use App\Services\Infra\PlayerProgress\PlayerProgressService;
+use App\Services\Packs\Cosmetics\CosmeticService;
+use App\Services\Packs\Cosmetics\ICosmeticService;
+use App\Services\Packs\Powerups\IPowerupService;
+use App\Services\Packs\Powerups\PowerupService;
 use App\Services\Pagination\IPaginationService;
 use App\Services\Pagination\PaginationService;
 use App\Services\Core\Players\IPlayerService;
@@ -105,6 +109,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->scoped(IGameEntryService::class, GameEntryService::class);
         $this->app->scoped(IGameResultService::class, GameResultService::class);
         $this->app->scoped(IGamePrizeService::class, GamePrizeService::class);
+
+        // Packs Services
+        $this->app->scoped(IPowerupService::class, PowerupService::class);
+        $this->app->scoped(ICosmeticService::class, CosmeticService::class);
+
 
         // Games Services
         $this->app->scoped(IBingoGameService::class, BingoGameService::class);

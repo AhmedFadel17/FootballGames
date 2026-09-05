@@ -51,17 +51,23 @@ return new class extends Migration {
             $table->string('slug', 50)->unique();
             $table->string('name', 100);
             $table->text('description')->nullable();
-            $table->string('icon_src')->nullable();
+            $table->string('img_src')->nullable();
+            $table->unsignedTinyInteger('type')->default(1);
+            $table->unsignedTinyInteger('rarity')->default(1);
+            $table->unsignedInteger('duration')->default(3600);
+            $table->float('multiplier')->default(1.0);
             $table->timestamps();
+
+            $table->index('type');
         });
 
 
         Schema::create('cosmetics', function (Blueprint $table) {
             $table->id();
-            $table->string('type', 30);
             $table->string('slug', 50)->unique();
             $table->string('name', 100);
             $table->string('img_src');
+            $table->unsignedTinyInteger('type')->default(1);
             $table->unsignedTinyInteger('rarity')->default(1);
             $table->timestamps();
 

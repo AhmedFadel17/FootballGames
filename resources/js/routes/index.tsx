@@ -33,6 +33,8 @@ import DailyChallenge from "@/pages/Main/DailyChallenge";
 import TermsOfService from "@/pages/Main/Terms";
 import PrivacyPolicy from "@/pages/Main/Privacy";
 import Support from "@/pages/Main/Support";
+import CosmeticsPage from "@/pages/Admin/Packs/Cosmetics";
+import PowerupPage from "@/pages/Admin/Packs/Powerups";
 
 // =============================
 // MAIN ROUTES
@@ -201,5 +203,14 @@ export const AppAdminRoutes: AppRoute[] = [
     label: "Seasons",
     element: <Seasons />,
   },
-
+  {
+    path: "/dashboard/admin/powerups",
+    label: "Powerups",
+    element: <PowerupPage />,
+  },
+  {
+    path: "/dashboard/admin/cosmetics",
+    label: "Cosmetics",
+    element: <CosmeticsPage />,
+  },
 ];

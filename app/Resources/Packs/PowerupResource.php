@@ -20,7 +20,7 @@ class PowerupResource extends JsonResource
             'type' => $this->type,
             'rarity' => $this->rarity,
             'description' => $this->description,
-            'icon_src' => $this->icon_src,
+            'img_src' => $this->img_src,
             'multiplier' => (float) $this->multiplier,
             'duration' => (int) $this->duration,
             'created_at' => $this->created_at?->toIso8601String(),

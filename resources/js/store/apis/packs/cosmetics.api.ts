@@ -6,8 +6,9 @@ const BASE_URL = `${API_URL}/cosmetics`;
 
 export interface CreateCosmeticRequest {
     name: string;
-    type: string;
-    rarity: string;
+    slug: string;
+    type: number;
+    rarity: number;
     description?: string;
     img_src?: string;
     is_active: boolean;
