@@ -35,6 +35,14 @@ export const mainApi = createApi({
     'GamePrize',
     'GameEntry',
     'GameResult',
+    // Packs
+    'Pack',
+    'PackDropRule',
+    'PackOpening',
+    'Cosmetic',
+    'Powerup',
+    'PlayerCard',
+    'Event',
     // Games List
     'GuessThePlayer',
     'BingoGame',

@@ -22,6 +22,14 @@ export * from './gameList/careerGame.api';
 export * from './gameList/gridGame.api';
 export * from './gameList/topListGame.api';
 
+// ─── Packs ────────────────────────────────────────────────────────────────────
+export * from './packs/events.api';
+export * from './packs/playerCards.api';
+export * from './packs/powerups.api';
+export * from './packs/cosmetics.api';
+export * from './packs/packs.api';
+export * from './packs/packDropRules.api';
+
 // ─── Infra ────────────────────────────────────────────────────────────────────
 export * from './infra/user.api';
 

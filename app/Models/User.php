@@ -2,7 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Packs\UserCard;
+use App\Models\Packs\UserPackOpening;
+use App\Models\Packs\UserPowerup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -87,5 +91,20 @@ class User extends Authenticatable implements OAuthenticatable
     public function userSettings()
     {
         return $this->hasMany(UserSetting::class);
+    }
+
+    public function cards(): HasMany
+    {
+        return $this->hasMany(UserCard::class);
+    }
+
+    public function powerups(): HasMany
+    {
+        return $this->hasMany(UserPowerup::class);
+    }
+
+    public function packOpenings(): HasMany
+    {
+        return $this->hasMany(UserPackOpening::class);
     }
 }
