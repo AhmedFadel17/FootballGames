@@ -35,6 +35,12 @@ import PrivacyPolicy from "@/pages/Main/Privacy";
 import Support from "@/pages/Main/Support";
 import CosmeticsPage from "@/pages/Admin/Packs/Cosmetics";
 import PowerupPage from "@/pages/Admin/Packs/Powerups";
+import PacksPage from "@/pages/Admin/Packs/Packs";
+import EventsPage from "@/pages/Admin/Packs/Events";
+import PlayerCardsPage from "@/pages/Admin/Packs/PlayerCards";
+import PackDropRulesPage from "@/pages/Admin/Packs/PackDropRules";
+import StorePage from "@/pages/User/Store";
+import MyTeamPage from "@/pages/User/MyTeam";
 
 // =============================
 // MAIN ROUTES
@@ -104,6 +110,16 @@ export const AppUserRoutes: AppRoute[] = [
     path: "/games/top-list",
     label: "Top List",
     element: <TopListGame />,
+  },
+  {
+    path: "/store",
+    label: "Store",
+    element: <StorePage />,
+  },
+  {
+    path: "/my-team",
+    label: "My Team",
+    element: <MyTeamPage />,
   },
 ];
 // =============================
@@ -212,5 +228,25 @@ export const AppAdminRoutes: AppRoute[] = [
     path: "/dashboard/admin/cosmetics",
     label: "Cosmetics",
     element: <CosmeticsPage />,
+  },
+  {
+    path: "/dashboard/admin/packs",
+    label: "Packs",
+    element: <PacksPage />,
+  },
+  {
+    path: "/dashboard/admin/events",
+    label: "Events",
+    element: <EventsPage />,
+  },
+  {
+    path: "/dashboard/admin/player-cards",
+    label: "Player Cards",
+    element: <PlayerCardsPage />,
+  },
+  {
+    path: "/dashboard/admin/pack-drop-rules",
+    label: "Pack Drop Rules",
+    element: <PackDropRulesPage />,
   },
 ];

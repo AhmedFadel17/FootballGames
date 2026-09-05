@@ -4,7 +4,7 @@ namespace App\Models\Packs;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use User;
+use App\Models\User;
 
 class UserPowerup extends Model
 {

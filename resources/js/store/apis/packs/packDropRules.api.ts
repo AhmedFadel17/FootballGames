@@ -6,10 +6,14 @@ const BASE_URL = `${API_URL}/pack-drop-rules`;
 
 export interface CreatePackDropRuleRequest {
     pack_id: number;
-    item_type: string;
-    min_rating?: number;
-    max_rating?: number;
-    drop_chance: number;
+    drop_type: string;
+    item_type?: string;
+    rarity?: number | null;
+    event_id?: number | null;
+    min_coins?: number;
+    max_coins?: number;
+    drop_percentage: number;
+    drop_chance?: number;
 }
 
 export interface UpdatePackDropRuleRequest extends Partial<CreatePackDropRuleRequest> { }

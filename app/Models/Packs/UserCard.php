@@ -5,7 +5,7 @@ namespace App\Models\Packs;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use User;
+use App\Models\User;
 
 class UserCard extends Model
 {

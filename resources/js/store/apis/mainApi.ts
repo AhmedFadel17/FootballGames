@@ -43,6 +43,7 @@ export const mainApi = createApi({
     'Powerup',
     'PlayerCard',
     'Event',
+    'UserInventory',
     // Games List
     'GuessThePlayer',
     'BingoGame',

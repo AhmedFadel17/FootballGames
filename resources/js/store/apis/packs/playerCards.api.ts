@@ -6,11 +6,12 @@ const BASE_URL = `${API_URL}/player-cards`;
 
 export interface CreatePlayerCardRequest {
     player_id: number;
-    event_id?: number;
+    event_id: number;
     rating: number;
-    rarity: string;
-    position: string;
+    rarity: number | string;
+    position?: string;
     img_src?: string;
+    is_packable?: boolean;
     stats?: Record<string, number>;
 }
 

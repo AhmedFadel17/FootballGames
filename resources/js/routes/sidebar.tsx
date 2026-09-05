@@ -11,7 +11,11 @@ import {
   FaGlobeAfrica,
   FaHome,
   FaFlask,
-  FaBox
+  FaBox,
+  FaBoxOpen,
+  FaCalendarCheck,
+  FaIdCard,
+  FaDice
 } from "react-icons/fa";
 import { BiWorld } from "react-icons/bi";
 import { SiSecurityscorecard } from "react-icons/si";
@@ -48,6 +52,16 @@ export const SidebarUserRoutes: SidebarRoute[] = [
     path: "/games/top-list",
     label: "Top List",
     icon: <BsListTask size={18} />,
+  },
+  {
+    path: "/store",
+    label: "Store",
+    icon: <FaBoxOpen size={18} />,
+  },
+  {
+    path: "/my-team",
+    label: "My Team",
+    icon: <FaUsers size={18} />,
   },
   // {
   //   path: "/games/guess-the-player",
@@ -129,6 +143,26 @@ export const SidebarAdminRoutes: SidebarRoute[] = [
     label: "Packs",
     icon: <FaBox size={18} />,
     subItems: [
+      {
+        path: "dashboard/admin/packs",
+        label: "Packs",
+        icon: <FaBoxOpen size={18} />,
+      },
+      {
+        path: "dashboard/admin/events",
+        label: "Events",
+        icon: <FaCalendarCheck size={18} />,
+      },
+      {
+        path: "dashboard/admin/player-cards",
+        label: "Player Cards",
+        icon: <FaIdCard size={18} />,
+      },
+      {
+        path: "dashboard/admin/pack-drop-rules",
+        label: "Drop Rules",
+        icon: <FaDice size={18} />,
+      },
       {
         path: "dashboard/admin/powerups",
         label: "Powerups",

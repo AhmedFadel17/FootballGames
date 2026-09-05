@@ -1,7 +1,7 @@
 <?php
 namespace App\DTOs\Packs;
 
-use App\Enums\CardRarity;
+use App\Enums\Packs\CardRarity;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PlayerCardDTO

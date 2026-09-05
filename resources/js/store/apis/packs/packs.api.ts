@@ -1,16 +1,19 @@
 import { mainApi, API_URL } from './../mainApi';
 import { ApiResponse, PaginationResponse, PaginationFilter, LookupOption } from '@/types';
-import { Pack, PackOpeningResult } from '@/types';
+import { Pack, PackOpeningResult, Powerup, Cosmetic, UserPlayerCard, UserInventoryPowerup, UserInventoryCosmetic, SquadLineup } from '@/types';
 
 const BASE_URL = `${API_URL}/packs`;
 
 export interface CreatePackRequest {
-    event_id?: number;
     name: string;
+    slug: string;
     description?: string;
     img_src?: string;
     price_coins: number;
     cards_count: number;
+    required_level?: number;
+    user_limit?: number | null;
+    limit_type?: number;
     is_active: boolean;
 }
 
@@ -93,8 +96,54 @@ export const packsApi = mainApi.injectEndpoints({
         }),
 
         openPack: builder.mutation<ApiResponse<PackOpeningResult>, OpenPackRequest>({
-            query: (body) => ({ url: `${BASE_URL}/open`, method: 'POST', body }),
-            invalidatesTags: [{ type: 'Pack', id: 'LIST' }],
+            query: (body) => ({ url: `${API_URL}/store/open-pack`, method: 'POST', body }),
+            invalidatesTags: [
+                { type: 'Pack', id: 'LIST' },
+                'User',
+                { type: 'UserInventory' as const, id: 'CARDS' },
+                { type: 'UserInventory' as const, id: 'POWERUPS' },
+                { type: 'UserInventory' as const, id: 'COSMETICS' },
+            ],
+        }),
+
+        // ── User Store Endpoints ──
+        getUserStorePacks: builder.query<ApiResponse<Pack[]>, void>({
+            query: () => `${API_URL}/store/packs`,
+            providesTags: [{ type: 'Pack', id: 'STORE' }],
+        }),
+
+        getUserStorePowerups: builder.query<ApiResponse<Powerup[]>, void>({
+            query: () => `${API_URL}/store/powerups`,
+        }),
+
+        getUserStoreCosmetics: builder.query<ApiResponse<Cosmetic[]>, void>({
+            query: () => `${API_URL}/store/cosmetics`,
+        }),
+
+        // ── User Inventory & My Team Endpoints ──
+        getUserMyCards: builder.query<ApiResponse<UserPlayerCard[]>, void>({
+            query: () => `${API_URL}/my-team/cards`,
+            providesTags: [{ type: 'UserInventory' as const, id: 'CARDS' }],
+        }),
+
+        getUserMyPowerups: builder.query<ApiResponse<UserInventoryPowerup[]>, void>({
+            query: () => `${API_URL}/my-team/powerups`,
+            providesTags: [{ type: 'UserInventory' as const, id: 'POWERUPS' }],
+        }),
+
+        getUserMyCosmetics: builder.query<ApiResponse<UserInventoryCosmetic[]>, void>({
+            query: () => `${API_URL}/my-team/cosmetics`,
+            providesTags: [{ type: 'UserInventory' as const, id: 'COSMETICS' }],
+        }),
+
+        getSquadLineup: builder.query<ApiResponse<SquadLineup | null>, void>({
+            query: () => `${API_URL}/my-team/lineup`,
+            providesTags: [{ type: 'UserInventory' as const, id: 'LINEUP' }],
+        }),
+
+        saveSquadLineup: builder.mutation<ApiResponse<SquadLineup>, SquadLineup>({
+            query: (body) => ({ url: `${API_URL}/my-team/lineup`, method: 'POST', body }),
+            invalidatesTags: [{ type: 'UserInventory' as const, id: 'LINEUP' }],
         }),
     }),
 });
@@ -107,4 +156,12 @@ export const {
     useDeletePackMutation,
     useGetPacksLookupQuery,
     useOpenPackMutation,
+    useGetUserStorePacksQuery,
+    useGetUserStorePowerupsQuery,
+    useGetUserStoreCosmeticsQuery,
+    useGetUserMyCardsQuery,
+    useGetUserMyPowerupsQuery,
+    useGetUserMyCosmeticsQuery,
+    useGetSquadLineupQuery,
+    useSaveSquadLineupMutation,
 } = packsApi;

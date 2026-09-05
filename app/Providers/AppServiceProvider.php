@@ -28,6 +28,14 @@ use App\Services\Packs\Cosmetics\CosmeticService;
 use App\Services\Packs\Cosmetics\ICosmeticService;
 use App\Services\Packs\Powerups\IPowerupService;
 use App\Services\Packs\Powerups\PowerupService;
+use App\Services\Packs\Packs\IPackService;
+use App\Services\Packs\Packs\PackService;
+use App\Services\Packs\Events\IEventService;
+use App\Services\Packs\Events\EventService;
+use App\Services\Packs\PlayerCards\IPlayerCardService;
+use App\Services\Packs\PlayerCards\PlayerCardService;
+use App\Services\Packs\PackDropRules\IPackDropRuleService;
+use App\Services\Packs\PackDropRules\PackDropRuleService;
 use App\Services\Pagination\IPaginationService;
 use App\Services\Pagination\PaginationService;
 use App\Services\Core\Players\IPlayerService;
@@ -113,6 +121,10 @@ class AppServiceProvider extends ServiceProvider
         // Packs Services
         $this->app->scoped(IPowerupService::class, PowerupService::class);
         $this->app->scoped(ICosmeticService::class, CosmeticService::class);
+        $this->app->scoped(IPackService::class, PackService::class);
+        $this->app->scoped(IEventService::class, EventService::class);
+        $this->app->scoped(IPlayerCardService::class, PlayerCardService::class);
+        $this->app->scoped(IPackDropRuleService::class, PackDropRuleService::class);
 
 
         // Games Services

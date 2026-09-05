@@ -18,7 +18,12 @@ use App\Http\Controllers\GamesList\GridGameController;
 use App\Http\Controllers\GamesList\GuessThePlayerController;
 use App\Http\Controllers\GamesList\TopListGameController;
 use App\Http\Controllers\Packs\CosmeticController;
+use App\Http\Controllers\Packs\EventController;
+use App\Http\Controllers\Packs\PackController;
+use App\Http\Controllers\Packs\PackDropRuleController;
+use App\Http\Controllers\Packs\PlayerCardController;
 use App\Http\Controllers\Packs\PowerupController;
+use App\Http\Controllers\Packs\UserStoreController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
@@ -68,6 +73,9 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::get('lookups/teams', [TeamController::class, 'getOptions']);
         Route::get('lookups/players', [PlayerController::class, 'getOptions']);
         Route::get('lookups/managers', [ManagerController::class, 'getOptions']);
+        Route::get('lookups/packs', [PackController::class, 'getOptions']);
+        Route::get('lookups/events', [EventController::class, 'getOptions']);
+        Route::get('lookups/player-cards', [PlayerCardController::class, 'getOptions']);
     });
 
     //-----------------------------User-----------------------------
@@ -119,6 +127,23 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
                 Route::post('assignments/{assignment_id}/ask', [GuessThePlayerController::class, 'askPlayer']);
             });
         });
+
+        // ─── User Store & Pack Opening ─────────────────────────────────
+        Route::prefix('store')->group(function () {
+            Route::get('packs', [UserStoreController::class, 'packs']);
+            Route::get('powerups', [UserStoreController::class, 'powerups']);
+            Route::get('cosmetics', [UserStoreController::class, 'cosmetics']);
+            Route::post('open-pack', [UserStoreController::class, 'openPack']);
+        });
+
+        // ─── User Team & Inventory ─────────────────────────────────────
+        Route::prefix('my-team')->group(function () {
+            Route::get('cards', [UserStoreController::class, 'myCards']);
+            Route::get('powerups', [UserStoreController::class, 'myPowerups']);
+            Route::get('cosmetics', [UserStoreController::class, 'myCosmetics']);
+            Route::get('lineup', [UserStoreController::class, 'getLineup']);
+            Route::post('lineup', [UserStoreController::class, 'saveLineup']);
+        });
     });
 
 
@@ -145,6 +170,11 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
 
         Route::apiResource('powerups', PowerupController::class);
         Route::apiResource('cosmetics', CosmeticController::class);
+        Route::post('packs/open', [PackController::class, 'open']);
+        Route::apiResource('packs', PackController::class);
+        Route::apiResource('events', EventController::class);
+        Route::apiResource('player-cards', PlayerCardController::class);
+        Route::apiResource('pack-drop-rules', PackDropRuleController::class);
 
 
 

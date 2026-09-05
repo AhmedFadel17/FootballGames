@@ -2,7 +2,7 @@
 
 namespace App\Models\Packs;
 
-use App\Enums\CardRarity;
+use App\Enums\Packs\CardRarity;
 use App\Models\Core\Player;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

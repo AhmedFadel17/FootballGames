@@ -4,6 +4,7 @@ namespace App\Models\Packs;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Event extends Model
 {
@@ -31,6 +32,11 @@ class Event extends Model
     public function dropRules(): HasMany
     {
         return $this->hasMany(PackDropRule::class);
+    }
+
+    public function packs(): HasManyThrough
+    {
+        return $this->hasManyThrough(Pack::class, PackDropRule::class, 'event_id', 'id', 'id', 'pack_id')->distinct();
     }
 
     // Scope for active events within their operational time window
